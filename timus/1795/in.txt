@@ -1,0 +1,9 @@
+3
+2 of sweets
+4 of milk
+1 of sausage
+4
+2 of milk
+3 of sweets
+3 of milk
+1 of cheese
