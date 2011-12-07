@@ -9,20 +9,14 @@
 #include <cmath>
 using namespace std;
 
-static bool IsSimple(int num) {
-    const int max = sqrt(num);
+static bool IsSimpleNum(int num) {
+    const int max = sqrt((double)num);
     for (int i = 2; i <= (max+1); ++i) {
         if (num % i == 0)
             return false;
     }
     return true;
 }
-
-//bool IS_SIMPLE_NUM[1000];
-
-//typedef map<int, vector<int> > TPostfix2Postfixes;
-//TPostfix2Postfixes Postfix2Postfixes;
-//int Postfix2Cnt[1000];
 
 static int Get3Prefix(int num) {
     num /= 10;
@@ -39,56 +33,103 @@ static int GetPostfix(int num) {
     return res;
 }
 
-static void Init() {
-    /*
-    for (int i = 100; i < 1000; ++i) {
-        if (IsSimple(i))
-            Postfix2Postfixes[GetPostfix(i)].push_back(i);
-    }
-    */
-    /*
-    for (int i = 0; i < 1000; ++i)
-        POSTFIX_2_CNT[i] = 0;
+bool IsSimple[1000];
 
-    for (int i = 0; i < 1000; ++i) {
-        IsSimpleNum[i] = IsSimple(i);
-        if (i > 100 && IsSimpleNum[i])
-            Postfix2Cnt[GetPostfix(i)];
+int NUM_2_PREFIX[1000];
+
+typedef map<int, map<int, int> > TP2Ps2Cnt;
+TP2Ps2Cnt p2ps2cnt;
+
+long long a[100][10005];
+
+static void Init() {
+    // simple numbers
+    for (int i = 0; i < 1000; ++i)
+        IsSimple[i] = IsSimpleNum(i);
+
+    // simple numbers prefixes
+    for (int i = 0; i < 1000; ++i)
+        NUM_2_PREFIX[i] = Get3Prefix(i);
+
+    // p2ps2cnt
+    for (int i = 100; i < 1000; ++i) {
+        if (IsSimple[i]) {
+            const int postfix = GetPostfix(i);
+            for (int j = 100; j < 1000; ++j) {
+                if (IsSimple[j]) {
+                    const int prefix = Get3Prefix(j);
+                    if (prefix == postfix) {
+                        ++p2ps2cnt[postfix][GetPostfix(j)];
+                        //++p2ps2cnt[i][j];
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+    for (TP2Ps2Cnt::const_iterator iter = p2ps2cnt.begin(), end = p2ps2cnt.end(); iter != end; ++iter) {
+        cout << iter->first << ":";
+        const map<int, int> &prefixes = iter->second;
+        for (map<int, int>::const_iterator piter = prefixes.begin(), pend = prefixes.end(); piter != pend; ++piter) {
+            cout << "\t" << piter->first << ":" << piter->second;
+        }
+        cout << endl;
     }
     */
+
+    // a
+    for (int i = 0; i < 100; ++i)
+        for (int j = 0; j < 10005; ++j)
+            a[i][j] = 0;
 }
+
 
 int main() {
     Init();
 
     int N;
-    scanf("%d\n", &N);
-    
-    //int a[1000];
-    //for (int i = 0; i < 1000; ++i)
-    //    a[i] = Postfix[i];
-    vector< pair<int, int> > a;
-    for (TPostfix2Postfixes::const_iterator iter = Postfix2Postfixes.begin(), end = Postfix2Postfixes.end(); iter != end; ++iter)
-        a.push_back( make_pair(iter->first, iter->second.size()) );
+    scanf("%d", &N);
 
-    for (int k = 0; k < (N-2); ++k) {
-        vector<int> nexta;
-        for (vector<int>::const_iterator iter = a.begin(), end = a.end(); iter != end; ++iter) {
-            const int postfix = iter->first;
-            const int cnt = iter->second;
-            const vector<int> &postfixes = 
+    for (int i = 100; i < 1000; ++i) {
+        if (IsSimple[i]) {
+            ++a[GetPostfix(i)][3];
         }
-        /*
-        for (int i = 0; i < 1000; ++i) {
-            if (a[i] <= 0)
-                continue;
-            const int postfix = i;
-            const int cnt = a[i];
-            //const int matches = Postfix2Cnt[i];
-            //const vector<int> postfixes[
-        }
-        */
     }
+
+    for (int n = 3; n < N; ++n) {
+        for (int p = 10; p < 100; ++p) {
+            if (a[p][n] == 0)
+                continue;
+
+            const map<int, int> &ps2cnt = p2ps2cnt[p];
+            for (map<int, int>::const_iterator iter = ps2cnt.begin(), end = ps2cnt.end(); iter != end; ++iter) {
+                long long &c = a[iter->first][n+1];
+                c += iter->second;
+                //c += (iter->second * a[p][n]);
+                c %= 1000000009;
+            }
+        }
+    }
+
+    long long res = 0;
+    for (int p = 0; p < 100; ++p) {
+        res += a[p][N];
+        res %= 1000000009;
+    }
+    printf("%lld\n", res);
+
+    /*
+    for (int n = 3; n <= N; ++n)
+        cout << "\t" << n;
+    for (int p = 0; p < 100; ++p) {
+        cout << "p=" << p << "|\t";
+        for (int n = 3; n <= N; ++n) {
+            cout << a[p][n] << "\t";
+        }
+        cout << endl;
+    }
+    */
 
     return 0;
 }

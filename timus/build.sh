@@ -1,1 +1,1 @@
-g++ main.cpp -Wall -pedantic -o x
+g++ main.cpp -Wall -o x
