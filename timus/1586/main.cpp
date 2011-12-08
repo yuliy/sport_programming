@@ -84,6 +84,7 @@ static void Init() {
             a[i][j] = 0;
 }
 
+const int MOD = 1000 * 1000 * 1000 + 9;
 
 int main() {
     Init();
@@ -112,7 +113,7 @@ int main() {
                 long long &c = a[iter->first][n+1];
                 c += iter->second;
                 //c += (iter->second * a[p][n]);
-                c %= 1000000009;
+                c %= MOD;
             }
         }
     }
@@ -120,7 +121,7 @@ int main() {
     long long res = 0;
     for (int p = 10; p < 100; ++p) {
         res += a[p][N];
-        res %= 1000000009;
+        res %= MOD;
     }
     printf("%lld\n", res);
 
