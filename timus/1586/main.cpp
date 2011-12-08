@@ -92,8 +92,9 @@ int main() {
     scanf("%d", &N);
 
     for (int i = 100; i < 1000; ++i) {
-        if (IsSimple[i]) {
-            ++a[GetPostfix(i)][3];
+        const int p = GetPostfix(i);
+        if (IsSimple[i] && p >= 10) {
+            ++a[p][3];
         }
     }
 
@@ -102,7 +103,11 @@ int main() {
             if (a[p][n] == 0)
                 continue;
 
-            const map<int, int> &ps2cnt = p2ps2cnt[p];
+            TP2Ps2Cnt::const_iterator piter = p2ps2cnt.find(p);
+            if (piter == p2ps2cnt.end())
+                continue;
+
+            const map<int, int> &ps2cnt = piter->second;
             for (map<int, int>::const_iterator iter = ps2cnt.begin(), end = ps2cnt.end(); iter != end; ++iter) {
                 long long &c = a[iter->first][n+1];
                 c += iter->second;
@@ -113,7 +118,7 @@ int main() {
     }
 
     long long res = 0;
-    for (int p = 0; p < 100; ++p) {
+    for (int p = 10; p < 100; ++p) {
         res += a[p][N];
         res %= 1000000009;
     }
@@ -122,6 +127,7 @@ int main() {
     /*
     for (int n = 3; n <= N; ++n)
         cout << "\t" << n;
+    cout << endl;
     for (int p = 0; p < 100; ++p) {
         cout << "p=" << p << "|\t";
         for (int n = 3; n <= N; ++n) {
@@ -133,3 +139,4 @@ int main() {
 
     return 0;
 }
+
