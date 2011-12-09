@@ -57,7 +57,7 @@ static void Init() {
             const int postfix = GetPostfix(i);
             for (int j = 100; j < 1000; ++j) {
                 if (IsSimple[j]) {
-                    const int prefix = Get3Prefix(j);
+                    const int prefix = NUM_2_PREFIX[j];
                     if (prefix == postfix) {
                         ++p2ps2cnt[postfix][GetPostfix(j)];
                         //++p2ps2cnt[i][j];
@@ -94,32 +94,46 @@ int main() {
 
     for (int i = 100; i < 1000; ++i) {
         const int p = GetPostfix(i);
-        if (IsSimple[i] && p >= 10) {
+        //if (IsSimple[i] && p >= 10) {
+        if (IsSimple[i]) {
             ++a[p][3];
         }
     }
 
     for (int n = 3; n < N; ++n) {
-        for (int p = 10; p < 100; ++p) {
-            if (a[p][n] == 0)
-                continue;
 
-            TP2Ps2Cnt::const_iterator piter = p2ps2cnt.find(p);
-            if (piter == p2ps2cnt.end())
-                continue;
+        if (n == (N-1)) {
+            for (int p = 0; p < 100; ++p) {
+                if (a[p][n] == 0)
+                    continue;
 
-            const map<int, int> &ps2cnt = piter->second;
-            for (map<int, int>::const_iterator iter = ps2cnt.begin(), end = ps2cnt.end(); iter != end; ++iter) {
-                long long &c = a[iter->first][n+1];
-                c += iter->second;
-                //c += (iter->second * a[p][n]);
-                c %= MOD;
+                for (int i = 100; i < 1000; ++i) {
+                    if (IsSimple[i] && NUM_2_PREFIX[i] == p)
+                        a[GetPostfix(i)][n+1] += a[p][n];
+                }
+            }
+        } else {
+            for (int p = 10; p < 100; ++p) {
+                if (a[p][n] == 0)
+                    continue;
+
+                TP2Ps2Cnt::const_iterator piter = p2ps2cnt.find(p);
+                if (piter == p2ps2cnt.end())
+                    continue;
+
+                const map<int, int> &ps2cnt = piter->second;
+                for (map<int, int>::const_iterator iter = ps2cnt.begin(), end = ps2cnt.end(); iter != end; ++iter) {
+                    long long &c = a[iter->first][n+1];
+                    c += iter->second;
+                    //c += (iter->second * a[p][n]);
+                    c %= MOD;
+                }
             }
         }
     }
 
     long long res = 0;
-    for (int p = 10; p < 100; ++p) {
+    for (int p = 0; p < 100; ++p) {
         res += a[p][N];
         res %= MOD;
     }
