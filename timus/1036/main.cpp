@@ -10,8 +10,8 @@ using namespace std;
 
 class TLongNum {
 private:
-    static const int LNUM_SIZE = 30;
-    static const long long BASE = 10 * 1000 * 1000;
+    static const int LNUM_SIZE = 20;
+    static const long long BASE = 100 * 1000 * 1000;
     long long arr[LNUM_SIZE];
 public:
     TLongNum() {
@@ -21,6 +21,12 @@ public:
     TLongNum(const TLongNum &other) {
         for (int i = 0; i < LNUM_SIZE; ++i)
             arr[i] = other.arr[i];
+    }
+
+    TLongNum &operator=(const TLongNum &other) {
+        for (int i = 0; i < LNUM_SIZE; ++i)
+            arr[i] = other.arr[i];
+        return *this;
     }
 
     void Init() {
@@ -48,31 +54,43 @@ public:
         return *this;
     }
 
-    TLongNum &operator *= (const TLongNum &other) {
+    TLongNum &operator *= (int num) {
         long long carry = 0;
         for (int i = 0; i < LNUM_SIZE; ++i) {
-            arr[i] = (arr[i] * other.arr[i] + carry);
+            arr[i] = (arr[i] * num + carry);
             carry = arr[i] / BASE;
             arr[i] %= BASE;
         }
         return *this;
     }
 
+    TLongNum &operator *= (const TLongNum &other) {
+        TLongNum res;
+        for (int i = 0; i < LNUM_SIZE; ++i) {
+            TLongNum tmp(*this);
+            tmp *= other.arr[i];
+            for (int k = 0; k < i; ++k)
+                tmp *= BASE;
+            res += tmp;
+        }
+        *this = res;
+        return *this;
+    }
+
     void Print() const {
         int start = 0;
-        for (int i = LNUM_SIZE-1; i >= 0; --i)
+        for (int i = LNUM_SIZE-1; i >= 0; --i) {
             if (arr[i] != 0) {
                 start = i;
                 break;
             }
-        //for (int i = LNUM_SIZE-1; i >= 0; --i)
-        //    printf("%lld\n", arr[i]);
-        //return;
+        }
+
         for (int i = start; i >= 0; --i) {
             if (i == start)
                 printf("%lld", arr[i]);
             else
-                printf("%07lld", arr[i]);
+                printf("%08lld", arr[i]);
         }
     }
 };
@@ -106,17 +124,7 @@ int main() {
         }
     }
 
-    /*
-    TLongNum res;
-    for (int s = 1; s < S; ++s) {
-        TLongNum t;
-        t += a[N][s];
-        t *= a[N][S-s];
-        res += t;
-        //res += (a[N][s] * a[N][S-s]);
-    }
-    */
-    TLongNum res = a[N][S];
+    TLongNum res(a[N][S]);
     res *= res;
     res.Print();
     printf("\n");
