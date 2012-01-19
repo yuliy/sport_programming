@@ -22,9 +22,11 @@ def main():
     for v in xrange(2, 201):
         for coin in Values:
             if (v - coin) >= 1:
-                d[v] += d[v-coin]
+                #d[v] += d[v-coin]
+                #if (v-coin) > coin:
+                d[v] += (d[v-coin] * d[coin])
 
-    for i in xrange(0, 251):
+    for i in xrange(0, 201):
         print i, d[i]
 
 if __name__ == '__main__':
