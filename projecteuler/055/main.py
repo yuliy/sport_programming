@@ -2,21 +2,20 @@
 
 import math
 
-def calcSumOfDigits(num):
-    res = 0
-    while num:
-        res += (num % 10)
-        num /= 10
-    return res
+def IsLychrelNumber(number):
+    num = str(number)
+    for i in xrange(0, 51):
+        t = int(num) + int(num[::-1])
+        num = str(t)
+        if num == num[::-1]:
+            return False
+    return True
 
 def main():
     res = 0
-    for a in xrange(0, 100):
-        print 'a = %d' % a
-        for b in xrange(0, 100):
-            curRes = calcSumOfDigits(a ** b)
-            if curRes > res:
-                res = curRes
+    for i in xrange(11, 10001):
+        if IsLychrelNumber(i):
+            res += 1
     print 'Result = %d' % res
 
 if __name__ == '__main__':
