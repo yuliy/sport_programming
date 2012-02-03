@@ -25,49 +25,45 @@ static bool IsPrime(long long num) {
 vector<long long> Primes;
 
 static void Init() {
-    for (long long i = 1; i < 1000*1000; ++i) {
+    for (long long i = 2; i < 1000*1000; ++i) {
         if (IsPrime(i))
             Primes.push_back(i);
     }
 }
 
-static int CheckNum(long long num, size_t numIdx) {
-    int res = 0;
-
-    for (size_t i = 0; i < numIdx; ++i) {
-
-        long long sum = 0;
-        int curRes = 0;
-        for (size_t j = i; j <= numIdx; ++j) {
-            sum += Primes[j];
-            curRes += 1;
-            if (sum == num) {
-                if (curRes > res)
-                    res = curRes;
-                break;
-            }
-            if (sum > num)
-                break;
-        }
-    }
-
-    return res;
-}
-
 int main() {
     Init();
 
+    int maxCnt = 0;
     int res = 0;
-    const size_t cnt = Primes.size();
-    for (size_t i = 0; i < cnt; ++i) {
+
+    const int cnt = Primes.size();
+    for (int i = 0; i < cnt; ++i) {
         if (i % 1000 == 0)
-            cout << "i=" << i << "\tres=" << res << endl;
-        const long long num = Primes[i];
-        const int curRes = CheckNum(num, i);
-        if (curRes > res)
-            res = curRes;
+            cout << "Primes[i]=" << Primes[i] << "\tres=" << res << "\tmaxCnt=" << maxCnt << endl;
+
+        for (int k = 0; k < i; ++k) {
+            long long num = 0;
+            int c = 0;
+            for (int j = k; j < i; ++j) {
+                num += Primes[j];
+
+                if (num == Primes[i]) {
+                    c = j-k+1;
+                    break;
+                }
+                
+                if (num > Primes[i])
+                    break;
+            }
+
+            if (c > maxCnt) {
+                maxCnt = c;
+                res = num;
+            }
+        }
     }
 
-    cout << "Result: " << res << endl;
+    cout << "Result: " << res << "\tmaxCnt=" << maxCnt << endl;
     return 0;
 }
