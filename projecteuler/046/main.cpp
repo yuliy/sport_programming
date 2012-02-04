@@ -31,33 +31,30 @@ static void Init() {
     }
 }
 
-static int CalcDivisors(long long num) {
-    int res = 0;
+static bool CheckIfCanBeWrittenAsASumOfPrimeAndTwiceASquare(long long num) {
     for (vector<long long>::const_iterator iter = Primes.begin(), end = Primes.end(); iter != end; ++iter) {
         const long long p = *iter;
-        bool flag = false;
-        while (num && num % p == 0) {
-            num /= p;
-            flag = true;
-        }
-        if (flag)
-            ++res;
-        if (num == 1)
+        if (p > num)
             break;
+
+        for (long long i = 1; ; ++i) {
+            const long long sum = p + 2 * i * i;
+            if (sum == num)
+                return true;
+            if (sum > num)
+                break;
+        }
     }
-    return res;
+    return false;
 }
 
 int main() {
     Init();
 
-    for (long long i = 644; i < 1000*1000; ++i) {
-        if (i % 10000 == 0)
+    for (long long i = 5; i < 1000*1000; i+=2) {
+        if (i % 1000 == 0)
             cout << "\ti=" << i << endl;
-        if (CalcDivisors(i) == 4 &&
-            CalcDivisors(i+1) == 4 &&
-            CalcDivisors(i+2) == 4 &&
-            CalcDivisors(i+3) == 4) {
+        if (!CheckIfCanBeWrittenAsASumOfPrimeAndTwiceASquare(i) && !IsPrime(i)) {
             cout << "Result=" << i << endl;
             break;
         }
