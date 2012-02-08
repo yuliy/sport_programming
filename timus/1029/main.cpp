@@ -43,7 +43,7 @@ int main() {
             d[i][j] = a[i][j] + d[i-1][j];
             p[i][j] = j;
             if (j > 1) {
-                const long long t = a[i][j] + d[i][j-1] + d[i-1][j-1];
+                const long long t = a[i][j] + a[i][j-1] + d[i-1][j-1];
                 if (t < d[i][j]) {
                     d[i][j] = t;
                     p[i][j] = j-1;
@@ -51,7 +51,7 @@ int main() {
             }
 
             if (j < N) {
-                const long long t = a[i][j] + d[i][j+1] + d[i-1][j+1];
+                const long long t = a[i][j] + a[i][j+1] + d[i-1][j+1];
                 if (t < d[i][j]) {
                     d[i][j] = t;
                     p[i][j] = j+1;
@@ -60,14 +60,12 @@ int main() {
         }
     }
 
-    /*
     for (int i = 1; i <= M; ++i) {
         for (int j = 1; j <= N; ++j) {
-            cout << d[i][j] << "\t";
+            cout << d[i][j] << "/" << p[i][j] << "\t";
         }
         cout << endl;
     }
-    */
 
     int minj = 0;
     long long minCost = 10LL*1000000000LL;
@@ -77,15 +75,15 @@ int main() {
             minj = j;
         }
     }
+    cout << minj << endl;
 
-    //cout << minj << endl;
     vector<int> path;
     path.push_back(minj);
     for (int i = M, j = minj; i >= 2; --i) {
         const int t = p[i][j];
-        path.push_back(t);
-        if (j != t)
-            path.push_back(t);
+        //path.push_back(t);
+        //if (j != t)
+        //    path.push_back(t);
         j = t;
     }
 
