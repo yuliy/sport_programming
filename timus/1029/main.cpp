@@ -104,7 +104,7 @@ int main() {
     */
 
     int minj = 0;
-    i64 minCost = 1e9;
+    i64 minCost = 2e9;
     for (int j = 1; j <= N; ++j) {
         if (d[M][j] < minCost) {
             minCost = d[M][j];
