@@ -28,7 +28,7 @@ int main() {
     for (int i = 0; i < K; ++i) {
         int m, s;
         scanf("%d:%d", &m, &s);
-        cout << m << "\t" << s << endl;
+        //cout << m << "\t" << s << endl;
 
         if (m == 0 && s <= 6)
             continue;
