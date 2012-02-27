@@ -10,100 +10,129 @@ using namespace std;
 
 typedef unsigned int ui32;
 
-template<typename DigitType, int BASE_DIGITS, int NUM_LENGTH>
-class TBigUInt {
+class TBigInt {
 private:
-    int BaseDigits;
-    int Base;
-    vector<DigitType> Digits;
-    typedef vector<DigitType> TDigits;
-    typedef typename vector<DigitType>::iterator TDIter;
-    typedef typename vector<DigitType>::const_iterator TDConstIter;
-    typedef typename vector<DigitType>::reverse_iterator TDReverseIter;
-    typedef typename vector<DigitType>::const_reverse_iterator TDConstReverseIter;
+    typedef vector<int> TDigits;
+    typedef TDigits::iterator TIter;
+    typedef TDigits::const_iterator TCIter;
+    typedef TDigits::reverse_iterator TRIter;
+    typedef TDigits::const_reverse_iterator TCRIter;
+private:
+    TDigits Digits;
+    static const int BASE = 10000;
+    static const int BASE_DIGITS_CNT = 4;
 public:
-    TBigUInt()
-        : BaseDigits(BASE_DIGITS)
-        , Base(pow(10.0, BASE_DIGITS))
-        , Digits(NUM_LENGTH) {
-        //Digits[0] = 100;
-        //Digits[1] = 1000;
-        //Digits[2] = 9999;
-        //Digits[3] = 70;
+    TBigInt()
+        : Digits(0) {
     }
 
-    TBigUInt(const TBigUInt &other)
-        : BaseDigits(BASE_DIGITS)
-        , Base(pow(10.0, BASE_DIGITS))
-        , Digits(NUM_LENGTH) {
+    TBigInt(const TBigInt &other)
+        : Digits(other.Digits) {
+    }
+
+    TBigInt(int num) {
+        if (num == 0) {
+            Digits.push_back(0);
+            return;
+        }
+
+        while (num) {
+            Digits.push_back(num % BASE);
+            num /= BASE;
+        }
+    }
+
+    TBigInt(long long num) {
+        if (num == 0) {
+            Digits.push_back(0);
+            return;
+        }
+
+        while (num) {
+            Digits.push_back(num % BASE);
+            num /= BASE;
+        }
+    }
+
+    TBigInt &operator=(const TBigInt &other) {
         Digits = other.Digits;
+        return *this;
     }
 
-    TBigUInt(DigitType shortNum)
-        : BaseDigits(BASE_DIGITS)
-        , Base(pow(10.0, BASE_DIGITS))
-        , Digits(NUM_LENGTH) {
-        for (TDIter iter = Digits.begin(), end = Digits.end(); (iter != end) && shortNum; ++iter) {
-            *iter = (shortNum % Base);
-            shortNum /= Base;
-        }
+    TBigInt operator+(const TBigInt &other) {
+        // TODO
     }
 
-    //TBigUInt &operator=(const TBigUInt &other) {
-    //    BaseDigits = other.BaseDigits;
-    //    Base = other.Base;
-    //    Digits = other.Digits;
-    //    return *this;
-    //}
+    TBigInt operator-(const TBigInt &other) {
+        // TODO
+    }
 
-    template<typename DT, int BSDS, int NL>
-    friend ostream &operator<<(ostream &ous, TBigUInt<DT, BSDS, NL> &num);
+    TBigInt operator*(const TBigInt &other) {
+        // TODO
+    }
+
+    TBigInt operator/(const TBigInt &other) {
+        // TODO
+    }
+
+    TBigInt &operator++() {
+        // TODO
+    }
+
+    TBigInt &operator++(int) {
+        // TODO
+    }
+
+    TBigInt operator--() {
+        // TODO
+    }
+
+    TBigInt operator--(int) {
+        // TODO
+    }
+
+    bool operator==(const TBigInt &other) {
+        // TODO
+    }
+
+    bool operator!=(const TBigInt &other) {
+        return !(*this == other);
+    }
+
+    bool operator<(const TBigInt &other) {
+        // TODO
+    }
+
+    bool operator>(const TBigInt &other) {
+        // TODO
+    }
+
+    bool operator<=(const TBigInt &other) {
+        // TODO
+    }
+
+    bool operator>=(const TBigInt &other) {
+        // TODO
+    }
+
+    friend ostream &operator<<(ostream &ous, const TBigInt &num);
 };
 
-template<typename T>
-struct TNotZero : public unary_function<T, bool> {
-    bool operator()(const T &v) {
-        return v != 0;
-    }
-};
-
-static int DigitsCount(long long num) {
-    int res = 0;
-    while (num) {
-        ++res;
-        num /= 10;
-    }
-    return res;
-}
-
-template<typename DigitType, int BASE_DIGITS, int NUM_LENGTH>
-ostream &operator<<(ostream &ous, TBigUInt<DigitType, BASE_DIGITS, NUM_LENGTH> &num) {
-    typedef typename TBigUInt<DigitType, BASE_DIGITS, NUM_LENGTH>::TDConstReverseIter TIter;
-    TIter end = num.Digits.rend();
-    TIter start = num.Digits.rbegin();
-    start = find_if(start, end, TNotZero<DigitType>());
-    if (start != end) {
-        for (TIter it = start; it != end; ++it) {
-            if (it != start) {
-                const int dcnt = DigitsCount(*it);
-                const int nullsCount = BASE_DIGITS - dcnt;
-                for (int i = 0; i < nullsCount; ++i)
-                    ous << '0';
-            }
-            ous << *it;
-        }
-    } else {
-        ous << '0';
+ostream &operator<<(ostream &ous, const TBigInt &num) {
+    TBigInt::TCRIter beg = num.Digits.rbegin(),
+                     end = num.Digits.rend();
+    for (TBigInt::TCRIter iter = beg; iter != end; ++iter) {
+        if (iter != beg)
+            ous << setfill('0') << setw(TBigInt::BASE_DIGITS_CNT);
+        ous << *iter;
     }
     return ous;
 }
 
-typedef TBigUInt<ui32, 4, 5> TBigNum;
-
 int main( int argc, char** argv ) {
     try {
-        TBigNum a(50005);
-        TBigNum b;
+        TBigInt a(50005);
+        TBigInt b;
         b = a;
         cout << a << endl;
         cout << b << endl;
