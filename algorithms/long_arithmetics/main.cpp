@@ -24,25 +24,37 @@ private:
 public:
     TBigUInt()
         : BaseDigits(BASE_DIGITS)
-        , Base(pow(10, BASE_DIGITS))
+        , Base(pow(10.0, BASE_DIGITS))
         , Digits(NUM_LENGTH) {
-
-        Digits[0] = 100;
-        Digits[1] = 1000;
-        Digits[2] = 9999;
-        Digits[3] = 70;
+        //Digits[0] = 100;
+        //Digits[1] = 1000;
+        //Digits[2] = 9999;
+        //Digits[3] = 70;
     }
 
     TBigUInt(const TBigUInt &other)
         : BaseDigits(BASE_DIGITS)
-        , Base(pow(10, BASE_DIGITS))
+        , Base(pow(10.0, BASE_DIGITS))
         , Digits(NUM_LENGTH) {
-        copy(other.Digits.begin(), other.Digits.end(), Digits.begin());
+        Digits = other.Digits;
     }
 
-    TBigUInt(const DigitType &shortNum);
+    TBigUInt(DigitType shortNum)
+        : BaseDigits(BASE_DIGITS)
+        , Base(pow(10.0, BASE_DIGITS))
+        , Digits(NUM_LENGTH) {
+        for (TDIter iter = Digits.begin(), end = Digits.end(); (iter != end) && shortNum; ++iter) {
+            *iter = (shortNum % Base);
+            shortNum /= Base;
+        }
+    }
 
-    TBigUInt &operator=(const TBigUInt &other);
+    //TBigUInt &operator=(const TBigUInt &other) {
+    //    BaseDigits = other.BaseDigits;
+    //    Base = other.Base;
+    //    Digits = other.Digits;
+    //    return *this;
+    //}
 
     template<typename DT, int BSDS, int NL>
     friend ostream &operator<<(ostream &ous, TBigUInt<DT, BSDS, NL> &num);
@@ -86,12 +98,15 @@ ostream &operator<<(ostream &ous, TBigUInt<DigitType, BASE_DIGITS, NUM_LENGTH> &
     return ous;
 }
 
-typedef TBigUInt<ui32, 4, 100> TBigNum;
+typedef TBigUInt<ui32, 4, 5> TBigNum;
 
 int main( int argc, char** argv ) {
     try {
-        TBigNum a;
+        TBigNum a(50005);
+        TBigNum b;
+        b = a;
         cout << a << endl;
+        cout << b << endl;
 
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
