@@ -22,8 +22,7 @@ private:
     static const int BASE = 10000;
     static const int BASE_DIGITS_CNT = 4;
 public:
-    TBigInt()
-        : Digits(0) {
+    TBigInt() {
     }
 
     TBigInt(const TBigInt &other)
@@ -31,11 +30,6 @@ public:
     }
 
     TBigInt(int num) {
-        if (num == 0) {
-            Digits.push_back(0);
-            return;
-        }
-
         while (num) {
             Digits.push_back(num % BASE);
             num /= BASE;
@@ -43,11 +37,6 @@ public:
     }
 
     TBigInt(long long num) {
-        if (num == 0) {
-            Digits.push_back(0);
-            return;
-        }
-
         while (num) {
             Digits.push_back(num % BASE);
             num /= BASE;
@@ -60,65 +49,79 @@ public:
     }
 
     TBigInt operator+(const TBigInt &other) {
-        // TODO
+        TCIter  aiter   = Digits.begin(),
+                aend    = Digits.end(),
+                biter   = other.Digits.begin(),
+                bend    = other.Digits.end();
+
+        TBigInt res;
+        int carry = 0;
+        for (; aiter != aend || biter != bend;) {
+            int t = carry;
+            if (aiter != aend)
+                t += *aiter++;
+            if (biter != bend)
+                t += *biter++;
+
+            res.Digits.push_back(t % BASE);
+            carry = t / BASE;
+        }
+
+        if (carry)
+            res.Digits.push_back(carry);
+
+        return res;
     }
 
-    TBigInt operator-(const TBigInt &other) {
-        // TODO
-    }
+    //TBigInt operator-(const TBigInt &other) {
+    //}
 
-    TBigInt operator*(const TBigInt &other) {
-        // TODO
-    }
+    //TBigInt operator*(const TBigInt &other) {
+    //}
 
-    TBigInt operator/(const TBigInt &other) {
-        // TODO
-    }
+    //TBigInt operator/(const TBigInt &other) {
+    //}
 
-    TBigInt &operator++() {
-        // TODO
-    }
+    //TBigInt &operator++() {
+    //}
 
-    TBigInt &operator++(int) {
-        // TODO
-    }
+    //TBigInt &operator++(int) {
+    //}
 
-    TBigInt operator--() {
-        // TODO
-    }
+    //TBigInt operator--() {
+    //}
 
-    TBigInt operator--(int) {
-        // TODO
-    }
+    //TBigInt operator--(int) {
+    //}
 
-    bool operator==(const TBigInt &other) {
-        // TODO
-    }
+    //bool operator==(const TBigInt &other) {
+    //}
 
-    bool operator!=(const TBigInt &other) {
-        return !(*this == other);
-    }
+    //bool operator!=(const TBigInt &other) {
+    //    return !(*this == other);
+    //}
 
-    bool operator<(const TBigInt &other) {
-        // TODO
-    }
+    //bool operator<(const TBigInt &other) {
+    //}
 
-    bool operator>(const TBigInt &other) {
-        // TODO
-    }
+    //bool operator>(const TBigInt &other) {
+    //}
 
-    bool operator<=(const TBigInt &other) {
-        // TODO
-    }
+    //bool operator<=(const TBigInt &other) {
+    //}
 
-    bool operator>=(const TBigInt &other) {
-        // TODO
-    }
+    //bool operator>=(const TBigInt &other) {
+    //}
 
     friend ostream &operator<<(ostream &ous, const TBigInt &num);
 };
 
 ostream &operator<<(ostream &ous, const TBigInt &num) {
+    if (num.Digits.empty()) {
+        ous << '0';
+        return ous;
+    }
+
     TBigInt::TCRIter beg = num.Digits.rbegin(),
                      end = num.Digits.rend();
     for (TBigInt::TCRIter iter = beg; iter != end; ++iter) {
@@ -131,11 +134,11 @@ ostream &operator<<(ostream &ous, const TBigInt &num) {
 
 int main( int argc, char** argv ) {
     try {
-        TBigInt a(50005);
-        TBigInt b;
-        b = a;
+        TBigInt a = 5000005;
+        TBigInt b = 5001100;
         cout << a << endl;
         cout << b << endl;
+        cout << a + b << endl;
 
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
