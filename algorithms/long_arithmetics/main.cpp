@@ -63,8 +63,13 @@ public:
             if (biter != bend)
                 t += *biter++;
 
-            res.Digits.push_back(t % BASE);
-            carry = t / BASE;
+            if (t >= BASE) {
+                res.Digits.push_back(t - BASE);
+                carry = 1;
+            } else {
+                res.Digits.push_back(t);
+                carry = 0;
+            }
         }
 
         if (carry)
@@ -73,8 +78,35 @@ public:
         return res;
     }
 
-    //TBigInt operator-(const TBigInt &other) {
-    //}
+    TBigInt operator-(const TBigInt &other) {
+        TCIter  aiter   = Digits.begin(),
+                aend    = Digits.end(),
+                biter   = other.Digits.begin(),
+                bend    = other.Digits.end();
+
+        TBigInt res;
+        int carry = 0;
+        for (; aiter != aend || biter != bend;) {
+            int t = carry;
+            if (aiter != aend)
+                t += *aiter++;
+            if (biter != bend)
+                t += *biter++;
+
+            if (t < 0) {
+                res.Digits.push_back(t + BASE);
+                carry = -1;
+            } else {
+                res.Digits.push_back(t);
+                carry = 0;
+            }
+        }
+
+        //if (carry)
+        //    res.Digits.push_back(carry);
+
+        return res;
+    }
 
     //TBigInt operator*(const TBigInt &other) {
     //}
