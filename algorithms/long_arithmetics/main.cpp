@@ -39,6 +39,11 @@ private:
     TDigits Digits;
     static const int BASE = 10000;
     static const int BASE_DIGITS_CNT = 4;
+private:
+    void Normalize() {
+        while (Digits.size() && Digits.back() == 0)
+            Digits.pop_back();
+    }
 public:
     TBigInt() {
     }
@@ -123,14 +128,35 @@ public:
         if (carry)
             throw TBigIntException("TBigInt::operator- overflow!");
 
-        while (res.Digits.size() && res.Digits.back() == 0)
-            res.Digits.pop_back();
-
+        res.Normalize();
         return res;
     }
 
-    //TBigInt operator*(const TBigInt &other) {
-    //}
+    TBigInt operator*(const TBigInt &other) {
+        const TDigits &a = Digits;
+        const TDigits &b = other.Digits;
+        const int asize = a.size();
+        const int bsize = b.size();
+
+        TBigInt res;
+        res.Digits.resize(asize + bsize + 1);
+        TDigits &c = res.Digits;
+
+        int carry = 0;
+        int i = 0, j = 0;
+        for (i = 0; i < asize; ++i) {
+            carry = 0;
+            for (j = 0; j < bsize; ++j) {
+                const int t = a[i] * b[j] + c[i+j] + carry;
+                carry = t / BASE;
+                c[i+j] = t - carry * BASE;
+            }
+            c[i+j] = carry;
+        }
+
+        res.Normalize();
+        return res;
+    }
 
     //TBigInt operator/(const TBigInt &other) {
     //}
@@ -187,11 +213,11 @@ ostream &operator<<(ostream &ous, const TBigInt &num) {
 
 int main( int argc, char** argv ) {
     try {
-        TBigInt a = 5001005;
-        TBigInt b = 5000000;
+        TBigInt a = 200005;
+        TBigInt b = 300007;
         cout << a << endl;
         cout << b << endl;
-        cout << a - b << endl;
+        cout << a * b << endl;
 
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
