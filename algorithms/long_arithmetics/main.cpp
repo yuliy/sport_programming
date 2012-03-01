@@ -10,6 +10,24 @@ using namespace std;
 
 typedef unsigned int ui32;
 
+class TBigIntException : public std::exception {
+private:
+    string Desc;
+private:
+    TBigIntException();
+public:
+    explicit TBigIntException(const char *desc)
+        : Desc(desc) {
+    }
+
+    ~TBigIntException() throw() {
+    }
+
+    const char *what() const throw() {
+        return Desc.c_str();
+    }
+};
+
 class TBigInt {
 private:
     typedef vector<int> TDigits;
@@ -91,7 +109,7 @@ public:
             if (aiter != aend)
                 t += *aiter++;
             if (biter != bend)
-                t += *biter++;
+                t -= *biter++;
 
             if (t < 0) {
                 res.Digits.push_back(t + BASE);
@@ -102,8 +120,11 @@ public:
             }
         }
 
-        //if (carry)
-        //    res.Digits.push_back(carry);
+        if (carry)
+            throw TBigIntException("TBigInt::operator- overflow!");
+
+        while (res.Digits.size() && res.Digits.back() == 0)
+            res.Digits.pop_back();
 
         return res;
     }
@@ -166,11 +187,11 @@ ostream &operator<<(ostream &ous, const TBigInt &num) {
 
 int main( int argc, char** argv ) {
     try {
-        TBigInt a = 5000005;
-        TBigInt b = 5001100;
+        TBigInt a = 5001005;
+        TBigInt b = 5000000;
         cout << a << endl;
         cout << b << endl;
-        cout << a + b << endl;
+        cout << a - b << endl;
 
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
