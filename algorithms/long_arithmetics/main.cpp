@@ -44,6 +44,10 @@ private:
         while (Digits.size() && Digits.back() == 0)
             Digits.pop_back();
     }
+
+    static void Divide(const TBigInt &a, const int b, TBigInt &res, int &remainder) {
+        //
+    }
 public:
     TBigInt() {
     }
@@ -158,8 +162,9 @@ public:
         return res;
     }
 
-    //TBigInt operator/(const TBigInt &other) {
-    //}
+    TBigInt operator/(const TBigInt &other) {
+        // TODO
+    }
 
     //TBigInt &operator++() {
     //}
@@ -172,6 +177,22 @@ public:
 
     //TBigInt operator--(int) {
     //}
+
+    TBigInt &operator+=(const TBigInt &other) {
+        return *this + other;
+    }
+
+    TBigInt &operator-=(const TBigInt &other) {
+        return *this - other;
+    }
+
+    TBigInt &operator*=(const TBigInt &other) {
+        return *this * other;
+    }
+
+    TBigInt &operator/=(const TBigInt &other) {
+        return *this / other;
+    }
 
     //bool operator==(const TBigInt &other) {
     //}
