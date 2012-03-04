@@ -58,8 +58,34 @@ private:
         res.Normalize();
     }
 
-    static void Divide(const TBigInt &a, const TBigInt &b, TBigInt &res, TBigInt &remainder) {
+    static void Divide(const TBigInt &a, TBigInt b, TBigInt &res, TBigInt &remainder) {
+        const int asize = a.Digits.size();
+        const int bsize = b.Digits.size();
+
+        // Special case 1.
+        if (asize < bsize) {
+            res.Digits.clear();
+            return;
+        }
+
+        // Special case 2.
+        if (bsize == 1) {
+            Divide(a, b.Digits[0], res, remainder);
+            return;
+        }
+
         //
+        TBigInt u(a);
+        u.Digits.push_back(0);
+
+        const int n = bsize;
+        const int m = asize + 1 - bsize;
+
+        const int scale = BASE  / (b.Digits[n-1] + 1);
+        if (scale > 1) {
+            u = u * scale;
+            b = b * scale;
+        }
     }
 public:
     TBigInt() {
