@@ -45,8 +45,17 @@ private:
             Digits.pop_back();
     }
 
-    static void Divide(const TBigInt &a, const int b, TBigInt &res, int &remainder) {
-        //
+    static void Divide(const TBigInt &a, int b, TBigInt &res, int &remainder) {
+        const int asize = a.Digits.size();
+        res.Digits.resize(asize);
+        remainder = 0;
+        for (int i = asize - 1; i >= 0; --i) {
+            const int t = remainder * BASE + a.Digits[i]; 
+            res.Digits[i] = t / b;
+            remainder = t - res.Digits[i] * b;
+        }
+
+        res.Normalize();
     }
 public:
     TBigInt() {
@@ -162,6 +171,13 @@ public:
         return res;
     }
 
+    TBigInt operator/(int other) {
+        TBigInt res;
+        int remainder;
+        Divide(*this, other, res, remainder);
+        return res;
+    }
+
     TBigInt operator/(const TBigInt &other) {
         // TODO
     }
@@ -179,19 +195,28 @@ public:
     //}
 
     TBigInt &operator+=(const TBigInt &other) {
-        return *this + other;
+        *this = *this + other;
+        return *this;
     }
 
     TBigInt &operator-=(const TBigInt &other) {
-        return *this - other;
+        *this = *this - other;
+        return *this;
     }
 
     TBigInt &operator*=(const TBigInt &other) {
-        return *this * other;
+        *this = *this * other;
+        return *this;
+    }
+
+    TBigInt &operator=(int other) {
+        *this = *this / other;
+        return *this;
     }
 
     TBigInt &operator/=(const TBigInt &other) {
-        return *this / other;
+        *this = *this / other;
+        return *this;
     }
 
     //bool operator==(const TBigInt &other) {
@@ -234,11 +259,11 @@ ostream &operator<<(ostream &ous, const TBigInt &num) {
 
 int main( int argc, char** argv ) {
     try {
-        TBigInt a = 200005;
-        TBigInt b = 300007;
+        TBigInt a = 5000006;
+        //TBigInt b = 100000;
         cout << a << endl;
-        cout << b << endl;
-        cout << a * b << endl;
+        //cout << b << endl;
+        cout << a / 5 << endl;
 
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
