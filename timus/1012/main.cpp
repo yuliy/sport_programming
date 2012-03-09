@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <iostream>
 #include <exception>
 #include <vector>
@@ -7,8 +8,6 @@
 #include <iomanip>
 #include <cmath>
 using namespace std;
-
-typedef unsigned int ui32;
 
 class TBigIntException : public std::exception {
 private:
@@ -43,49 +42,6 @@ private:
     void Normalize() {
         while (Digits.size() && Digits.back() == 0)
             Digits.pop_back();
-    }
-
-    static void Divide(const TBigInt &a, int b, TBigInt &res, int &remainder) {
-        const int asize = a.Digits.size();
-        res.Digits.resize(asize);
-        remainder = 0;
-        for (int i = asize - 1; i >= 0; --i) {
-            const int t = remainder * BASE + a.Digits[i]; 
-            res.Digits[i] = t / b;
-            remainder = t - res.Digits[i] * b;
-        }
-
-        res.Normalize();
-    }
-
-    static void Divide(const TBigInt &a, TBigInt b, TBigInt &res, TBigInt &remainder) {
-        const int asize = a.Digits.size();
-        const int bsize = b.Digits.size();
-
-        // Special case 1.
-        if (asize < bsize) {
-            res.Digits.clear();
-            return;
-        }
-
-        // Special case 2.
-        if (bsize == 1) {
-            Divide(a, b.Digits[0], res, remainder);
-            return;
-        }
-
-        //
-        TBigInt u(a);
-        u.Digits.push_back(0);
-
-        const int n = bsize;
-        const int m = asize + 1 - bsize;
-
-        const int scale = BASE  / (b.Digits[n-1] + 1);
-        if (scale > 1) {
-            u = u * scale;
-            b = b * scale;
-        }
     }
 public:
     TBigInt() {
@@ -201,73 +157,6 @@ public:
         return res;
     }
 
-    TBigInt operator/(int other) {
-        TBigInt res;
-        int remainder;
-        Divide(*this, other, res, remainder);
-        return res;
-    }
-
-    TBigInt operator/(const TBigInt &other) {
-        // TODO
-    }
-
-    //TBigInt &operator++() {
-    //}
-
-    //TBigInt &operator++(int) {
-    //}
-
-    //TBigInt operator--() {
-    //}
-
-    //TBigInt operator--(int) {
-    //}
-
-    TBigInt &operator+=(const TBigInt &other) {
-        *this = *this + other;
-        return *this;
-    }
-
-    TBigInt &operator-=(const TBigInt &other) {
-        *this = *this - other;
-        return *this;
-    }
-
-    TBigInt &operator*=(const TBigInt &other) {
-        *this = *this * other;
-        return *this;
-    }
-
-    TBigInt &operator=(int other) {
-        *this = *this / other;
-        return *this;
-    }
-
-    TBigInt &operator/=(const TBigInt &other) {
-        *this = *this / other;
-        return *this;
-    }
-
-    //bool operator==(const TBigInt &other) {
-    //}
-
-    //bool operator!=(const TBigInt &other) {
-    //    return !(*this == other);
-    //}
-
-    //bool operator<(const TBigInt &other) {
-    //}
-
-    //bool operator>(const TBigInt &other) {
-    //}
-
-    //bool operator<=(const TBigInt &other) {
-    //}
-
-    //bool operator>=(const TBigInt &other) {
-    //}
-
     friend ostream &operator<<(ostream &ous, const TBigInt &num);
 };
 
@@ -286,20 +175,35 @@ ostream &operator<<(ostream &ous, const TBigInt &num) {
     }
     return ous;
 }
+int main()
+{
+   // Рекуррентная формула получилась вот такая:
+   // Mn+1 = (K - 1) * (Mn + Mn-1);
+   // Начальное условие: M2 = K * (K - 1)
+   //                    M3 = (K - 1) * (K - 1) * (K + 1)
 
-int main( int argc, char** argv ) {
-    try {
-        TBigInt a = 2000000000;
-        //TBigInt b = 100000;
-        cout << a << endl;
-        //cout << b << endl;
-        cout << a / 1000000000 << endl;
+    int N, K;
+    scanf( "%d%d", &N, &K );
 
-    } catch (const exception &xcp) {
-        cout << "An std::exception occured in main routine: " << xcp.what() << endl;
-    } catch (...) {
-        cout << "An unknown exception occured in main routine!" << endl;
+    TBigInt M2 = K * (K - 1);
+    TBigInt M3 = (K - 1) * (K - 1) * (K + 1);
+
+    TBigInt res;
+    if( N == 2 )
+        res = M2;
+    else if( N == 3 )
+        res = M3;
+    else
+    {
+        for (int i = 3; i < N; ++i) {
+            res = TBigInt(K - 1) * (M3 + M2);
+            M2 = M3;
+            M3 = res;
+        }
     }
+
+    //printf( "%d\n", res );
+    cout << res << endl;
 
     return 0;
 }
