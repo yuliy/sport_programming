@@ -15,31 +15,34 @@ class TMatrix {
 private:
     T Elems[ROWS][COLUMNS];
 
-    void Zero() {
-        for (int i = 0; i < ROWS; ++i)
-            for (int j = 0; j < COLUMNS; ++j)
-                Elems[i][j] = T();
-    }
-
 public:
     TMatrix() {
-        Zero();
+        Fill(T());
     }
 
-    //template<typename U>
-    //TMatrix(const TMatrix<U, ROWS, COLUMNS> &other) {
     TMatrix(const TMatrix &other) {
         *this = other;
     }
 
-    //template<typename U>
-    //TMatrix<T, ROWS, COLUMNS>& operator=(const TMatrix<U, ROWS, COLUMNS> &other) {
     TMatrix& operator=(const TMatrix &other) {
         for (int i = 0; i < ROWS; ++i)
             for (int j = 0; j < COLUMNS; ++j)
                 Elems[i][j] = other.Elems[i][j];
-                //Elems[i][j] = other.Get(i, j);
         return *this;
+    }
+
+    int Rows() const {
+        return ROWS;
+    }
+
+    int Columns() const {
+        return COLUMNS;
+    }
+
+    void Fill(const T &val) {
+        for (int i = 0; i < ROWS; ++i)
+            for (int j = 0; j < COLUMNS; ++j)
+                Elems[i][j] = val;
     }
 
     const T& operator()(int i, int j) const {
@@ -66,6 +69,14 @@ public:
         return res;
     }
 
+    TMatrix operator*(T scalar) {
+        TMatrix res;
+        for (int i = 0; i < ROWS; ++i)
+            for (int j = 0; j < COLUMNS; ++j)
+                res.Elems[i][j] = this->Elems[i][j] * scalar;
+        return res;
+    }
+
     template<int OTHER_COLUMNS>
     TMatrix<T, ROWS, OTHER_COLUMNS> operator*(const TMatrix<T, COLUMNS, OTHER_COLUMNS> &other) {
         TMatrix<T, ROWS, OTHER_COLUMNS> res;
@@ -79,6 +90,14 @@ public:
             }
         }
         return res;
+    }
+
+    bool operator==(const TMatrix &other) {
+        for (int i = 0; i < ROWS; ++i)
+            for (int j = 0; j < COLUMNS; ++j)
+                if (Elems[i][j] != other.Elems[i][j])
+                    return false;
+        return true;
     }
 
     template<typename pT, int pROWS, int pCOLUMNS>
@@ -95,26 +114,50 @@ ostream &operator<<(ostream &ous, const TMatrix<T, ROWS, COLUMNS> &mx) {
     return ous;
 }
 
+template<typename T, int N, int M, int K>
+TMatrix<T, N, K> ShtrassenMultiply(const TMatrix<T, N, M> &a, const TMatrix<T, M, K> &b) {
+    //
+}
+
+template<int R, int C>
+TMatrix<int, R, C> CreateRandomMatrix() {
+    TMatrix<int, R, C> res;
+    for (int i = 0; i < R; ++i)
+        for (int j = 0; j < C; ++j)
+            res(i, j) = rand() % 1000;
+    return res;
+}
+
+static void Test1() {
+    TMatrix<int, 2, 3> m1;
+    TMatrix<int, 3, 4> m2;
+
+    // m1
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 3; ++j)
+            m1(i, j) = i + j;
+
+    // m2
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 4; ++j)
+            m2(i, j) = i - j;
+
+    cout << m1 << endl
+        << m2 << endl;
+
+    TMatrix<int, 2, 4> m3 = m1 * m2;
+    cout << m3 << endl;
+}
+
+static void Test2() {
+    TMatrix<int, 10, 10> m = CreateRandomMatrix<10, 10>();
+    cout << m << endl;
+}
+
 int main( int argc, char** argv ) {
     try {
-        TMatrix<int, 2, 3> m1;
-        TMatrix<int, 3, 4> m2;
-
-        // m1
-        for (int i = 0; i < 2; ++i)
-            for (int j = 0; j < 3; ++j)
-                m1(i, j) = i + j;
-
-        // m2
-        for (int i = 0; i < 3; ++i)
-            for (int j = 0; j < 4; ++j)
-                m2(i, j) = i - j;
-
-        cout << m1 << endl
-            << m2 << endl;
-
-        TMatrix<int, 2, 4> m3 = m1 * m2;
-        cout << m3 << endl;
+        //srand( time(NULL) );
+        Test2();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
