@@ -18,21 +18,27 @@ i64 GetTickCount() {
 template<typename T, int ROWS, int COLUMNS>
 class TMatrix {
 private:
-    T Elems[ROWS][COLUMNS];
-
+    //T Elems[ROWS][COLUMNS];
+    typedef vector< vector<T> > TElems;
+    TElems Elems;
+private:
+    void AllocateMemory() {
+        vector<int> tmp(COLUMNS);
+        for (int i = 0; i < ROWS; ++i)
+            Elems.push_back(tmp);
+    }
 public:
     TMatrix() {
-        Fill(T());
+        AllocateMemory();
+        //Fill(T());
     }
 
     TMatrix(const TMatrix &other) {
-        *this = other;
+        Elems = other.Elems;
     }
 
     TMatrix& operator=(const TMatrix &other) {
-        for (int i = 0; i < ROWS; ++i)
-            for (int j = 0; j < COLUMNS; ++j)
-                Elems[i][j] = other.Elems[i][j];
+        Elems = other.Elems;
         return *this;
     }
 
@@ -155,6 +161,9 @@ void Join(TMatrix<T, N, N> &res,
 
 template<typename T, int N>
 TMatrix<T, N, N> ShtrassenMultiply(const TMatrix<T, N, N> &A, const TMatrix<T, N, N> &B) {
+    if (N <= 128)
+        return A * B;
+
     const int n = N >> 1;
     typedef TMatrix<T, n, n> TMx;
 
@@ -162,6 +171,14 @@ TMatrix<T, N, N> ShtrassenMultiply(const TMatrix<T, N, N> &A, const TMatrix<T, N
     TMx e, f, g, h;
     Split(A, a, b, c, d);
     Split(B, e, f, g, h);
+
+/*
+    cout << "A:" << endl << A << endl << endl
+        << "a:" << endl << a << endl << endl
+        << "b:" << endl << b << endl << endl
+        << "c:" << endl << c << endl << endl
+        << "d:" << endl << d << endl << endl;
+        */
 
     const TMx P1 = ShtrassenMultiply(a, f - h);
     const TMx P2 = ShtrassenMultiply(a + b, h);
@@ -213,38 +230,40 @@ static void Test1() {
 
 static void Test2() {
     cout << "Generating random input matrices..." << endl;
-    const int N = 2;
+    const int N = 2048;
     typedef TMatrix<int, N, N> TMat;
     const TMat m1 = CreateRandomMatrix<N, N>();
     const TMat m2 = CreateRandomMatrix<N, N>();
 
-    cout << "Running algorithm 1..." << endl;
+    cout << "Running calculations for N=" << N << " ..." << endl;
     const i64 start1 = GetTickCount();
     const TMat r1 = m1 * m2;
     const i64 time1 = GetTickCount() - start1;
     cout << "\ttime1: " << time1 << "ms" << endl;
 
-    cout << "Running algorithm 2..." << endl;
     const i64 start2 = GetTickCount();
     const TMat r2 = ShtrassenMultiply(m1, m2);
     const i64 time2 = GetTickCount() - start2;
     cout << "\ttime2: " << time2 << "ms" << endl;
 
-    cout << "Checking correctness of algoritm 2..." << endl;
-    if (r1 == r2)
-        cout << "OK. Correct :)" << endl;
-    else {
-        cout << "Error!" << endl;
-        cout << "Matrix 1:" << endl << m1 << endl << endl
-            << "Matrix 2:" << endl << m2 << endl << endl
-            << "Algorithm 1 result:" << endl << r1 << endl << endl
-            << "Algorithm 2 result:" << endl << r2 << endl << endl;
+    if (r1 == r2) {
+        cout << "Correct: YES" << endl;
+    } else {
+        cout << "Correct: NO! There are errors!" << endl;
     }
+
+    /*
+    cout << "Matrix 1:" << endl << m1 << endl << endl
+        << "Matrix 2:" << endl << m2 << endl << endl
+        << "Algorithm 1 result:" << endl << r1 << endl << endl
+        << "Algorithm 2 result:" << endl << r2 << endl << endl;
+        */
 }
 
 int main( int argc, char** argv ) {
     try {
         //srand( time(NULL) );
+        //Test1();
         Test2();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
