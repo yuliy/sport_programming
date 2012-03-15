@@ -9,6 +9,11 @@
 using namespace std;
 
 typedef unsigned int ui32;
+typedef long long i64;
+
+i64 GetTickCount() {
+    return clock() * 1000 / CLOCKS_PER_SEC;
+}
 
 template<typename T, int ROWS, int COLUMNS>
 class TMatrix {
@@ -53,7 +58,7 @@ public:
         return Elems[i][j];
     }
 
-    TMatrix operator+(const TMatrix &other) {
+    TMatrix operator+(const TMatrix &other) const {
         TMatrix res;
         for (int i = 0; i < ROWS; ++i)
             for (int j = 0; j < COLUMNS; ++j)
@@ -61,7 +66,7 @@ public:
         return res;
     }
 
-    TMatrix operator-(const TMatrix &other) {
+    TMatrix operator-(const TMatrix &other) const {
         TMatrix res;
         for (int i = 0; i < ROWS; ++i)
             for (int j = 0; j < COLUMNS; ++j)
@@ -69,7 +74,7 @@ public:
         return res;
     }
 
-    TMatrix operator*(T scalar) {
+    TMatrix operator*(T scalar) const {
         TMatrix res;
         for (int i = 0; i < ROWS; ++i)
             for (int j = 0; j < COLUMNS; ++j)
@@ -78,7 +83,7 @@ public:
     }
 
     template<int OTHER_COLUMNS>
-    TMatrix<T, ROWS, OTHER_COLUMNS> operator*(const TMatrix<T, COLUMNS, OTHER_COLUMNS> &other) {
+    TMatrix<T, ROWS, OTHER_COLUMNS> operator*(const TMatrix<T, COLUMNS, OTHER_COLUMNS> &other) const {
         TMatrix<T, ROWS, OTHER_COLUMNS> res;
         for (int i = 0; i < ROWS; ++i) {
             for (int j = 0; j < OTHER_COLUMNS; ++j) {
@@ -92,7 +97,7 @@ public:
         return res;
     }
 
-    bool operator==(const TMatrix &other) {
+    bool operator==(const TMatrix &other) const {
         for (int i = 0; i < ROWS; ++i)
             for (int j = 0; j < COLUMNS; ++j)
                 if (Elems[i][j] != other.Elems[i][j])
@@ -114,9 +119,66 @@ ostream &operator<<(ostream &ous, const TMatrix<T, ROWS, COLUMNS> &mx) {
     return ous;
 }
 
-template<typename T, int N, int M, int K>
-TMatrix<T, N, K> ShtrassenMultiply(const TMatrix<T, N, M> &a, const TMatrix<T, M, K> &b) {
-    //
+template<typename T, int N>
+void Split(const TMatrix<T, N, N> &m,
+            TMatrix<T, N/2, N/2> &a,
+            TMatrix<T, N/2, N/2> &b,
+            TMatrix<T, N/2, N/2> &c,
+            TMatrix<T, N/2, N/2> &d) {
+    const int n = N >> 1;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            a(i, j) = m(i, j);
+            b(i, j) = m(i, j + n);
+            c(i, j) = m(i + n, j);
+            d(i, j) = m(i + n, j + n);
+        }
+    }
+}
+
+template<typename T, int N>
+void Join(TMatrix<T, N, N> &res,
+            const TMatrix<T, N/2, N/2> &r,
+            const TMatrix<T, N/2, N/2> &s,
+            const TMatrix<T, N/2, N/2> &t,
+            const TMatrix<T, N/2, N/2> &u) {
+    const int n = N >> 1;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            res(i, j)         = r(i, j);
+            res(i, j + n)     = s(i, j);
+            res(i + n, j)     = t(i, j);
+            res(i + n, j + n) = u(i, j);
+        }
+    }
+}
+
+template<typename T, int N>
+TMatrix<T, N, N> ShtrassenMultiply(const TMatrix<T, N, N> &A, const TMatrix<T, N, N> &B) {
+    const int n = N >> 1;
+    typedef TMatrix<T, n, n> TMx;
+
+    TMx a, b, c, d;
+    TMx e, f, g, h;
+    Split(A, a, b, c, d);
+    Split(B, e, f, g, h);
+
+    const TMx P1 = ShtrassenMultiply(a, f - h);
+    const TMx P2 = ShtrassenMultiply(a + b, h);
+    const TMx P3 = ShtrassenMultiply(c + d, e);
+    const TMx P4 = ShtrassenMultiply(d, g - e);
+    const TMx P5 = ShtrassenMultiply(a + d, e + h);
+    const TMx P6 = ShtrassenMultiply(b - d, g + h);
+    const TMx P7 = ShtrassenMultiply(a - c, e + f);
+
+    const TMx r = P5 + P4 - P2 + P6;
+    const TMx s = P1 + P2;
+    const TMx t = P3 + P4;
+    const TMx u = P5 + P1 - P3 - P7;
+
+    TMatrix<T, N, N> res;
+    Join(res, r, s, t, u);
+    return res;
 }
 
 template<int R, int C>
@@ -124,7 +186,7 @@ TMatrix<int, R, C> CreateRandomMatrix() {
     TMatrix<int, R, C> res;
     for (int i = 0; i < R; ++i)
         for (int j = 0; j < C; ++j)
-            res(i, j) = rand() % 1000;
+            res(i, j) = rand() % 100;
     return res;
 }
 
@@ -150,8 +212,34 @@ static void Test1() {
 }
 
 static void Test2() {
-    TMatrix<int, 10, 10> m = CreateRandomMatrix<10, 10>();
-    cout << m << endl;
+    cout << "Generating random input matrices..." << endl;
+    const int N = 2;
+    typedef TMatrix<int, N, N> TMat;
+    const TMat m1 = CreateRandomMatrix<N, N>();
+    const TMat m2 = CreateRandomMatrix<N, N>();
+
+    cout << "Running algorithm 1..." << endl;
+    const i64 start1 = GetTickCount();
+    const TMat r1 = m1 * m2;
+    const i64 time1 = GetTickCount() - start1;
+    cout << "\ttime1: " << time1 << "ms" << endl;
+
+    cout << "Running algorithm 2..." << endl;
+    const i64 start2 = GetTickCount();
+    const TMat r2 = ShtrassenMultiply(m1, m2);
+    const i64 time2 = GetTickCount() - start2;
+    cout << "\ttime2: " << time2 << "ms" << endl;
+
+    cout << "Checking correctness of algoritm 2..." << endl;
+    if (r1 == r2)
+        cout << "OK. Correct :)" << endl;
+    else {
+        cout << "Error!" << endl;
+        cout << "Matrix 1:" << endl << m1 << endl << endl
+            << "Matrix 2:" << endl << m2 << endl << endl
+            << "Algorithm 1 result:" << endl << r1 << endl << endl
+            << "Algorithm 2 result:" << endl << r2 << endl << endl;
+    }
 }
 
 int main( int argc, char** argv ) {
