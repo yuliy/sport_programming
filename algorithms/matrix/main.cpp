@@ -261,14 +261,14 @@ static void Test1() {
 }
 
 static void Test2(int N) {
-    cout << "---------------------------------------------" << endl
-        << "Generating random input matrices..." << endl;
+    cout << "---------------------------------------------" << endl;
+    //cout << "Generating random input matrices..." << endl;
     //const int N = 16;
     typedef TMatrix<int> TMat;
     const TMat m1 = CreateRandomMatrix(N, N);
     const TMat m2 = CreateRandomMatrix(N, N);
 
-    cout << "Running calculations for N=" << N << " ..." << endl;
+    cout << "N=" << N << endl;
     const i64 start1 = GetTickCount();
     const TMat r1 = m1 * m2;
     const i64 time1 = GetTickCount() - start1;
@@ -280,9 +280,9 @@ static void Test2(int N) {
     cout << "\ttime2: " << time2 << "ms" << endl;
 
     if (r1 == r2) {
-        cout << "Correct: YES" << endl;
+        //cout << "Correct: YES" << endl;
     } else {
-        cout << "Correct: NO! There are errors!" << endl;
+        //cout << "Correct: NO! There are errors!" << endl;
     }
 
     //cout << "Matrix 1:" << endl << m1 << endl << endl
