@@ -10,26 +10,46 @@ using namespace std;
 
 int N, K;
 
-struct TCompare {
-    bool operator()(const pair<int, int> &l, const pair<int, int> &r) const {
-        return l.second > r.second;
+int r[100000];
+
+int MergeAndCountInversions(vector<int> &v, int beg, int m, int end) {
+    //vector<int> r;
+    int inv = 0;
+    int i = beg, j = m+1, k = 0;
+    while(i <= m && j <= end) {
+        if (v[i] <= v[j]) {
+            r[k] = v[i];
+            ++i;
+        } else { 
+            r[k] = v[j];
+            ++j;
+            inv += (m - i + 1);
+        }
+        ++k;
     }
-};
 
-static int Solve(vector< pair<int, int> > &v) {
-    std::sort(v.begin(), v.end(), TCompare());
+    for (; i <= m; ++i, ++k)
+        r[k] = v[i];
+    for (; j <= end; ++j, ++k)
+        r[k] = v[j];
 
-    int res = 0;
-    for (int i = 0; i < N; ++i) {
-        cout << "(" << v[i].first << "; " << i << ")\t";
-        if (v[i].first > i)
-            res += (v[i].first - i);
-    }
+    for (int i = 0; i < k; ++i)
+        v[beg+i] = r[i];
+    return inv;
+}
 
-    cout << res << "\t";
-    cout << endl;
+int CalcInversions(vector<int> &v, int beg, int end) {
+    if (beg >= end)
+        return 0;
 
-    return res;
+    const int m = (beg + end) / 2;
+    const int x = CalcInversions(v, beg, m);
+    const int y = CalcInversions(v, m+1, end);
+    const int z = MergeAndCountInversions(v, beg, m, end);
+    return x + y + z;
+}
+static int Solve(vector<int> &v) {
+    return CalcInversions(v, 0, v.size() - 1);
 }
 
 int main() {
@@ -42,12 +62,12 @@ int main() {
 
     int max = -1;
     int maxRow = 1;
-    vector< pair<int, int> > v(N);
     for (int i = 0; i < K; ++i) {
+        vector<int> v(N);
         for (int j = 0; j < N; ++j) {
             int tmp;
             scanf("%d", &tmp);
-            v[j] = make_pair(j, tmp);
+            v[j] = tmp;
         }
 
         const int cur = Solve(v);
