@@ -183,8 +183,8 @@ TPolygon CreateRandomPolygon(int size, int max) {
 int main( int argc, char** argv ) {
     try {
         srand( time(NULL) );
-        //const TPolygon poly = CreateRandomPolygon(100, 1000);
-        const TPolygon poly = CreateRandomPolygon(1000, 1000000);
+        const TPolygon poly = CreateRandomPolygon(100, 1000);
+        //const TPolygon poly = CreateRandomPolygon(1000, 1000000);
         cout << poly << endl;
         TPolygon ch;
         poly.CalcConvexHull_Graham(ch);
