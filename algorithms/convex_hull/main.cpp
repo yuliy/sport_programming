@@ -102,9 +102,9 @@ private:
 
     bool NonLeftTurn(const TPoint &p0, const TPoint &p1, const TPoint &p2) const {
         const TPoint a(p2.X - p0.X, p2.Y - p0.Y);
-        const TPoint b(p1.X - p0.X, p2.Y - p0.Y);
+        const TPoint b(p1.X - p0.X, p1.Y - p0.Y);
         const float p = a.X * b.Y - b.X * a.Y;
-        return p >= 0.0;
+        return p <= 0.0;
     }
 
 public:
@@ -130,6 +130,8 @@ public:
     void CalcConvexHull_Graham(TPolygon &ch) const {
         const int startIdx = FindStartPoint(Points);
         const TPoint &sPoint = Points[startIdx];
+        //cout << "startIdx=" << startIdx << endl;
+        //cout << "sPoint=" << sPoint.X << ";" << sPoint.Y << endl;
         
         TPoints sortedPoints;
         CalcPointsSortedByPolarAngle(sortedPoints, startIdx);
@@ -142,7 +144,7 @@ public:
         const int m = sortedPoints.size();
         for (int i = 2; i < m; ++i) {
             const TPoint &pi = sortedPoints[i];
-            while ( NonLeftTurn(st[st.size()-2], st[st.size()-1], pi) )
+            while ( st.size() > 1 && NonLeftTurn(st[st.size()-2], st[st.size()-1], pi) )
                 st.pop_back();
             st.push_back(pi);
         }
@@ -166,20 +168,23 @@ public:
 ostream &operator<<(ostream &ous, const TPolygon &p) {
     const int cnt = p.Count();
     for (int i = 0; i < cnt; ++i)
-        ous << "(" << p[i].X << "; " << p[i].Y << ")\n";
+        //ous << "(" << p[i].X << "; " << p[i].Y << ")\n";
+        ous << p[i].X << "\t" << p[i].Y << "\n";
     return ous;
 }
 
-TPolygon CreateRandomPolygon(int size) {
+TPolygon CreateRandomPolygon(int size, int max) {
     TPoints points;
     for (int i = 0; i < size; ++i)
-        points.push_back(TPoint(rand() % 10, rand() % 10));
+        points.push_back(TPoint(rand() % max, rand() % max));
     return TPolygon(points);
 }
 
 int main( int argc, char** argv ) {
     try {
-        const TPolygon poly = CreateRandomPolygon(10);
+        srand( time(NULL) );
+        //const TPolygon poly = CreateRandomPolygon(100, 1000);
+        const TPolygon poly = CreateRandomPolygon(1000, 1000000);
         cout << poly << endl;
         TPolygon ch;
         poly.CalcConvexHull_Graham(ch);
