@@ -25,12 +25,13 @@ enum EVColour {
 
 struct TVertex {
     EVColour Colour;
-    int Distance;
-    int ParentIdx;
+    int DiscoverTime;
+    int FinitishingTime;
 
     TVertex()
         : Colour(VC_WHITE)
-        , Distance(numeric_limits<int>::max())
+        , DiscoverTime(-1)
+        , FinishingTime(-1)
         , ParentIdx(-1) {
     }
 };
@@ -48,7 +49,8 @@ static void PrintVertices(const TVertices &vertices) {
         case VC_BLACK:  cout << "b\t"; break;
         }
 
-        cout << "d=" << vertices[i].Distance << "\t"
+        cout << "d=" << vertices[i].DiscoverTime << "\t"
+            << "f=" << vertices[i].FinishingTime << "\t"
             << "p=" << vertices[i].ParentIdx << endl;
     }
 }

@@ -54,6 +54,12 @@ static void PrintVertices(const TVertices &vertices) {
 }
 
 static void BFS(TVertices &vertices, const vector< vector<int> > &adjList, int sourceIdx) {
+    for (TVertices::iterator iter = vertices.begin(), end = vertices.end(); iter != end; ++iter) {
+        iter->Colour = VC_WHITE;
+        iter->Distance = numeric_limits<int>::max();
+        iter->ParentIdx = -1;
+    }
+
     TVertex &s = vertices[sourceIdx];
     s.Colour = VC_GRAY;
     s.Distance = 0;
@@ -82,6 +88,12 @@ static void BFS(TVertices &vertices, const vector< vector<int> > &adjList, int s
 }
 
 static void BFS(TVertices &vertices, const vector< vector<bool> > &adjMatrix, int sourceIdx) {
+    for (TVertices::iterator iter = vertices.begin(), end = vertices.end(); iter != end; ++iter) {
+        iter->Colour = VC_WHITE;
+        iter->Distance = numeric_limits<int>::max();
+        iter->ParentIdx = -1;
+    }
+
     TVertex &s = vertices[sourceIdx];
     s.Colour = VC_GRAY;
     s.Distance = 0;
