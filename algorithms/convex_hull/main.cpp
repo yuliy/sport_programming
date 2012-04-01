@@ -1,6 +1,7 @@
 #include <iostream>
 #include <exception>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <functional>
 #include <iterator>
@@ -31,7 +32,7 @@ struct TPoint2D {
     }
 };
 
-typedef TPoint2D<float> TPoint;
+typedef TPoint2D<double> TPoint;
 typedef vector< TPoint > TPoints;
 
 template<typename T, typename U>
@@ -47,8 +48,8 @@ private:
 private:
     int FindStartPoint(const TPoints &v) const {
         int res = 0;
-        float minx = v[0].X;
-        float miny = v[0].Y;
+        double minx = v[0].X;
+        double miny = v[0].Y;
         const int cnt = Points.size();
         for (int i = 1; i < cnt; ++i) {
             if (v[i].Y < miny || (v[i].Y == miny && v[i].X < minx)) {
@@ -103,7 +104,7 @@ private:
     bool NonLeftTurn(const TPoint &p0, const TPoint &p1, const TPoint &p2) const {
         const TPoint a(p2.X - p0.X, p2.Y - p0.Y);
         const TPoint b(p1.X - p0.X, p1.Y - p0.Y);
-        const float p = a.X * b.Y - b.X * a.Y;
+        const double p = a.X * b.Y - b.X * a.Y;
         return p <= 0.0;
     }
 
@@ -130,8 +131,6 @@ public:
     void CalcConvexHull_Graham(TPolygon &ch) const {
         const int startIdx = FindStartPoint(Points);
         const TPoint &sPoint = Points[startIdx];
-        //cout << "startIdx=" << startIdx << endl;
-        //cout << "sPoint=" << sPoint.X << ";" << sPoint.Y << endl;
         
         TPoints sortedPoints;
         CalcPointsSortedByPolarAngle(sortedPoints, startIdx);
@@ -173,17 +172,26 @@ ostream &operator<<(ostream &ous, const TPolygon &p) {
     return ous;
 }
 
-TPolygon CreateRandomPolygon(int size, int max) {
+TPolygon CreateRandomPolygon(int size, int minx, int maxx, int miny, int maxy) {
     TPoints points;
-    for (int i = 0; i < size; ++i)
-        points.push_back(TPoint(rand() % max, rand() % max));
+    set< pair<double, double> > dic;
+
+    for (; points.size() < size; ) {
+        const double x = minx + rand() % (maxx - minx + 1);
+        const double y = miny + rand() % (maxy - miny + 1);
+        //points.push_back(TPoint(x, y));
+        if (dic.find(make_pair(x, y)) == dic.end()) {
+            dic.insert(make_pair(x, y));
+            points.push_back(TPoint(x, y));
+        }
+    }
     return TPolygon(points);
 }
 
 int main( int argc, char** argv ) {
     try {
         srand( time(NULL) );
-        const TPolygon poly = CreateRandomPolygon(100, 1000);
+        const TPolygon poly = CreateRandomPolygon(100, -10000, 10000, -10000, 10000);
         //const TPolygon poly = CreateRandomPolygon(1000, 1000000);
         cout << poly << endl;
         TPolygon ch;
