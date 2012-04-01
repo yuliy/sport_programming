@@ -56,16 +56,24 @@ static void PrintVertices(const TVertices &vertices) {
     }
 }
 
-int time;
+int Time;
 
 static void DFS_Visit(TVertices &vertices, const vector< vector<int> > &adjList, int uIdx) {
     TVertex &u = vertices[uIdx];
     u.Colour = VC_GRAY;
-    ++time;
-    u.DiscoverTime = time;
+    u.DiscoverTime = ++Time;
 
-    
-    const int adjCnt = 
+    const vector<int> &adj = adjList[uIdx];
+    for (vector<int>::const_iterator iter = adj.begin(), end = adj.end(); iter != end; ++iter) {
+        TVertex &v = vertices[*iter];
+        if (v.Colour == VC_WHITE) {
+            v.ParentIdx = uIdx;
+            DFS_Visit(vertices, adjList, *iter);
+        }
+    }
+
+    u.Colour = VC_BLACK;
+    u.FinishingTime = ++Time;
 }
 
 static void DFS(TVertices &vertices, const vector< vector<int> > &adjList) {
@@ -74,92 +82,98 @@ static void DFS(TVertices &vertices, const vector< vector<int> > &adjList) {
         iter->ParentIdx = -1;
     }
 
-    time = 0;
+    Time = 0;
     const int cnt = vertices.size();
     for (int i = 0; i < cnt; ++i) {
         TVertex &u = vertices[i];
-        if (u.Colour = VC_WHITE)
+        if (u.Colour == VC_WHITE)
             DFS_Visit(vertices, adjList, i);
     }
 }
 
+static void DFS_Visit(TVertices &vertices, const vector< vector<bool> > &adjMatrix, int uIdx) {
+    TVertex &u = vertices[uIdx];
+    u.Colour = VC_GRAY;
+    u.DiscoverTime = ++Time;
+
+    const vector<bool> &adj = adjMatrix[uIdx];
+    const int adjCnt = adj.size();
+    for (int i = 0; i < adjCnt; ++i) {
+        if (adj[i] == false)
+            continue;
+
+        TVertex &v = vertices[i];
+        if (v.Colour == VC_WHITE) {
+            v.ParentIdx = uIdx;
+            DFS_Visit(vertices, adjMatrix, i);
+        }
+    }
+
+    u.Colour = VC_BLACK;
+    u.FinishingTime = ++Time;
+}
+
 static void DFS(TVertices &vertices, const vector< vector<bool> > &adjMatrix) {
+    for (TVertices::iterator iter = vertices.begin(), end = vertices.end(); iter != end; ++iter) {
+        iter->Colour = VC_WHITE;
+        iter->ParentIdx = -1;
+    }
+
+    Time = 0;
+    const int cnt = vertices.size();
+    for (int i = 0; i < cnt; ++i) {
+        TVertex &u = vertices[i];
+        if (u.Colour == VC_WHITE)
+            DFS_Visit(vertices, adjMatrix, i);
+    }
 }
 
 static void CreateGraph(TVertices &vertices, vector< vector<int> > &adjList) {
     vertices.clear();
-    vertices.resize(8);
+    vertices.resize(6);
 
     vector< vector<int> > al;
-    al.resize(8);
+    al.resize(6);
 
     al[0].push_back(1);
-    al[0].push_back(4);
+    al[0].push_back(3);
 
-    al[1].push_back(0);
-    al[1].push_back(5);
+    al[1].push_back(4);
 
-    al[2].push_back(3);
+    al[2].push_back(4);
     al[2].push_back(5);
-    al[2].push_back(6);
 
-    al[3].push_back(2);
-    al[3].push_back(6);
-    al[3].push_back(7);
+    al[3].push_back(1);
 
-    al[4].push_back(0);
+    al[4].push_back(3);
 
-    al[5].push_back(1);
-    al[5].push_back(2);
-    al[5].push_back(6);
-
-    al[6].push_back(2);
-    al[6].push_back(3);
-    al[6].push_back(5);
-    al[6].push_back(7);
-
-    al[7].push_back(3);
-    al[7].push_back(6);
+    al[5].push_back(5);
 
     adjList.swap(al);
 }
 
 static void CreateGraph(TVertices &vertices, vector< vector<bool> > &adjMatrix) {
     vertices.clear();
-    vertices.resize(8);
+    vertices.resize(6);
 
     vector< vector<bool> > am;
-    vector<bool> tmp(8);
-    for (int i = 0; i < 8; ++i)
+    vector<bool> tmp(6);
+    for (int i = 0; i < 6; ++i)
         am.push_back(tmp);
 
     am[0][1] = true;
-    am[0][4] = true;
+    am[0][3] = true;
 
-    am[1][0] = true;
-    am[1][5] = true;
+    am[1][4] = true;
 
-    am[2][3] = true;
+    am[2][4] = true;
     am[2][5] = true;
-    am[2][6] = true;
 
-    am[3][2] = true;
-    am[3][6] = true;
-    am[3][7] = true;
+    am[3][1] = true;
 
-    am[4][0] = true;
+    am[4][3] = true;
 
-    am[5][1] = true;
-    am[5][2] = true;
-    am[5][6] = true;
-
-    am[6][2] = true;
-    am[6][3] = true;
-    am[6][5] = true;
-    am[6][7] = true;
-
-    am[7][3] = true;
-    am[7][6] = true;
+    am[5][5] = true;
 
     adjMatrix.swap(am);
 }
