@@ -26,7 +26,8 @@ enum EVColour {
 struct TVertex {
     EVColour Colour;
     int DiscoverTime;
-    int FinitishingTime;
+    int FinishingTime;
+    int ParentIdx;
 
     TVertex()
         : Colour(VC_WHITE)
@@ -55,10 +56,34 @@ static void PrintVertices(const TVertices &vertices) {
     }
 }
 
-static void DFS(TVertices &vertices, const vector< vector<int> > &adjList, int sourceIdx) {
+int time;
+
+static void DFS_Visit(TVertices &vertices, const vector< vector<int> > &adjList, int uIdx) {
+    TVertex &u = vertices[uIdx];
+    u.Colour = VC_GRAY;
+    ++time;
+    u.DiscoverTime = time;
+
+    
+    const int adjCnt = 
 }
 
-static void DFS(TVertices &vertices, const vector< vector<bool> > &adjMatrix, int sourceIdx) {
+static void DFS(TVertices &vertices, const vector< vector<int> > &adjList) {
+    for (TVertices::iterator iter = vertices.begin(), end = vertices.end(); iter != end; ++iter) {
+        iter->Colour = VC_WHITE;
+        iter->ParentIdx = -1;
+    }
+
+    time = 0;
+    const int cnt = vertices.size();
+    for (int i = 0; i < cnt; ++i) {
+        TVertex &u = vertices[i];
+        if (u.Colour = VC_WHITE)
+            DFS_Visit(vertices, adjList, i);
+    }
+}
+
+static void DFS(TVertices &vertices, const vector< vector<bool> > &adjMatrix) {
 }
 
 static void CreateGraph(TVertices &vertices, vector< vector<int> > &adjList) {
@@ -144,7 +169,7 @@ static void Test1() {
     vector< vector<int> > adjList;
     CreateGraph(vertices, adjList);
 
-    DFS(vertices, adjList, 1);
+    DFS(vertices, adjList);
     PrintVertices(vertices);
 }
 
@@ -153,7 +178,7 @@ static void Test2() {
     vector< vector<bool> > adjMatrix;
     CreateGraph(vertices, adjMatrix);
 
-    DFS(vertices, adjMatrix, 1);
+    DFS(vertices, adjMatrix);
     PrintVertices(vertices);
 }
 

@@ -71,7 +71,7 @@ static void BFS(TVertices &vertices, const vector< vector<int> > &adjList, int s
         TVertex &u = vertices[uIdx];
         q.pop_front();
 
-        vector<int> adj = adjList[uIdx];
+        const vector<int> &adj = adjList[uIdx];
         for (vector<int>::const_iterator iter = adj.begin(), end = adj.end(); iter != end; ++iter) {
             TVertex &v = vertices[*iter];
             if (v.Colour == VC_WHITE) {
@@ -105,7 +105,7 @@ static void BFS(TVertices &vertices, const vector< vector<bool> > &adjMatrix, in
         TVertex &u = vertices[uIdx];
         q.pop_front();
 
-        vector<bool> adj = adjMatrix[uIdx];
+        const vector<bool> &adj = adjMatrix[uIdx];
         const int adjCnt = adj.size();
         for (int i = 0; i < adjCnt; ++i) {
             if (adj[i] == false)
