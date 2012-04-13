@@ -2,6 +2,8 @@
 #include <exception>
 #include <vector>
 #include <deque>
+#include <map>
+#include <set>
 #include <algorithm>
 #include <functional>
 #include <iterator>
@@ -36,6 +38,9 @@ struct TVertex {
 };
 
 typedef vector<TVertex> TVertices;
+typedef vector<int> TAdjList;
+typedef vector< TAdjList > TAdjLists;
+typedef vector< vector<bool> > TAdjMatrix;
 
 static void PrintVertices(const TVertices &vertices) {
     const int cnt = vertices.size();
@@ -53,7 +58,7 @@ static void PrintVertices(const TVertices &vertices) {
     }
 }
 
-static void BFS(TVertices &vertices, const vector< vector<int> > &adjList, int sourceIdx) {
+static void BFS(TVertices &vertices, const TAdjLists &adjList, int sourceIdx) {
     for (TVertices::iterator iter = vertices.begin(), end = vertices.end(); iter != end; ++iter) {
         iter->Colour = VC_WHITE;
         iter->Distance = numeric_limits<int>::max();
@@ -221,11 +226,42 @@ static void Test2() {
     PrintVertices(vertices);
 }
 
+static void ReadGraph(TVertices &vertices, TAdjLists &adjLists) {
+
+}
+
+static void Test3() {
+    TVertices vertices;
+    TAdjLists adjLists;
+    ReadGraph(vertices, adjLists);
+
+    BFS(vertices, adjLists, 0);
+    PrintVertices(vertices);
+}
+
+static void GenerateRandomGraph(int verticesCnt, int edgesCnt) {
+    srand( time(NULL) );
+
+    set< pair<int, int> > edges;
+    while (edges.size() < edgesCnt) {
+        const int from = 1 + rand() % verticesCnt;
+        const int to = 1 + rand() % verticesCnt;
+        if (from != to)
+            edges.insert( make_pair(from, to) );
+    }
+
+    cout << verticesCnt << "\t" << edgesCnt << endl;
+    for (set< pair<int, int> >::const_iterator iter = edges.begin(), end = edges.end(); iter != end; ++iter)
+        cout << iter->first << "\t" << iter->second << endl;
+}
+
 int main( int argc, char** argv ) {
     try {
-        Test1();
-        cout << "==============================================" << endl;
-        Test2();
+        //Test1();
+        //cout << "==============================================" << endl;
+        //Test2();
+        //Test3();
+        GenerateRandomGraph(20, 30);
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
