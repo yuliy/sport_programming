@@ -38,11 +38,14 @@ struct TVertex {
 };
 
 typedef vector<TVertex> TVertices;
+typedef vector<int> TAdjList;
+typedef vector< TAdjList > TAdjLists;
+typedef vector< vector<bool> > TAdjMatrix;
 
 static void PrintVertices(const TVertices &vertices) {
     const int cnt = vertices.size();
     for (int i = 0; i < cnt; ++i) {
-        cout << "#" << i << "\tcolour=";
+        cout << "#" << (i + 1) << "\tcolour=";
 
         switch (vertices[i].Colour) {
         case VC_WHITE:  cout << "w\t"; break;
@@ -50,9 +53,12 @@ static void PrintVertices(const TVertices &vertices) {
         case VC_BLACK:  cout << "b\t"; break;
         }
 
+        int p = vertices[i].ParentIdx;
+        if (p != -1)
+            ++p;
         cout << "d=" << vertices[i].DiscoverTime << "\t"
             << "f=" << vertices[i].FinishingTime << "\t"
-            << "p=" << vertices[i].ParentIdx << endl;
+            << "p=" << p << endl;
     }
 }
 
@@ -196,11 +202,36 @@ static void Test2() {
     PrintVertices(vertices);
 }
 
+static void ReadGraph(TVertices &vertices, TAdjLists &adjLists) {
+    int V, E;
+    scanf("%d\t%d", &V, &E);
+
+    vertices.clear();
+    vertices.resize(V);
+    adjLists.clear();
+    adjLists.resize(V);
+    for (int i = 0; i < E; ++i) {
+        int from, to;
+        scanf("%d %d", &from, &to);
+        adjLists[from-1].push_back(to-1);
+    }
+}
+
+static void Test3() {
+    TVertices vertices;
+    TAdjLists adjLists;
+    ReadGraph(vertices, adjLists);
+
+    DFS(vertices, adjLists);
+    PrintVertices(vertices);
+}
+
 int main( int argc, char** argv ) {
     try {
-        Test1();
-        cout << "==============================================" << endl;
-        Test2();
+        //Test1();
+        //cout << "==============================================" << endl;
+        //Test2();
+        Test3();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
