@@ -8,14 +8,7 @@
 #include <cmath>
 #include "graph.h"
 using namespace std;
-using namespace NGraphLib;
-
-typedef unsigned int ui32;
-typedef long long i64;
-
-i64 GetTickCount() {
-    return clock() * 1000 / CLOCKS_PER_SEC;
-}
+//using namespace NGraphLib;
 
 struct TVertex {
     int Num;
@@ -24,13 +17,33 @@ struct TVertex {
     TVertex(int num) : Num(num) {}
 };
 
+typedef NGraphLib::TALGraph<TVertex> TGraph;
+typedef vector< TGraph::TVertexDescriptor > TVDescriptors;
+
+void PrintVertices(const TGraph &g) {
+    pair< TGraph::TVertexIterator, TGraph::TVertexIterator > p = g.GetVertices();
+    for (; p.first != p.second; ++p.first) {
+        TGraph::TVertexDescriptor vd = *(p.first);
+        const TVertex &v = g.GetVertex(vd);
+        cout << v.Num << endl;
+    }
+}
+
+void PrintEdges(const TGraph &g) {
+    pair< TGraph::TEdgeIterator, TGraph::TEdgeIterator > p = g.GetEdges();
+    for (; p.first != p.second; ++p.first) {
+        TGraph::TEdgeDescriptor ed = *(p.first);
+        const TVertex &from = g.GetVertex(ed.From());
+        const TVertex &to = g.GetVertex(ed.To());
+        cout << from.Num << "\t" << to.Num << endl;
+    }
+}
+
 static void Test() {
     // Reading graph
     int N, M;
     scanf("%d %d", &N, &M);
 
-    typedef TALGraph<TVertex> TGraph;
-    typedef vector< TGraph::TVertexDescriptor > TVDescriptors;
     TGraph g;
     TVDescriptors vdescriptors;
     for (int i = 0; i < N; ++i) {
@@ -45,7 +58,11 @@ static void Test() {
         g.AddEdge(vdescriptors[from-1], vdescriptors[to-1]);
     }
 
-    BreadthFirstSearch(g, TBFSHandler);
+    //
+    //PrintVertices(g);
+    //PrintEdges(g);
+
+    //BreadthFirstSearch(g, TBFSHandler);
 }
 
 int main( int argc, char** argv ) {

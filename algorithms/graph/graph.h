@@ -37,46 +37,85 @@ namespace NGraphLib {
             : FromIndex(fromIndex)
             , ToIndex(toIndex) {
         }
+
+        TALGVertexDescriptor<T> From() const {
+            return TALGVertexDescriptor<T>(FromIndex);
+        }
+
+        TALGVertexDescriptor<T> To() const {
+            return TALGVertexDescriptor<T>(ToIndex);
+        }
     };
 
-    template<typename T, typename TListIter, typename TListVertexIter >
+    template<typename TVDescriptorType >
+    class TALGVertexIterator {
+    private:
+        TALGVertexIterator();
+    private:
+        int Index;
+    public:
+        TALGVertexIterator(int index)
+            : Index(index) {
+        }
+
+        TVDescriptorType operator*() const {
+            return TVDescriptorType(Index);
+        }
+
+        TALGVertexIterator &operator++() {
+            ++Index;
+            return *this;
+        }
+
+        bool operator==(const TALGVertexIterator &other) const {
+            return Index == other.Index;
+        }
+
+        bool operator!=(const TALGVertexIterator &other) const {
+            return !(*this == other);
+        }
+    };
+
+    template<typename TLists, typename TListVertexIter, typename TEDescriptorType >
     class TALGEdgeIterator {
     private:
         TALGEdgeIterator();
     private:
-        TListIter ListIter;
-        TListIter ListEnd;
+        int Index;
+        const TLists &Lists;
         TListVertexIter ListVertexIter;
-        TListVertexIter ListVertexEnd;
     public:
-        TALGEdgeIterator(TListIter lIter, TListIter lEnd, TListVertexIter lvIter, TListVertexIter lvEnd)
-            : ListIter(lIter)
-            , ListEnd(lEnd)
-            , ListVertexIter(lvIter)
-            , ListVertexEnd(lvEnd) {
+        TALGEdgeIterator(const TLists &lists, int index, TListVertexIter lvIter)
+            : Lists(lists)
+            , Index(index)
+            , ListVertexIter(lvIter) {
         }
 
-        T& operator*() {
-            return *ListVertexIter;
+        TEDescriptorType operator*() const {
+            //std::cout << ">>>\t" << (Index + 1) << "\t" << (*ListVertexIter + 1) << std::endl;
+            return TEDescriptorType(Index, *ListVertexIter);
         }
 
-        const T& operator*() const {
-            return *ListVertexIter;
+        bool operator==(const TALGEdgeIterator &other) const {
+            return (Index == other.Index) && (ListVertexIter == other.ListVertexIter);
         }
 
-        bool operator==(const TALGEdgeIter &other) const {
-            return (ListIter == other.ListIter) && (ListVertexIter == other.ListVertexIter);
-        }
-
-        bool operator!=(const TALGEdgeIter &other) const {
+        bool operator!=(const TALGEdgeIterator &other) const {
             return !(*this == other);
         }
 
         TALGEdgeIterator& operator++() {
-            if (ListVertexIterator != ListVertexEnd)
-                ++ListVertexIter;
-            else
-                ++ListIter;
+            ++ListVertexIter;
+            if (ListVertexIter == Lists[Index].end()) {
+                ++Index;
+                while (Index < Lists.size() && Lists[Index].size() == 0)
+                    ++Index;
+
+                if (Index < Lists.size())
+                    ListVertexIter = Lists[Index].begin();
+                else
+                    ListVertexIter = Lists[Index-1].end();
+            }
             return *this;
         }
     };
@@ -91,17 +130,18 @@ namespace NGraphLib {
         TVertices Vertices;
         TAdjLists AdjLists;
     public:
-        typedef TVertices::const_iterator TConstVertexIterator;
-        typedef TVertices::iterator TVertexIterator;
-
         typedef TALGVertexDescriptor<T> TVertexDescriptor;
         typedef TALGEdgeDescriptor<T> TEdgeDescriptor;
+
+        typedef TALGVertexIterator<TVertexDescriptor > TVertexIterator;
+        typedef TALGEdgeIterator<TAdjLists, TAdjList::const_iterator, TEdgeDescriptor > TEdgeIterator;
 
         TALGraph() {
         }
 
         TVertexDescriptor AddVertex(const T& v) {
             Vertices.push_back(v);
+            AdjLists.push_back( TAdjList() );
             return TVertexDescriptor(Vertices.size() - 1);
         }
 
@@ -126,14 +166,14 @@ namespace NGraphLib {
             return false;
         }
 
-        std::pair< TVertexIterator, TVertexIterator> GetVertices() {
-            return std::make_pair(Vertices.begin(), Vertices.end());
+        std::pair< TVertexIterator, TVertexIterator > GetVertices() const {
+            return std::make_pair( TVertexIterator(0), TVertexIterator(Vertices.size()) );
         }
 
-        std::pair< TConstVertexIterator, TConstVertexIterator > GetVertices() const {
-            return std::make_pair(Vertices.begin(), Vertices.end());
+        std::pair< TEdgeIterator, TEdgeIterator > GetEdges() const {
+            const int lastIndex = AdjLists.size() - 1;
+            return std::make_pair(  TEdgeIterator(AdjLists, 0, AdjLists[0].begin()),
+                                    TEdgeIterator(AdjLists, lastIndex + 1, AdjLists[lastIndex].end())   );
         }
-
-        //
     };
 }; // namespace NGraphLib
