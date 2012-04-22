@@ -39,6 +39,18 @@ void PrintEdges(const TGraph &g) {
     }
 }
 
+void TestAdjVertices(const TGraph &g, const TVDescriptors &vdescriptors) {
+    for (TVDescriptors::const_iterator iter = vdescriptors.begin(), end = vdescriptors.end(); iter != end; ++iter) {
+        cout << g.GetVertex(*iter).Num << ":";
+        pair< TGraph::TAdjVertexIterator, TGraph::TAdjVertexIterator > p = g.GetAdjVertices(*iter);
+        for (; p.first != p.second; ++p.first) {
+            TGraph::TVertexDescriptor vd = *(p.first);
+            cout << "\t" << g.GetVertex(vd).Num;
+        }
+        cout << endl;
+    }
+}
+
 static void Test() {
     // Reading graph
     int N, M;
@@ -61,6 +73,7 @@ static void Test() {
     //
     //PrintVertices(g);
     //PrintEdges(g);
+    TestAdjVertices(g, vdescriptors);
 
     //BreadthFirstSearch(g, TBFSHandler);
 }
