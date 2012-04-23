@@ -51,6 +51,28 @@ void TestAdjVertices(const TGraph &g, const TVDescriptors &vdescriptors) {
     }
 }
 
+template<typename TGraphType>
+class TBFS_PrintingHandler {
+private:
+    TBFS_PrintingHandler();
+private:
+    const TGraphType &Graph;
+public:
+    TBFS_PrintingHandler(const TGraphType &g)
+        : Graph(g) {
+    }
+
+    void DiscoverVertex(typename TGraphType::TVertexDescriptor* parentDescriptor, typename TGraphType::TVertexDescriptor vertexDescriptor) {
+        cout << "Num=" << Graph.GetVertex(vertexDescriptor).Num << "\t"
+            << "ParentNum=" << (parentDescriptor ? Graph.GetVertex(*parentDescriptor).Num : -1) << endl;
+    }
+};
+
+static void TestBFS(const TGraph &g) {
+    TBFS_PrintingHandler<TGraph> h(g);
+    BFS(g, h);
+}
+
 static void Test() {
     // Reading graph
     int N, M;
@@ -73,7 +95,8 @@ static void Test() {
     //
     //PrintVertices(g);
     //PrintEdges(g);
-    TestAdjVertices(g, vdescriptors);
+    //TestAdjVertices(g, vdescriptors);
+    TestBFS(g);
 
     //BreadthFirstSearch(g, TBFSHandler);
 }

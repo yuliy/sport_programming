@@ -2,8 +2,11 @@
 
 #include <vector>
 #include <list>
+#include <deque>
 
 namespace NGraphLib {
+    /// Graph Descriptors
+
     template<typename T> class TALGraph;
 
     template<typename T>
@@ -46,6 +49,8 @@ namespace NGraphLib {
             return TALGVertexDescriptor<T>(ToIndex);
         }
     };
+
+    /// Graph Iterators
 
     template<typename TVDescriptorType >
     class TALGVertexIterator {
@@ -148,6 +153,8 @@ namespace NGraphLib {
         }
     };
 
+    /// Graph Classes
+
     template<typename T>
     class TALGraph {
     private:
@@ -158,12 +165,29 @@ namespace NGraphLib {
         TVertices Vertices;
         TAdjLists AdjLists;
     public:
+        typedef T TVertex;
+
         typedef TALGVertexDescriptor<T> TVertexDescriptor;
         typedef TALGEdgeDescriptor<T> TEdgeDescriptor;
 
         typedef TALGVertexIterator<TVertexDescriptor > TVertexIterator;
         typedef TALGEdgeIterator<TAdjLists, TAdjList::const_iterator, TEdgeDescriptor > TEdgeIterator;
         typedef TALGAdjVertexIterator<TAdjList::const_iterator, TVertexDescriptor > TAdjVertexIterator;
+
+        template<typename TVDescriptor, typename TProperty >
+        class TVertexPropertyMap {
+        private:
+            TVertexPropertyMap();
+            explicit TVertexPropertyMap(int verticesCount, TProperty defaultValue)
+                : Properties(verticesCount, defaultValue) {
+            }
+
+            friend class TALGraph<T>;
+        private:
+            typedef std::deque<TProperty> TProperties;
+            TProperties Properties;
+        public:
+        };
 
         TALGraph() {
         }
@@ -211,5 +235,59 @@ namespace NGraphLib {
             return std::make_pair(  TAdjVertexIterator(l.begin()),
                                     TAdjVertexIterator(l.end()) );
         }
+
+        template<typename TProperty >
+        TVertexPropertyMap<TVertexDescriptor, TProperty > CreateVertexPropertyMap(TProperty defaultValue = TProperty()) const {
+            return TVertexPropertyMap<TVertexDescriptor, TProperty>(Vertices.size(), defaultValue);
+        }
+
+        template<typename TProperty >
+        TProperty &GetVertexProperty(TVertexPropertyMap<TVertexDescriptor, TProperty> &vpMap, TVertexDescriptor vd) const {
+            return vpMap.Properties[vd.Index];
+        }
+
+        template<typename TProperty >
+        const TProperty &GetVertexProperty(const TVertexPropertyMap<TVertexDescriptor, TProperty> &vpMap, TVertexDescriptor vd) const {
+            return vpMap.Properties[vd.Index];
+        }
+
     };
+
+    /// Algorithms
+
+    template<typename TGraphType, typename TBFSHandlerType >
+    void BFS(const TGraphType &g, TBFSHandlerType &h) {
+        std::pair< typename TGraphType::TVertexIterator,
+                    typename TGraphType::TVertexIterator > vIters = g.GetVertices();
+
+        typedef std::vector< typename TGraphType::TVertexDescriptor > TVDescriptors;
+        TVDescriptors vdescriptors;
+        for (; vIters.first != vIters.second; ++(vIters.first))
+            vdescriptors.push_back(*(vIters.first));
+
+        typedef typename TGraphType::template TVertexPropertyMap< typename TGraphType::TVertexDescriptor, bool > TVPMap;
+        TVPMap exploredMap = g.CreateVertexPropertyMap(false);
+
+        typedef std::deque< typename TGraphType::TVertexDescriptor > TVQueue;
+        TVQueue q;
+        q.push_back(vdescriptors.front());
+        h.DiscoverVertex(0, vdescriptors.front());
+        g.GetVertexProperty(exploredMap, vdescriptors.front()) = true;
+
+        while (!q.empty()) {
+            typename TGraphType::TVertexDescriptor vd = q.front();
+            q.pop_front();
+
+            std::pair< typename TGraphType::TAdjVertexIterator,
+                        typename TGraphType::TAdjVertexIterator > adjIters = g.GetAdjVertices(vd);
+            for (; adjIters.first != adjIters.second; ++(adjIters.first)) {
+                typename TGraphType::TVertexDescriptor ud = *(adjIters.first);
+                if (g.GetVertexProperty(exploredMap, ud) == false) {
+                    h.DiscoverVertex(&vd, ud);
+                    q.push_back(ud);
+                    g.GetVertexProperty(exploredMap, ud) = true;
+                }
+            }
+        }
+    }
 }; // namespace NGraphLib
