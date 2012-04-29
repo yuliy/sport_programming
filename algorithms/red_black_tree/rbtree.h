@@ -32,7 +32,6 @@ template<typename T, typename TComparator = std::less<T> >
 class TRBTree {
 public:
     TNode<T> *Root;
-    //TNode *Sentinel;
     TComparator Cmp;
 public:
     void LeftRotate(TNode<T> *x) {
@@ -90,53 +89,41 @@ public:
 
     void InsertFixup(TNode<T> *z) {
         if (Root == z) {
-            std::cout << "(root)" << std::endl;
             z->Colour = C_BLACK;
             return;
         }
 
         while (z->Parent && z->Parent->Colour == C_RED) {
-            std::cout << "while begin" << std::endl;
             // z is a left chilf of pp
             if (z->Parent == z->Parent->Parent->Left) {
-                std::cout << "(1)" << std::endl;
                 TNode<T> *y = z->Parent->Parent->Right;
                 if (y && y->Colour == C_RED) {
-                    std::cout << "Case 1" << std::endl;
                     z->Parent->Colour = C_BLACK;
                     y->Colour = C_BLACK;
                     z->Parent->Parent->Colour = C_RED;
                     z = z->Parent->Parent;
-                    std::cout << "zpp" << std::endl;
                 } else {
                     if (z == z->Parent->Right) {
-                        std::cout << "Case 2" << std::endl;
                         z = z->Parent;
                         LeftRotate(z);
                     } 
-                    std::cout << "Case 3" << std::endl;
                     z->Parent->Colour = C_BLACK;
                     z->Parent->Parent->Colour = C_RED;
                     RightRotate(z->Parent->Parent);
                 }
             // if is a right child of pp
             } else {
-                std::cout << "(2)" << std::endl;
                 TNode<T> *y = z->Parent->Parent->Left;
                 if (y && y->Colour == C_RED) {
-                    std::cout << "Case 1" << std::endl;
                     z->Parent->Colour = C_BLACK;
                     y->Colour = C_BLACK;
                     z->Parent->Parent->Colour = C_RED;
                     z = z->Parent->Parent;
-                    std::cout << "zpp" << std::endl;
                 } else {
                     if (z == z->Parent->Left) {
-                        std::cout << "Case 2" << std::endl;
                         z = z->Parent;
                         RightRotate(z);
                     }
-                    std::cout << "Case 3" << std::endl;
                     z->Parent->Colour = C_BLACK;
                     z->Parent->Parent->Colour = C_RED;
                     LeftRotate(z->Parent->Parent);
@@ -149,12 +136,10 @@ public:
     TRBTree()
         : Cmp(TComparator())
         , Root(0) {
-        //, Sentinel (new TNode<T>()) {
      }
 
     TRBTree(TComparator cmp)
         : Cmp(cmp)
         , Root(0) {
-        //, Sentinel(new TNode<T>()) {
     }
 };
