@@ -34,9 +34,36 @@ public:
     TNode<T> *Root;
     TComparator Cmp;
 public:
+    TNode<T> *Minimum(TNode<T> *x) {
+        while (x && x->Left)
+            x = x->Left;
+        return x;
+    }
+
+    TNodeT> *Maximum(TNode<T> *x) {
+        while (x && x->Right)
+            x = x->Right;
+        return x;
+    }
+
+    TNode<T> *Successor(TNode<T> *x) const {
+        if (!x)
+            return 0;
+
+        if (x->Right)
+            return Minimum(x->Right);
+
+        TNode<T> *y = x->Parent;
+        while (y && x == y->Right) {
+            x = y;
+            y = y->Parent;
+        }
+        return y;
+    }
+
     void LeftRotate(TNode<T> *x) {
-        TNode<T> *y = x->Right;        // set y
-        x->Right = y->Left;         // turn y's left subtree into x's right subtree
+        TNode<T> *y = x->Right;
+        x->Right = y->Left;
         if (y->Left != 0)
             y->Left->Parent = x;
         y->Parent = x->Parent;
@@ -131,6 +158,81 @@ public:
             }
         }
         Root->Colour = C_BLACK;
+    }
+
+    /*
+    void Transplant(TNode<T> *u, TNode<T> *v) {
+        if (u->Parent == 0)
+            Root = v;
+        else if (u == u->Parent->Left)
+            u->Parent->Left = v;
+        else
+            u->Parent->Right = v;
+
+        if (v)
+            v->Parent = u->Parent;
+    }
+    */
+
+    TNode<T> *Delete(TNode<T> *z) {
+        TNode<T> *y = (z->Left == 0 || z->Right == 0) ? z : Successor(z);
+        TNode<T> *x = (y->Left) ? y->Left : y->Right;
+        x->Parent = y->Parent;
+
+        if (y->Parent == 0) {
+            Root = x;
+        } else {
+            if (y == y->Parent->Left)
+                y->Parent->Left = x;
+            else
+                y->Parent->Right = x;
+        }
+
+        if (y != z) {
+            z->Key = y->Key;
+            // ...
+        }
+
+        if (y->Colour == C_BLACK)
+            DeleteFixup(x);
+
+        return y;
+    /*
+        TNode<T> *y = z;
+        TNode<T> *x = 0;
+        EColour yOriginalColour = y->Colour;
+        if (z->Left == 0) {
+            x = z->Right;
+            Transplant(z, z->Right);
+        } else if (z->Right == 0) {
+            x = z->Left;
+            Transplant(z, z->Left);
+        } else {
+            y = TreeMinimum(z->Right);
+            yOriginalColour = y->Colour;
+            x = y->Right;
+
+            if (y->Parent == z) {
+                x->Parent = y
+            } else {
+                Transplant(y, y->Right);
+                y->Right = z->Right;
+                y->Right->Parent = y;
+            }
+
+            Transplant(z, y);
+            y->Left = z->Left;
+            y->Left->Parent = y;
+            y->Colour = z->Colour;
+        }
+
+        if (yOriginalColour == C_BLACK)
+            DeleteFixup(x);
+    */
+    }
+
+    void DeleteFixup(TNode<T> *x) {
+        //
     }
 public:
     TRBTree()
