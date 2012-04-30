@@ -61,6 +61,16 @@ public:
         return y;
     }
 
+    TNode<T> *Search(TNode<T> *x, const T &key) const {
+        if (!x || Cmp(key, x->Key) && Cmp(x->Key, key))
+            return x;
+
+        if (Cmp(key, x->Key))
+            return Search(x->Left, key);
+        else
+            return Search(x->Right, key);
+    }
+
     void LeftRotate(TNode<T> *x) {
         TNode<T> *y = x->Right;
         x->Right = y->Left;
@@ -160,20 +170,6 @@ public:
         Root->Colour = C_BLACK;
     }
 
-    /*
-    void Transplant(TNode<T> *u, TNode<T> *v) {
-        if (u->Parent == 0)
-            Root = v;
-        else if (u == u->Parent->Left)
-            u->Parent->Left = v;
-        else
-            u->Parent->Right = v;
-
-        if (v)
-            v->Parent = u->Parent;
-    }
-    */
-
     TNode<T> *Delete(TNode<T> *z) {
         TNode<T> *y = (z->Left == 0 || z->Right == 0) ? z : Successor(z);
         TNode<T> *x = (y->Left) ? y->Left : y->Right;
@@ -188,47 +184,12 @@ public:
                 y->Parent->Right = x;
         }
 
-        if (y != z) {
+        if (y != z)
             z->Key = y->Key;
-            // ...
-        }
 
         if (y->Colour == C_BLACK)
             DeleteFixup(x);
-
         return y;
-    /*
-        TNode<T> *y = z;
-        TNode<T> *x = 0;
-        EColour yOriginalColour = y->Colour;
-        if (z->Left == 0) {
-            x = z->Right;
-            Transplant(z, z->Right);
-        } else if (z->Right == 0) {
-            x = z->Left;
-            Transplant(z, z->Left);
-        } else {
-            y = TreeMinimum(z->Right);
-            yOriginalColour = y->Colour;
-            x = y->Right;
-
-            if (y->Parent == z) {
-                x->Parent = y
-            } else {
-                Transplant(y, y->Right);
-                y->Right = z->Right;
-                y->Right->Parent = y;
-            }
-
-            Transplant(z, y);
-            y->Left = z->Left;
-            y->Left->Parent = y;
-            y->Colour = z->Colour;
-        }
-
-        if (yOriginalColour == C_BLACK)
-            DeleteFixup(x);
-    */
     }
 
     void DeleteFixup(TNode<T> *x) {

@@ -18,10 +18,7 @@ i64 GetTickCount() {
     return clock() * 1000 / CLOCKS_PER_SEC;
 }
 
-static void Test() {
-    TRBTree<int> t;
-
-    // filling with data
+static void FillWithData(TRBTree<int> &t) {
     const int cnt = 15;
     for (int i = 0; i < cnt; ++i) {
         cout << "inserting: " << i << endl;
@@ -29,8 +26,9 @@ static void Test() {
         n->Key = i;
         t.Insert(n);
     }
+}
 
-    // printing all tree structure
+static void PrintAllTreeStructure(TRBTree<int> &t) {
     deque< TNode<int>* > q;
     q.push_back(t.Root);
     while (!q.empty()) {
@@ -48,13 +46,30 @@ static void Test() {
         if (n->Right)
             q.push_back(n->Right);
     }
+}
 
-    //
+static void PrintTree(TRBTree<int> &t) {
     TNode<int> *x = t.Minimum(t.Root);
     while (x) {
         cout << x->Key << endl;
         x = t.Successor(x);
     }
+}
+
+static void Test() {
+    TRBTree<int> t;
+
+    FillWithData(t);
+    PrintAllTreeStructure(t);
+    PrintTree(t);
+
+    // deleting element
+    TNode<int> *n1 = t.Search(t.Root, 8);
+    TNode<int> *n2 = t.Search(t.Root, 11);
+    cout << "n1->Key = " << n1->Key << endl;
+    t.Delete(n1);
+
+    PrintTree(t);
 }
 
 int main( int argc, char** argv ) {
