@@ -21,6 +21,7 @@ i64 GetTickCount() {
 static void Test() {
     TRBTree<int> t;
 
+    // filling with data
     const int cnt = 15;
     for (int i = 0; i < cnt; ++i) {
         cout << "inserting: " << i << endl;
@@ -29,6 +30,7 @@ static void Test() {
         t.Insert(n);
     }
 
+    // printing all tree structure
     deque< TNode<int>* > q;
     q.push_back(t.Root);
     while (!q.empty()) {
@@ -45,6 +47,13 @@ static void Test() {
             q.push_back(n->Left);
         if (n->Right)
             q.push_back(n->Right);
+    }
+
+    //
+    TNode<int> *x = t.Minimum(t.Root);
+    while (x) {
+        cout << x->Key << endl;
+        x = t.Successor(x);
     }
 }
 

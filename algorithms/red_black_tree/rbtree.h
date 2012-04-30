@@ -34,13 +34,13 @@ public:
     TNode<T> *Root;
     TComparator Cmp;
 public:
-    TNode<T> *Minimum(TNode<T> *x) {
+    TNode<T> *Minimum(TNode<T> *x) const {
         while (x && x->Left)
             x = x->Left;
         return x;
     }
 
-    TNodeT> *Maximum(TNode<T> *x) {
+    TNode<T> *Maximum(TNode<T> *x) const {
         while (x && x->Right)
             x = x->Right;
         return x;
