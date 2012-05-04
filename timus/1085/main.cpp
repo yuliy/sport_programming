@@ -14,42 +14,49 @@ typedef vector< TRoute > TRoutes;
 
 int N, M, K;
 
-static int FindStartRoute(const TRoutes &routes, int startPoint) {
-    for (int i = 0; i < M; ++i) {
-        const TRoute &r = routes[i];
-        if (binary_search(r.begin(), r.end(), startPoint))
-            return i;
-    }
-    return -1;
-}
-
 const int INF = 1e9;
 
-static void CalcPrices(vector<int> &prices, const TRoutes &routes, int money, int start, bool hasAbonement) {
+/*
+static void PrintPrices(const vector<int> &prices) {
+    for (int i = 0; i < N; ++i) {
+        const int p = prices[i];
+        if (p == INF)
+            cout << "INF" << "\t";
+        else
+            cout << p << "\t";
+    }
+    cout << endl;
+}
+*/
+
+static void CalcPrices(vector<int> &prices, const TRoutes &routes, const int money, const int start, const bool hasAbonement) {
     prices[start] = 0;
-    const int startRoute = FindStartRoute(routes, start);
-    cout << "startRoute=" << startRoute << " (start=" << start << ")" << endl;
-    if (startRoute == -1)
-        return;
-
+    //cout << "prices (1): ";
+    //PrintPrices(prices);
+    
+    //cout << "hasAbonement = " << hasAbonement << endl;
     vector<bool> rFlags(M);
-    deque<int> q;
-    q.push_back(startRoute);
+    deque< pair<int, int> > q;
+    for (int i = 0; i < M; ++i) {
+        const TRoute &r = routes[i];
+        if (binary_search(r.begin(), r.end(), start)) {
+            q.push_back( make_pair(i, hasAbonement ? 0 : 4) );
+            //cout << "start route = " << i << "\t(" << q.back().first << "," << q.back().second << ")" << endl;
+        }
+    }
 
-    int price = 0;
     while(!q.empty()) {
-        if (!hasAbonement)
-            price += 4;
-
-        if ((price > money) && !hasAbonement)
-            break;
-
-        const int rnum = q.front();
+        const pair<int, int> rinfo = q.front();
         q.pop_front();
 
+        const int rnum = rinfo.first;
         if (rFlags[rnum])
             continue;
         rFlags[rnum] = true;
+
+        const int price = rinfo.second;
+        //cout << "rnum=" << rnum << "\tprice=" << price << endl;
+        const int newPrice = price + (hasAbonement ? 0 : 4);
 
         const TRoute &route = routes[rnum];
         const int rsize = route.size();
@@ -63,7 +70,8 @@ static void CalcPrices(vector<int> &prices, const TRoutes &routes, int money, in
                     continue;
 
                 if (binary_search(routes[j].begin(), routes[j].end(), pointNum))
-                    q.push_back(j);
+                    if (hasAbonement || (newPrice <= money))
+                        q.push_back( make_pair(j, newPrice) );
             }
         }
     }
@@ -92,13 +100,13 @@ int main() {
         --start;
 
         vector<int> curPrices(N);
-        for (int i= 0; i < N; ++i)
+        for (int i = 0; i < N; ++i)
             curPrices[i] = INF;
 
+        //cout << "----------------------------------------------------------" << endl;
         CalcPrices(curPrices, routes, money, start, hasAbonement);
-        cout << "cur prices:" << endl;
-        for (int i = 0; i < N; ++i)
-            cout << "point " << i << " - " << sumPrices[i] << endl;
+        //cout << "cur prices: ";
+        //PrintPrices(curPrices);
 
         for (int i = 0; i < N; ++i) {
             sumPrices[i] += curPrices[i];
@@ -116,9 +124,8 @@ int main() {
         }
     }
 
-    cout << "sum prices:" << endl;
-    for (int i = 0; i < N; ++i)
-        cout << "point " << i << " - " << sumPrices[i] << endl;
+    //cout << "============================================================" << endl << "sum prices: ";
+    //PrintPrices(sumPrices);
 
     if (minNum == -1)
         printf("0\n");
