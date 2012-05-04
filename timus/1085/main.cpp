@@ -26,16 +26,24 @@ static int FindStartRoute(const TRoutes &routes, int startPoint) {
 const int INF = 1e9;
 
 static void CalcPrices(vector<int> &prices, const TRoutes &routes, int money, int start, bool hasAbonement) {
+    prices[start] = 0;
     const int startRoute = FindStartRoute(routes, start);
+    cout << "startRoute=" << startRoute << " (start=" << start << ")" << endl;
     if (startRoute == -1)
         return;
 
-    vector<bool> rFlags;
+    vector<bool> rFlags(M);
     deque<int> q;
     q.push_back(startRoute);
 
-    int price = hasAbonement ? 0 : 4;
+    int price = 0;
     while(!q.empty()) {
+        if (!hasAbonement)
+            price += 4;
+
+        if ((price > money) && !hasAbonement)
+            break;
+
         const int rnum = q.front();
         q.pop_front();
 
@@ -58,9 +66,6 @@ static void CalcPrices(vector<int> &prices, const TRoutes &routes, int money, in
                     q.push_back(j);
             }
         }
-
-        if (!hasAbonement)
-            price += 4;
     }
 }
 
@@ -74,26 +79,27 @@ int main() {
         for (int j = 0; j < cnt; ++j) {
             int tmp;
             scanf("%d", &tmp);
-            routes[i].push_back(tmp);
+            routes[i].push_back(tmp-1);
         }
         std::sort( routes[i].begin(), routes[i].end() );
     }
 
-    //
     scanf("%d", &K);
     vector<int> sumPrices(N);
-    for (int i = 0; i < K; ++i) {
+    for (int k = 0; k < K; ++k) {
         int money, start, hasAbonement;
         scanf("%d %d %d", &money, &start, &hasAbonement);
+        --start;
 
-        //
-        vector<int> curPrices;
+        vector<int> curPrices(N);
         for (int i= 0; i < N; ++i)
             curPrices[i] = INF;
 
         CalcPrices(curPrices, routes, money, start, hasAbonement);
+        cout << "cur prices:" << endl;
+        for (int i = 0; i < N; ++i)
+            cout << "point " << i << " - " << sumPrices[i] << endl;
 
-        //
         for (int i = 0; i < N; ++i) {
             sumPrices[i] += curPrices[i];
             if (sumPrices[i] > INF)
@@ -110,10 +116,14 @@ int main() {
         }
     }
 
+    cout << "sum prices:" << endl;
+    for (int i = 0; i < N; ++i)
+        cout << "point " << i << " - " << sumPrices[i] << endl;
+
     if (minNum == -1)
-        printf("0");
+        printf("0\n");
     else
-        printf("%d %d", minNum, min);
+        printf("%d %d\n", minNum + 1, min);
 
     return 0;
 }
