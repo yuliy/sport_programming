@@ -9,6 +9,8 @@
 #include <algorithm>
 using namespace std;
 
+const bool DEBUG_LOG = true;
+
 typedef vector<int> TRoute;
 typedef vector< TRoute > TRoutes;
 
@@ -16,7 +18,6 @@ int N, M, K;
 
 const int INF = 1e9;
 
-/*
 static void PrintPrices(const vector<int> &prices) {
     for (int i = 0; i < N; ++i) {
         const int p = prices[i];
@@ -27,21 +28,22 @@ static void PrintPrices(const vector<int> &prices) {
     }
     cout << endl;
 }
-*/
 
 static void CalcPrices(vector<int> &prices, const TRoutes &routes, const int money, const int start, const bool hasAbonement) {
     prices[start] = 0;
-    //cout << "prices (1): ";
-    //PrintPrices(prices);
-    
-    //cout << "hasAbonement = " << hasAbonement << endl;
+    if (DEBUG_LOG) {
+        cout << "prices (1): ";
+        PrintPrices(prices);
+    }
+
     vector<bool> rFlags(M);
     deque< pair<int, int> > q;
     for (int i = 0; i < M; ++i) {
         const TRoute &r = routes[i];
         if (binary_search(r.begin(), r.end(), start)) {
             q.push_back( make_pair(i, hasAbonement ? 0 : 4) );
-            //cout << "start route = " << i << "\t(" << q.back().first << "," << q.back().second << ")" << endl;
+            if (DEBUG_LOG)
+                cout << "start route = " << i << "\t(" << q.back().first << "," << q.back().second << ")" << endl;
         }
     }
 
@@ -55,7 +57,8 @@ static void CalcPrices(vector<int> &prices, const TRoutes &routes, const int mon
         rFlags[rnum] = true;
 
         const int price = rinfo.second;
-        //cout << "rnum=" << rnum << "\tprice=" << price << endl;
+        if (DEBUG_LOG)
+            cout << "rnum=" << rnum << "\tprice=" << price << endl;
         const int newPrice = price + (hasAbonement ? 0 : 4);
 
         const TRoute &route = routes[rnum];
@@ -103,10 +106,13 @@ int main() {
         for (int i = 0; i < N; ++i)
             curPrices[i] = INF;
 
-        //cout << "----------------------------------------------------------" << endl;
+        if (DEBUG_LOG)
+            cout << "----------------------------------------------------------" << endl;
         CalcPrices(curPrices, routes, money, start, hasAbonement);
-        //cout << "cur prices: ";
-        //PrintPrices(curPrices);
+        if (DEBUG_LOG) {
+            cout << "cur prices: ";
+            PrintPrices(curPrices);
+        }
 
         for (int i = 0; i < N; ++i) {
             sumPrices[i] += curPrices[i];
@@ -124,8 +130,10 @@ int main() {
         }
     }
 
-    //cout << "============================================================" << endl << "sum prices: ";
-    //PrintPrices(sumPrices);
+    if (DEBUG_LOG) {
+        cout << "============================================================" << endl << "sum prices: ";
+        PrintPrices(sumPrices);
+    }
 
     if (minNum == -1)
         printf("0\n");
