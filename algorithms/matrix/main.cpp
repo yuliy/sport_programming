@@ -295,7 +295,7 @@ int main( int argc, char** argv ) {
     try {
         //srand( time(NULL) );
         //Test1();
-        for (int i = 2; i <= 2048; i <<= 1)
+        for (int i = 2; i <= 1024; i <<= 1)
             Test2(i);
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
