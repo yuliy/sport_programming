@@ -41,10 +41,17 @@ static void GenerateInputFile(const char *fname, int size) {
     }
 }
 
+static void DistributedSort(const char *inputFileName, const char *outputFileName) {
+    
+}
+
 static void Test() {
-    const char inputFileName[] = "input.bin"; 
-    cout << "Generating input file..." << endl;
-    GenerateInputFile(inputFileName, 256 * 1024 * 1024);
+    const char inputFileName[] = "input.bin";
+    const char outputFileName[] = "output.bin";
+    //cout << "Generating input file..." << endl;
+    //GenerateInputFile(inputFileName, 256 * 1024 * 1024);
+    cout << "Sorting..." << endl;
+    DistributedSort(inputFileName, outputFileName);
     cout << "Done" << endl;
 }
 
