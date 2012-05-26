@@ -41,17 +41,42 @@ static void GenerateInputFile(const char *fname, int size) {
     }
 }
 
-static void DistributedSort(const char *inputFileName, const char *outputFileName) {
-    
+class TChunk {
+private:
+    const char *InputFileName;
+    int Offset;
+    int MaxSize;
+    int Size;
+public:
+    TChunk(const char *inputFileName, int offset, int maxSize)
+        : InputFileName(inputFileName)
+        , Offset(offset)
+        , MaxSize(maxSize) {
+    }
+
+    void Init() {
+
+    }
+};
+
+static void DistributedSort(const char *inputFileName, const char *outputFileName, int maxChunkSize) {
+    FILE *ifile = fopen(inputFileName, "rb");
+    if (!ifile)
+        throw TException("Couldn't open input file!");
+
+    for (;;) {
+
+    }
 }
 
 static void Test() {
     const char inputFileName[] = "input.bin";
     const char outputFileName[] = "output.bin";
+    const int maxChunkSize = 100;
     //cout << "Generating input file..." << endl;
     //GenerateInputFile(inputFileName, 256 * 1024 * 1024);
     cout << "Sorting..." << endl;
-    DistributedSort(inputFileName, outputFileName);
+    DistributedSort(inputFileName, outputFileName, maxChunkSize);
     cout << "Done" << endl;
 }
 
