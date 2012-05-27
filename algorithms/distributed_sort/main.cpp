@@ -59,7 +59,7 @@ private:
 private:
     void MakeTmpFileName(int offset) {
         char buf[256];
-        sprintf(buf, "tmp_%04d", offset / MaxSize);
+        sprintf(buf, "tmp_%04d.bin", offset / MaxSize);
         TmpFileName = buf;
     }
 public:
