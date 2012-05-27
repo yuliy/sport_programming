@@ -50,28 +50,52 @@ private:
     int Offset;
     int MaxSize;
     int Size;
+    string TmpFileName;
+private:
+    void MakeTmpFileName(int offset) {
+        char buf[256];
+        sprintf(buf, "tmp_%04d", offset);
+        TmpFileName = buf;
+    }
 public:
     TChunk(const char *inputFileName, int offset, int maxSize)
         : InputFileName(inputFileName)
         , Offset(offset)
         , MaxSize(maxSize) {
+        MakeTmpFileName(offset);
     }
 
     void Init() {
+        FILE *ifile = fopen(InputFileName, "rb");
+        if (!ifile)
+            throw TException("Couldn't open input file in TChunk::Init!");
 
+        vector<int> v(MaxSize);
+        if (fseek(ifile, Offset * sizeof(int), SEEK_SET))
+            throw TException("Seek failed!");
+        Size = fread(&v[0], sizeof(int), MaxSize, ifile);
+        v.resize(Size);
+        std::sort(v.begin(), v.end());
+        fclose(ifile);
+
+        FILE *tfile = fopen(TmpFileName.c_str(), "wb");
+        if (!tfile)
+            throw TException("Couldn't open temp file in TChunk::Init!");
+
+        fwrite(&v[0], sizeof(int), Size, tfile);
+        fclose(tfile);
     }
 };
 
 static void DistributedSort(const char *inputFileName, const char *outputFileName, int size, int maxChunkSize) {
-    FILE *ifile = fopen(inputFileName, "rb");
-    if (!ifile)
-        throw TException("Couldn't open input file!");
+    //FILE *ifile = fopen(inputFileName, "rb");
+    //if (!ifile)
+    //    throw TException("Couldn't open input file!");
 
     cout << "Creating chunks ..." << endl;
     vector< boost::shared_ptr<TChunk> > chunks;
     for (int offset = 0; offset < size; offset += maxChunkSize) {
         boost::shared_ptr<TChunk> pc(new TChunk(inputFileName, offset, maxChunkSize));
-        //pc->Init();
         chunks.push_back(pc);
     }
 
@@ -81,7 +105,7 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
     int sortedChunks = 0;
     for (vector< boost::shared_ptr<TChunk> >::const_iterator iter = chunks.begin(), end = chunks.end(); iter != end; ++iter, ++sortedChunks) {
         boost::shared_ptr<TChunk> pc = *iter;
-        cout << "sorting chunks: " << sortedChunks << endl;
+        cout << "sorting chunk: " << sortedChunks << " (total: " << chunksCnt << ")" << endl;
         pc->Init();
     }
 }
@@ -90,7 +114,7 @@ static void Test() {
     const char inputFileName[] = "input.bin";
     const char outputFileName[] = "output.bin";
     const int size = 256 * 1024 * 1024;
-    const int maxChunkSize = 1000 * 1000;
+    const int maxChunkSize = 25 * 1000 * 1000;
     //cout << "Generating input file..." << endl;
     //GenerateInputFile(inputFileName, size);
     cout << "Sorting..." << endl;
