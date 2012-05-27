@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <queue>
 #include <algorithm>
 #include <exception>
 
@@ -29,7 +30,7 @@ public:
     virtual ~TException() throw() {
     }
 
-    virtual const char *what() throw() {
+    virtual const char *what() const throw() {
         return Descr.c_str();
     }
 };
@@ -53,6 +54,7 @@ private:
     string TmpFileName;
     FILE *TmpFile;
     int CurrentValue;
+    int NumsRead;
     bool Valid;
 private:
     void MakeTmpFileName(int offset) {
@@ -74,6 +76,7 @@ public:
     }
 
     void Init() {
+        /*
         // reading input
         FILE *ifile = fopen(InputFileName, "rb");
         if (!ifile)
@@ -94,6 +97,8 @@ public:
 
         fwrite(&v[0], sizeof(int), Size, tfile);
         fclose(tfile);
+        */
+        Size = 32 * 1024 * 1024;
 
         //
         TmpFile = fopen(TmpFileName.c_str(), "rb");
@@ -108,32 +113,49 @@ public:
     }
 
     bool IsValid() const {
-        return Valid;
+        //cout << NumsRead << " " << Size << endl;
+        return (NumsRead <= Size);
+        //return Valid;
     }
 
     void Next() {
+        if (NumsRead > Size)
+            throw TException("Error! Trying to call next for invalid chunk!");
+
+        const int cnt = fread(&CurrentValue, sizeof(int), 1, TmpFile);
+        ++NumsRead;
+    /*
         if (!Valid)
             throw TException("Error! Trying to call next for invalid chunk!");
 
         const int cnt = fread(&CurrentValue, sizeof(int), 1, TmpFile);
-        if (!cnt)
+        if (cnt < 1) {
+            cout << "!!!" << endl;
             Valid = false;
+        }
+        */
     }
 
     int GetCurrentValue() const {
         return CurrentValue;
     }
+
+    const string &GetName() const {
+        return TmpFileName;
+    }
 };
 
+typedef vector< boost::shared_ptr<TChunk> > TPChunks;
+
 struct TChunkComparator {
-    bool opeartor()(const boost::shared_ptr<TChunk> &lhs, const boost:shared_ptr<TChunk> &rhs) const {
+    bool operator()(const boost::shared_ptr<TChunk> &lhs, const boost::shared_ptr<TChunk> &rhs) const {
         return lhs->GetCurrentValue() < rhs->GetCurrentValue();
     }
 };
 
 static void DistributedSort(const char *inputFileName, const char *outputFileName, int size, int maxChunkSize) {
     cout << "Creating chunks ..." << endl;
-    vector< boost::shared_ptr<TChunk> > chunks;
+    TPChunks chunks;
     for (int offset = 0; offset < size; offset += maxChunkSize) {
         boost::shared_ptr<TChunk> pc(new TChunk(inputFileName, offset, maxChunkSize));
         chunks.push_back(pc);
@@ -143,7 +165,7 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
     cout << "Total number of chunks: " << chunksCnt << endl;
     cout << "Sorting chunks ..." << endl;
     int sortedChunks = 0;
-    for (vector< boost::shared_ptr<TChunk> >::const_iterator iter = chunks.begin(), end = chunks.end(); iter != end; ++iter, ++sortedChunks) {
+    for (TPChunks::const_iterator iter = chunks.begin(), end = chunks.end(); iter != end; ++iter, ++sortedChunks) {
         boost::shared_ptr<TChunk> pc = *iter;
         cout << "sorting chunk: " << sortedChunks << " (total: " << chunksCnt << ")" << endl;
         pc->Init();
@@ -153,7 +175,34 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
     if (!ofile)
         throw TException("Couldn't open output file!");
 
-    //
+    cout << "Initializing queue..." << endl;
+    typedef priority_queue< boost::shared_ptr<TChunk>, TPChunks, TChunkComparator > TQueue;
+    TQueue q;
+    for (TPChunks::const_iterator iter = chunks.begin(), end = chunks.end(); iter != end; ++iter) {
+        cout << (*iter)->GetName() << endl;
+        if ((*iter)->IsValid() == false)
+            throw TException("Invalid chunk! " + (*iter)->GetName());
+        q.push(*iter);
+    }
+
+    cout << "Merging..." << endl;
+    for (int i = 0; !q.empty(); ++i) {
+        boost::shared_ptr<TChunk> pchunk = q.top();
+        q.pop();
+        const int val = pchunk->GetCurrentValue();
+        const int cnt = fwrite(&val, sizeof(int), 1, ofile);
+        if (cnt != 1)
+            throw TException("Failed writing num to output file!");
+
+        pchunk->Next();
+        if (pchunk->IsValid())
+            q.push(pchunk);
+
+        if (i % 1000000 == 0)
+            cout << "merged: " << i << " of " << size << endl;
+    }
+
+    fclose(ofile);
 }
 
 static void Test() {
