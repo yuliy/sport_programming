@@ -51,21 +51,30 @@ private:
     int MaxSize;
     int Size;
     string TmpFileName;
+    FILE *TmpFile;
+    int CurrentValue;
+    bool Valid;
 private:
     void MakeTmpFileName(int offset) {
         char buf[256];
-        sprintf(buf, "tmp_%04d", offset);
+        sprintf(buf, "tmp_%04d", offset / MaxSize);
         TmpFileName = buf;
     }
 public:
     TChunk(const char *inputFileName, int offset, int maxSize)
         : InputFileName(inputFileName)
         , Offset(offset)
-        , MaxSize(maxSize) {
+        , MaxSize(maxSize)
+        , Valid(false) {
         MakeTmpFileName(offset);
     }
 
+    ~TChunk() {
+        fclose(TmpFile);
+    }
+
     void Init() {
+        // reading input
         FILE *ifile = fopen(InputFileName, "rb");
         if (!ifile)
             throw TException("Couldn't open input file in TChunk::Init!");
@@ -78,20 +87,51 @@ public:
         std::sort(v.begin(), v.end());
         fclose(ifile);
 
+        // sorting chunk
         FILE *tfile = fopen(TmpFileName.c_str(), "wb");
         if (!tfile)
             throw TException("Couldn't open temp file in TChunk::Init!");
 
         fwrite(&v[0], sizeof(int), Size, tfile);
         fclose(tfile);
+
+        //
+        TmpFile = fopen(TmpFileName.c_str(), "rb");
+        if (!TmpFile)
+            throw TException("Couldn't open temp file!");
+
+        if (fseek(TmpFile, Offset * sizeof(int), SEEK_SET))
+            throw TException("Seek (2) failed!");
+
+        Valid = true;
+        Next();
+    }
+
+    bool IsValid() const {
+        return Valid;
+    }
+
+    void Next() {
+        if (!Valid)
+            throw TException("Error! Trying to call next for invalid chunk!");
+
+        const int cnt = fread(&CurrentValue, sizeof(int), 1, TmpFile);
+        if (!cnt)
+            Valid = false;
+    }
+
+    int GetCurrentValue() const {
+        return CurrentValue;
+    }
+};
+
+struct TChunkComparator {
+    bool opeartor()(const boost::shared_ptr<TChunk> &lhs, const boost:shared_ptr<TChunk> &rhs) const {
+        return lhs->GetCurrentValue() < rhs->GetCurrentValue();
     }
 };
 
 static void DistributedSort(const char *inputFileName, const char *outputFileName, int size, int maxChunkSize) {
-    //FILE *ifile = fopen(inputFileName, "rb");
-    //if (!ifile)
-    //    throw TException("Couldn't open input file!");
-
     cout << "Creating chunks ..." << endl;
     vector< boost::shared_ptr<TChunk> > chunks;
     for (int offset = 0; offset < size; offset += maxChunkSize) {
@@ -108,13 +148,20 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
         cout << "sorting chunk: " << sortedChunks << " (total: " << chunksCnt << ")" << endl;
         pc->Init();
     }
+
+    FILE *ofile = fopen(outputFileName, "wb");
+    if (!ofile)
+        throw TException("Couldn't open output file!");
+
+    //
 }
 
 static void Test() {
     const char inputFileName[] = "input.bin";
     const char outputFileName[] = "output.bin";
     const int size = 256 * 1024 * 1024;
-    const int maxChunkSize = 25 * 1000 * 1000;
+    //const int maxChunkSize = 25 * 1000 * 1000;
+    const int maxChunkSize = 32 * 1024 * 1024;
     //cout << "Generating input file..." << endl;
     //GenerateInputFile(inputFileName, size);
     cout << "Sorting..." << endl;
