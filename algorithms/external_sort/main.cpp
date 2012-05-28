@@ -137,6 +137,8 @@ struct TChunkComparator {
 };
 
 static void DistributedSort(const char *inputFileName, const char *outputFileName, int size, int maxChunkSize) {
+    const long long start = GetTickCount();
+
     cout << "Creating chunks ..." << endl;
     TPChunks chunks;
     for (int offset = 0; offset < size; offset += maxChunkSize) {
@@ -154,6 +156,8 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
         pc->Init();
     }
 
+    cout << "RUNNING TIME = " << (GetTickCount() - start) << endl;
+
     FILE *ofile = fopen(outputFileName, "wb");
     if (!ofile)
         throw TException("Couldn't open output file!");
@@ -167,6 +171,8 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
             throw TException("Invalid chunk! " + (*iter)->GetName());
         q.push(*iter);
     }
+
+    cout << "RUNNING TIME = " << (GetTickCount() - start) << endl;
 
     cout << "Merging..." << endl;
     for (int i = 0; !q.empty(); ++i) {
@@ -186,14 +192,15 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
     }
 
     fclose(ofile);
+    cout << "RUNNING TIME = " << (GetTickCount() - start) << endl;
 }
 
 static void Test() {
     const char inputFileName[] = "input.bin";
     const char outputFileName[] = "output.bin";
 
-    const int size = 256 * 1024 * 1024;
-    const int maxChunkSize = 32 * 1024 * 1024;
+    const int size = 128 * 1024 * 1024;
+    const int maxChunkSize = 8 * 1024 * 1024;
 
     cout << "Generating input file..." << endl;
     GenerateInputFile(inputFileName, size);
