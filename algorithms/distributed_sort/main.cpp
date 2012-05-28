@@ -54,7 +54,6 @@ private:
     string TmpFileName;
     FILE *TmpFile;
     int CurrentValue;
-    int NumsRead;
     bool Valid;
 private:
     void MakeTmpFileName(int offset) {
@@ -76,7 +75,6 @@ public:
     }
 
     void Init() {
-        /*
         // reading input
         FILE *ifile = fopen(InputFileName, "rb");
         if (!ifile)
@@ -97,7 +95,6 @@ public:
 
         fwrite(&v[0], sizeof(int), Size, tfile);
         fclose(tfile);
-        */
         Size = 32 * 1024 * 1024;
 
         //
@@ -105,35 +102,21 @@ public:
         if (!TmpFile)
             throw TException("Couldn't open temp file!");
 
-        if (fseek(TmpFile, Offset * sizeof(int), SEEK_SET))
-            throw TException("Seek (2) failed!");
-
         Valid = true;
         Next();
     }
 
     bool IsValid() const {
-        //cout << NumsRead << " " << Size << endl;
-        return (NumsRead <= Size);
-        //return Valid;
+        return Valid;
     }
 
     void Next() {
-        if (NumsRead > Size)
-            throw TException("Error! Trying to call next for invalid chunk!");
-
-        const int cnt = fread(&CurrentValue, sizeof(int), 1, TmpFile);
-        ++NumsRead;
-    /*
         if (!Valid)
             throw TException("Error! Trying to call next for invalid chunk!");
 
         const int cnt = fread(&CurrentValue, sizeof(int), 1, TmpFile);
-        if (cnt < 1) {
-            cout << "!!!" << endl;
+        if (cnt != 1)
             Valid = false;
-        }
-        */
     }
 
     int GetCurrentValue() const {
@@ -208,13 +191,16 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
 static void Test() {
     const char inputFileName[] = "input.bin";
     const char outputFileName[] = "output.bin";
+
     const int size = 256 * 1024 * 1024;
-    //const int maxChunkSize = 25 * 1000 * 1000;
     const int maxChunkSize = 32 * 1024 * 1024;
-    //cout << "Generating input file..." << endl;
-    //GenerateInputFile(inputFileName, size);
+
+    cout << "Generating input file..." << endl;
+    GenerateInputFile(inputFileName, size);
+
     cout << "Sorting..." << endl;
     DistributedSort(inputFileName, outputFileName, size, maxChunkSize);
+
     cout << "Done" << endl;
 }
 
