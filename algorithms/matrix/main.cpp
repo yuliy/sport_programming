@@ -41,7 +41,7 @@ private:
     int Cols;
 private:
     void AllocateMemory(int rows, int cols) {
-        vector<int> tmp(rows);
+        vector<T> tmp(rows);
         for (int i = 0; i < cols; ++i)
             Elems.push_back(tmp);
     }
@@ -231,8 +231,9 @@ TMatrix<T> ShtrassenMultiply(const TMatrix<T> &A, const TMatrix<T> &B) {
     return res;
 }
 
-TMatrix<int> CreateRandomMatrix(int rows, int cols) {
-    TMatrix<int> res(rows, cols);
+template<typename T>
+TMatrix<T> CreateRandomMatrix(int rows, int cols) {
+    TMatrix<T> res(rows, cols);
     for (int i = 0; i < rows; ++i)
         for (int j = 0; j < cols; ++j)
             res(i, j) = rand() % 100;
@@ -265,8 +266,8 @@ static void Test2(int N) {
     //cout << "Generating random input matrices..." << endl;
     //const int N = 16;
     typedef TMatrix<int> TMat;
-    const TMat m1 = CreateRandomMatrix(N, N);
-    const TMat m2 = CreateRandomMatrix(N, N);
+    const TMat m1 = CreateRandomMatrix<int>(N, N);
+    const TMat m2 = CreateRandomMatrix<int>(N, N);
 
     cout << "N=" << N << endl;
     const i64 start1 = GetTickCount();
@@ -279,11 +280,13 @@ static void Test2(int N) {
     const i64 time2 = GetTickCount() - start2;
     cout << "\ttime2: " << time2 << "ms" << endl;
 
+    /*
     if (r1 == r2) {
-        //cout << "Correct: YES" << endl;
+        cout << "Correct: YES" << endl;
     } else {
-        //cout << "Correct: NO! There are errors!" << endl;
+        cout << "Correct: NO! There are errors!" << endl;
     }
+    */
 
     //cout << "Matrix 1:" << endl << m1 << endl << endl
     //    << "Matrix 2:" << endl << m2 << endl << endl
@@ -295,7 +298,7 @@ int main( int argc, char** argv ) {
     try {
         //srand( time(NULL) );
         //Test1();
-        for (int i = 2; i <= 1024; i <<= 1)
+        for (int i = 2; i <= 10240; i <<= 1)
             Test2(i);
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
