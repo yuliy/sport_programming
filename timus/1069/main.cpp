@@ -34,11 +34,10 @@ int main() {
     TQueue q;
     //for (TVertex2Count::const_iterator iter = v2c.begin(), end = v2c.end(); iter != end; ++iter)
     for (int i = 1; i <= N; ++i)
-        if (v2c[i] == 0)
+        if (v2c[i] == 0) 
             q.push(i);
 
-    TAdjLists adjLists(N);
-
+    TAdjLists adjLists(N+1);
     for (TVertices::const_iterator iter = vertices.begin(), end = vertices.end(); iter != end; ++iter) {
         const int v = *iter;
         if (q.empty())
@@ -46,20 +45,23 @@ int main() {
 
         const int minv = q.top();
 
-        adjLists[minv-1].insert(v);
-        adjLists[v-1].insert(minv);
+        cout << "Adding: " << v << " " << minv << endl;
+        adjLists[minv].insert(v);
+        adjLists[v].insert(minv);
 
-        if (v2c[v] == 0)
+        if (v2c[v] == 1)
             q.push(v);
-        else
+        if (v2c[v] > 0)
             --v2c[v];
     }
 
-    for (int i = 0; i < N; ++i) {
-        printf("%d:", i + 1);
+    for (int i = 1; i <= N; ++i) {
+        printf("%d:", i);
         const TAdjList &lst = adjLists[i];
-        for (TAdjList::const_iterator iter = lst.begin(), end = lst.end(); iter != end; ++iter)
+        //cout << lst.size() << endl;
+        for (TAdjList::const_iterator iter = lst.begin(), end = lst.end(); iter != end; ++iter) {
             printf(" %d", *iter);
+        }
         printf("\n");
     }
 
