@@ -30,9 +30,7 @@ int main() {
             N = tmp;
     }
 
-    //greater<int> cmp;
     TQueue q;
-    //for (TVertex2Count::const_iterator iter = v2c.begin(), end = v2c.end(); iter != end; ++iter)
     for (int i = 1; i <= N; ++i)
         if (v2c[i] == 0) 
             q.push(i);
@@ -44,8 +42,9 @@ int main() {
             continue;
 
         const int minv = q.top();
+        q.pop();
 
-        cout << "Adding: " << v << " " << minv << endl;
+        //cout << "Adding: " << v << " " << minv << endl;
         adjLists[minv].insert(v);
         adjLists[v].insert(minv);
 
@@ -58,10 +57,8 @@ int main() {
     for (int i = 1; i <= N; ++i) {
         printf("%d:", i);
         const TAdjList &lst = adjLists[i];
-        //cout << lst.size() << endl;
-        for (TAdjList::const_iterator iter = lst.begin(), end = lst.end(); iter != end; ++iter) {
+        for (TAdjList::const_iterator iter = lst.begin(), end = lst.end(); iter != end; ++iter)
             printf(" %d", *iter);
-        }
         printf("\n");
     }
 
