@@ -4,12 +4,17 @@ def visit(jid):
     q = [jid]
     while q:
         nid = q.pop(0)
-        #self.waitJobs[nid].add(jid)
-        if nid not in visited:
-            visited.add(nid)
-            if nid not in order:
-                raise RuntimeError('job dependencies cycle exists')
-            order[jid] = len(order)
+        if nid not in discovered:
+            discovered.add(nid)
+            hasUndiscoveredNeighbour = False
+            for neighbour in edges[nid]:
+                if neighbour in discovered:
+                    if neighbour not in finished:
+                        raise RuntimeError('cycle found!')
+                else:
+                    hasUndiscoveredNeighbour = True
+            if not hasUndiscoveredNeighbour:
+                finished.add(nid)
             q = edges[nid] + q
 
 edges = {
@@ -17,12 +22,13 @@ edges = {
     2: [3, 4],
     3: [],
     4: [],
-    5: [],
+    5: [4],
 }
 
-visited = set()
-
-order = {}
+#visited = set()
+#order = {}
+discovered = set()
+finished = set()
 
 def main():
     for i in xrange(1, 6):
