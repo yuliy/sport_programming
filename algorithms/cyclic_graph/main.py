@@ -1,21 +1,26 @@
 #!/usr/bin/env python
 
-def visit(jid):
-    q = [jid]
+def visit(startJID):
+    q = [startJID]
     while q:
-        nid = q.pop(0)
-        if nid not in discovered:
-            discovered.add(nid)
+        print '----------------------'
+        print 'q=', q
+        print 'discovered=', discovered
+        print 'finished=', finished
+        jid = q.pop(0)
+        if jid not in discovered:
+            discovered.add(jid)
             hasUndiscoveredNeighbour = False
-            for neighbour in edges[nid]:
-                if neighbour in discovered:
-                    if neighbour not in finished:
+            for nid in edges[jid]:
+                if nid in discovered:
+                    if nid not in finished:
                         raise RuntimeError('cycle found!')
                 else:
                     hasUndiscoveredNeighbour = True
+                    q = [nid] + q
             if not hasUndiscoveredNeighbour:
-                finished.add(nid)
-            q = edges[nid] + q
+                finished.add(jid)
+            #q = edges[nid] + q
 
 edges = {
     1: [2, 5],
