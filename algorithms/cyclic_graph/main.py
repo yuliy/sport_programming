@@ -1,34 +1,44 @@
 #!/usr/bin/env python
 
-DEBUG_LOG = True
+#DEBUG_LOG = True
+DEBUG_LOG = False
 
 def HasCycle(edges):
     discovered = set()
     finished = set()
 
     def visit(startJID):
-        import collections
-        q = collections.deque([startJID])
-        while q:
+        st = [startJID]
+        while len(st):
             if DEBUG_LOG:
                 print '----------------------'
-                print 'q=', q
+                print 'st=', st
                 print 'discovered=', discovered
                 print 'finished=', finished
-            jid = q.popleft()
-            if jid not in discovered:
-                discovered.add(jid)
+            jid = st[-1]
+            if jid not in finished:
+                if jid not in discovered:
+                    discovered.add(jid)
+                    if DEBUG_LOG:
+                        print '>>>d:', jid
+
                 hasUndiscoveredNeighbour = False
                 for nid in edges[jid]:
                     if nid in discovered:
                         if nid not in finished:
-                            #raise RuntimeError('cycle found!')
+                            print 'reverse edge: (%s, %s)' % (jid, nid)
                             return True
                     else:
                         hasUndiscoveredNeighbour = True
-                        q.appendleft(nid)
+                        st.append(nid)
+
                 if not hasUndiscoveredNeighbour:
+                    st.pop()
                     finished.add(jid)
+                    if DEBUG_LOG:
+                        print '>>>f:', jid
+            else:
+                st.pop()
         return False
 
     for v in edges.iterkeys():
@@ -38,6 +48,7 @@ def HasCycle(edges):
 
 
 def test(graph):
+    print '-----------'
     if HasCycle(graph):
         print 'cycle'
     else:
@@ -73,7 +84,6 @@ def test3():
     test(edges)
 
 def test4():
-    """
     edges = {
         1: [2, 3],
         2: [6, 7],
@@ -83,13 +93,6 @@ def test4():
         6: [7, 8],
         7: [],
         8: [3],
-    }
-    """
-    edges = {
-        1: [2, 3],
-        2: [3],
-        3: [4],
-        4: [],
     }
     test(edges)
 
