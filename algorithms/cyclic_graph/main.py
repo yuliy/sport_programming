@@ -14,11 +14,16 @@ def HasCycle(edges):
             print '>>> d:', startJID
 
         while st:
-            jid, last = st[-1]
+            """if DEBUG_LOG:
+                print '------------------'
+                print 'discovered=', discovered
+                print 'finished=', finished"""
+            # num - number of neighbours discovered
+            jid, num = st[-1]
             adj = edges[jid]
-            if (last + 1) < len(adj):
+            if num < len(adj):
                 st[-1][1] += 1
-                nid = adj[last + 1]
+                nid = adj[num]
                 if nid not in discovered:
                     discovered.add(nid)
                     st.append([nid, 0])
@@ -99,11 +104,11 @@ def test5():
     test(edges)
 
 def main():
-    test1()
+    #test1()
     #test2()
     #test3()
     #test4()
-    #test5()
+    test5()
 
 if __name__ == '__main__':
     main()
