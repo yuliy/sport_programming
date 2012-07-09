@@ -1,49 +1,40 @@
 #!/usr/bin/env python
 
-#DEBUG_LOG = True
-DEBUG_LOG = False
+DEBUG_LOG = True
+#DEBUG_LOG = False
 
 def HasCycle(edges):
     discovered = set()
     finished = set()
 
     def visit(startJID):
-        st = [startJID]
-        while len(st):
-            if DEBUG_LOG:
-                print '----------------------'
-                print 'st=', st
-                print 'discovered=', discovered
-                print 'finished=', finished
-            jid = st[-1]
-            if jid not in finished:
-                if jid not in discovered:
-                    discovered.add(jid)
-                    if DEBUG_LOG:
-                        print '>>>d:', jid
+        st = [[startJID, 0]]
+        discovered.add(startJID)
+        if DEBUG_LOG:
+            print '>>> d:', startJID
 
-                hasUndiscoveredNeighbour = False
-                for nid in edges[jid]:
-                    if nid in discovered:
-                        if nid not in finished:
-                            print 'reverse edge: (%s, %s)' % (jid, nid)
-                            return True
-                    else:
-                        hasUndiscoveredNeighbour = True
-                        st.append(nid)
-
-                if not hasUndiscoveredNeighbour:
-                    st.pop()
-                    finished.add(jid)
+        while st:
+            jid, last = st[-1]
+            adj = edges[jid]
+            if (last + 1) < len(adj):
+                st[-1][1] += 1
+                nid = adj[last + 1]
+                if nid not in discovered:
+                    discovered.add(nid)
+                    st.append([nid, 0])
                     if DEBUG_LOG:
-                        print '>>>f:', jid
+                        print '>>> d:', nid
             else:
                 st.pop()
+                finished.add(jid)
+                if DEBUG_LOG:
+                    print '>>> f:', jid
         return False
 
     for v in edges.iterkeys():
-        if visit(v):
-            return True
+        if v not in discovered:
+            if visit(v):
+                return True
     return False
 
 
@@ -96,11 +87,23 @@ def test4():
     }
     test(edges)
 
+def test5():
+    edges = {
+        1: [2, 3],
+        2: [],
+        3: [5],
+        4: [3],
+        5: [6],
+        6: [4],
+    }
+    test(edges)
+
 def main():
     test1()
-    test2()
-    test3()
-    test4()
+    #test2()
+    #test3()
+    #test4()
+    #test5()
 
 if __name__ == '__main__':
     main()
