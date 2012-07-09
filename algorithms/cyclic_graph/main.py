@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-DEBUG_LOG = True
-#DEBUG_LOG = False
+#DEBUG_LOG = True
+DEBUG_LOG = False
 
 def HasCycle(edges):
     discovered = set()
@@ -29,6 +29,8 @@ def HasCycle(edges):
                     st.append([nid, 0])
                     if DEBUG_LOG:
                         print '>>> d:', nid
+                elif nid not in finished:
+                    return True
             else:
                 st.pop()
                 finished.add(jid)
@@ -104,10 +106,10 @@ def test5():
     test(edges)
 
 def main():
-    #test1()
-    #test2()
-    #test3()
-    #test4()
+    test1()
+    test2()
+    test3()
+    test4()
     test5()
 
 if __name__ == '__main__':
