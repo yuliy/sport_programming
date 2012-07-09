@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 def visit(startJID):
-    q = [startJID]
+    import collections
+    q = collections.deque([startJID])
     while q:
         print '----------------------'
         print 'q=', q
         print 'discovered=', discovered
         print 'finished=', finished
-        jid = q.pop(0)
+        jid = q.popleft()
         if jid not in discovered:
             discovered.add(jid)
             hasUndiscoveredNeighbour = False
@@ -17,15 +18,14 @@ def visit(startJID):
                         raise RuntimeError('cycle found!')
                 else:
                     hasUndiscoveredNeighbour = True
-                    q = [nid] + q
+                    q.appendleft(nid)
             if not hasUndiscoveredNeighbour:
                 finished.add(jid)
-            #q = edges[nid] + q
 
 edges = {
     1: [2, 5],
     2: [3, 4],
-    3: [1],
+    3: [],
     4: [],
     5: [4],
 }
