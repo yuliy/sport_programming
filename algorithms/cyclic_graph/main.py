@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-DEBUG_LOG = False
-
+DEBUG_LOG = True
 
 def HasCycle(edges):
     discovered = set()
@@ -74,6 +73,7 @@ def test3():
     test(edges)
 
 def test4():
+    """
     edges = {
         1: [2, 3],
         2: [6, 7],
@@ -83,6 +83,13 @@ def test4():
         6: [7, 8],
         7: [],
         8: [3],
+    }
+    """
+    edges = {
+        1: [2, 3],
+        2: [3],
+        3: [4],
+        4: [],
     }
     test(edges)
 
