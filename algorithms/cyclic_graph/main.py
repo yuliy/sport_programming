@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
-#DEBUG_LOG = True
-DEBUG_LOG = False
+DEBUG_LOG = True
+#DEBUG_LOG = False
 
 def HasCycle(edges):
     discovered = set()
     finished = set()
+    waitJobs = dict((jid, set()) for jid in edges.iterkeys())
 
     def visit(startJID):
         st = [[startJID, 0]]
@@ -24,6 +25,7 @@ def HasCycle(edges):
             if num < len(adj):
                 st[-1][1] += 1
                 nid = adj[num]
+                waitJobs[nid].add(jid)
                 if nid not in discovered:
                     discovered.add(nid)
                     st.append([nid, 0])
@@ -42,6 +44,11 @@ def HasCycle(edges):
         if v not in discovered:
             if visit(v):
                 return True
+
+    if DEBUG_LOG:
+        leafs = set(jid for jid in discovered if not waitJobs[jid])
+        print 'waitJobs=', waitJobs
+        print 'leafs=', leafs
     return False
 
 
@@ -83,7 +90,7 @@ def test3():
 
 def test4():
     edges = {
-        1: [2, 3],
+        1: [3, 2],
         2: [6, 7],
         3: [4, 5],
         4: [],
@@ -106,11 +113,11 @@ def test5():
     test(edges)
 
 def main():
-    test1()
-    test2()
-    test3()
+    #test1()
+    #test2()
+    #test3()
     test4()
-    test5()
+    #test5()
 
 if __name__ == '__main__':
     main()
