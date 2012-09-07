@@ -7,9 +7,9 @@ int main() {
 
     long long x = n / a;
     long long y = m / a;
-    if (x < n)
+    if (a*x < n)
         ++x;
-    if (y < m)
+    if (a*y < m)
         ++y;
     cout << x * y << endl;
     return 0;
