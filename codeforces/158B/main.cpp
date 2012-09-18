@@ -20,10 +20,29 @@ int main() {
         ++c[tmp];
     }
 
-    int res = n;
-    if (c[1] == 4)
-        res -= 3;
-    else if (c[1] == 
+    int res = 0;
+    for (;;) {
+        int tmp = 0;
+        for (int i = 4; i >= 1; --i) {
+            while (c[i] && ((tmp + i) <= 4)) {
+                tmp += i;
+                --c[i];
+                //cout << i << endl;
+            }
+
+            if (tmp == 4)
+                break;
+        }
+
+        //cout << "Adding. tmp=" << tmp << endl;
+        ++res;
+
+        if (c[1] || c[2] || c[3] || c[4])
+            continue;
+        break;
+    }
+
+    printf("%d\n", res);
 
     return 0;
 }
