@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include <string>
 #include <map>
 #include <set>
