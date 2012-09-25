@@ -49,10 +49,10 @@ void Normal2Excel(const char *s, char *res) {
     int col;
     sscanf(scol, "%d", &col);
     vector<int> digits;
-    while (col) {
-        digits.push_back(col % 32);
-        col /= 32;
-    }
+    //while (col) {
+    //    digits.push_back(col % 26);
+    //    col /= 26;
+    //}
 
     for (vector<int>::const_reverse_iterator iter = digits.rbegin(), end = digits.rend(); iter != end; ++iter, ++res)
         //*res = (*iter + 'A');
