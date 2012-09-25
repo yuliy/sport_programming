@@ -9,6 +9,18 @@
 #include <algorithm>
 using namespace std;
 
+int XCNT[6] = {0};
+
+static void Init() {
+    XCNT[1] = 0;
+    int p = 26;
+    for (int i = 2; i <= 5; ++i) {
+        XCNT[i] = XCNT[i-1] + p;
+        p *= 26;
+        cout << i << "\t" << XCNT[i] << endl;
+    }
+}
+
 inline bool IsDigit(char ch) {
     return ('0' <= ch) && (ch <= '9');
 }
@@ -62,6 +74,8 @@ void Normal2Excel(const char *s, char *res) {
 }
 
 int main() {
+    Init();
+
     int n;
     scanf("%d", &n);
 
