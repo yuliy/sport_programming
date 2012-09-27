@@ -55,20 +55,20 @@ static void Init() {
     }
 }
 
-static void CalcCountsAndPaths(int C[SIZE][SIZE], int P[SIZE][SIZE]) {
+static void CalcCountsAndPaths(int D[SIZE][SIZE], int C[SIZE][SIZE], int P[SIZE][SIZE]) {
     for (int i = 1; i <= N; ++i) {
         for (int j = 1; j <= N; ++j) {
             if (i == 1) {
-                C[i][j] += C[i][j-1];
+                C[i][j] = D[i][j] + C[i][j-1];
                 P[i][j] = RIGHT;
             } else if (j == 1) {
-                C[i][j] += C[i-1][j];
+                C[i][j] = D[i][j] + C[i-1][j];
                 P[i][j] = DOWN;
             } else if (C[i-1][j] < C[i][j-1]) {
-                C[i][j] += C[i-1][j];
+                C[i][j] = D[i][j] + C[i-1][j];
                 P[i][j] = DOWN;
             } else {
-                C[i][j] += C[i][j-1];
+                C[i][j] = D[i][j] + C[i][j-1];
                 P[i][j] = RIGHT;
             }
         }
@@ -88,17 +88,11 @@ static void FillPath(int P[SIZE][SIZE], deque<int> &path) {
 int main() {
     Init();
 
-    CalcCountsAndPaths(C2, P2);
-    CalcCountsAndPaths(C5, P5);
+    CalcCountsAndPaths(D2, C2, P2);
+    CalcCountsAndPaths(D5, C5, P5);
 
-    for (int i = 1; i <= N; ++i) {
-        for (int j = 1; j <= N; ++j) {
-            cout << C2[i][j] << "/" << P2[i][j] << "\t";
-        }
-        cout << endl;
-    }
-
-    if (C2[N][N] >= 1 && C5[N][N] >= 1) {
+    if (HasZero && C2[N][N] >= 1 && C5[N][N] >= 1) {
+        cout << "!!!!!!!!!!!!!" << endl;
         printf("1\n");
         for (int i = 1; i < ZeroJ; ++i)
             printf("R");
