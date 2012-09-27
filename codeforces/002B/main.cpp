@@ -92,7 +92,6 @@ int main() {
     CalcCountsAndPaths(D5, C5, P5);
 
     if (HasZero && C2[N][N] >= 1 && C5[N][N] >= 1) {
-        cout << "!!!!!!!!!!!!!" << endl;
         printf("1\n");
         for (int i = 1; i < ZeroJ; ++i)
             printf("R");
