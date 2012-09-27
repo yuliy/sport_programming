@@ -118,6 +118,5 @@ int main() {
             printf("R");
     }
     printf("\n");
-
     return 0;
 }
