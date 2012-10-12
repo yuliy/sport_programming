@@ -7,7 +7,7 @@ namespace ystd {
 /**
   * Heap - max-heap (with maximum in root)
   */
-template<typename T, typename TCont = std::vector<T> >
+template<typename T, typename TCompare = std::less<T>, typename TCont = std::vector<T> >
 class THeap {
 private:
     typedef typename TCont::iterator TIterator;
