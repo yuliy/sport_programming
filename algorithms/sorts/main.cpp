@@ -20,7 +20,7 @@ i64 GetTickCount() {
 
 int main( int argc, char** argv ) {
     try {
-        cout << "hello" << endl;
+        //srand(time(NULL));
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
