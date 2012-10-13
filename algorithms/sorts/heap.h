@@ -42,7 +42,7 @@ private:
             if (r < sz && Cmp(Cont[largest], Cont[r]))
                 largest = r;
             if (largest != idx) {
-                swap(Cont[idx], Cont[largest]);
+                std::swap(Cont[idx], Cont[largest]);
                 idx = largest;
             } else
                 break;
@@ -91,14 +91,20 @@ public:
     }
 
     T ExtractRoot() {
-        T res = Root();
+        T r = Root();
         Cont.front() = Cont.back();
         Cont.pop_back();
         Heapify(0);
+        return r;
     }
 
     void Insert(const T &elem) {
-        //
+        Cont.push_back(elem);
+        for (int idx = Size() - 1, p = Parent(idx);
+            idx > 0 && Cont[p] < elem;
+            idx = p, p = Parent(p)) {
+            std::swap(Cont[idx], Cont[p]);
+        }
     }
 
     void Print() const {
