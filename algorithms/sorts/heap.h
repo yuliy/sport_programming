@@ -86,6 +86,10 @@ public:
         return Cont.size();
     }
 
+    const T &Root() const {
+        return Cont.front();
+    }
+
     void Print() const {
         for (TConstIterator iter = Cont.begin(), end = Cont.end(); iter != end; ++iter)
             std::cout << *iter << "\t";
