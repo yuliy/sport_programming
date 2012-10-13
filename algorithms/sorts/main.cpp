@@ -21,7 +21,8 @@ i64 GetTickCount() {
 int main( int argc, char** argv ) {
     try {
         //srand(time(NULL));
-        THeap<int>();
+        THeap<int> h;
+        h.Print();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
