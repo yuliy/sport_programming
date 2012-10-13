@@ -65,8 +65,8 @@ public:
     }
 
     THeap(const THeap &other)
-        : Cont(other.Cont),
-        Cmp(other.Cmp) {
+        : Cont(other.Cont)
+        , Cmp(other.Cmp) {
     }
 
     template<typename TOtherIter>

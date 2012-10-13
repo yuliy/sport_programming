@@ -8,7 +8,10 @@
 #include <iterator>
 #include <iomanip>
 #include <cmath>
+
 #include <heap.h>
+#include <heap_sort.h>
+
 using namespace std;
 using namespace ystd;
 
@@ -19,24 +22,34 @@ i64 GetTickCount() {
     return clock() * 1000 / CLOCKS_PER_SEC;
 }
 
+static void SortsTest(int n) {
+    //
+}
+
+static void TestHeapSort() {
+    vector<int> v;
+    v.push_back(5);
+    v.push_back(13);
+    v.push_back(2);
+    v.push_back(25);
+    v.push_back(7);
+    v.push_back(17);
+    v.push_back(20);
+    v.push_back(8);
+    v.push_back(4);
+    HeapSort(v.begin(), v.end());
+    std::copy(
+        v.begin(), v.end(),
+        ostream_iterator<int> (cout, "\t")
+    );
+}
+
 int main( int argc, char** argv ) {
     try {
         //srand(time(NULL));
-        deque<int> cont;
-        cont.push_back(4);
-        cont.push_back(1);
-        cont.push_back(3);
-        cont.push_back(2);
-        cont.push_back(16);
-        cont.push_back(9);
-        cont.push_back(10);
-        cont.push_back(14);
-        cont.push_back(8);
-        cont.push_back(7);
-        THeap<int> h(cont.begin(), cont.end());
-        h.Print();
-        THeap<int> h2(h);
-        h2.Print();
+        //for (int i = 1024; i < 1e9; i <<= 1)
+        //    SortsTest(i);
+        TestHeapSort();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
