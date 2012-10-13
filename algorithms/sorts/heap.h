@@ -90,6 +90,17 @@ public:
         return Cont.front();
     }
 
+    T ExtractRoot() {
+        T res = Root();
+        Cont.front() = Cont.back();
+        Cont.pop_back();
+        Heapify(0);
+    }
+
+    void Insert(const T &elem) {
+        //
+    }
+
     void Print() const {
         for (TConstIterator iter = Cont.begin(), end = Cont.end(); iter != end; ++iter)
             std::cout << *iter << "\t";

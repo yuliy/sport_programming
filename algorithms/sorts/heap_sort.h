@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 namespace ystd {
 
     namespace NPrivate {
@@ -36,7 +38,7 @@ namespace ystd {
                     if (r < sz && Cmp(Beg[largest], Beg[r]))
                         largest = r;
                     if (largest != idx) {
-                        swap(Beg[idx], Beg[largest]);
+                        std::swap(Beg[idx], Beg[largest]);
                         idx = largest;
                     } else
                         break;
