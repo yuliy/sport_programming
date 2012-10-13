@@ -48,7 +48,8 @@ private:
     }
 
     void BuildHeap() {
-        for (int i = Size() / 2; i >= 0; --i)
+        const int start = (Size() >> 1) - 1;
+        for (int i = start; i >= 0; --i)
             Heapify(i);
     }
 public:
@@ -76,7 +77,7 @@ public:
         Cont.push_back(10);
         Cont.push_back(14);
         Cont.push_back(8);
-        Cont.push_back(7);
+        //Cont.push_back(7);
 
         BuildHeap();
     }
