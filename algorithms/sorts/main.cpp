@@ -22,34 +22,51 @@ i64 GetTickCount() {
     return clock() * 1000 / CLOCKS_PER_SEC;
 }
 
-static void SortsTest(int n) {
-    //
+void FillRandom(vector<int> &v) {
+    for (vector<int>::iterator iter = v.begin(); iter != v.end(); ++iter)
+        *iter = rand();
 }
 
-static void TestHeapSort() {
-    vector<int> v;
-    v.push_back(5);
-    v.push_back(13);
-    v.push_back(2);
-    v.push_back(25);
-    v.push_back(7);
-    v.push_back(17);
-    v.push_back(20);
-    v.push_back(8);
-    v.push_back(4);
-    HeapSort(v.begin(), v.end());
-    std::copy(
-        v.begin(), v.end(),
-        ostream_iterator<int> (cout, "\t")
-    );
+static int compare (const void * a, const void * b) {
+    return ( *(int*)a - *(int*)b );
+}
+
+static void SortsTest(int n) {
+    vector<int> v(n);
+
+    cout << "======================================================================" << endl;
+    cout << "n=" << n/1024 << "K" << endl;
+
+    {
+        const int start = GetTickCount();
+        FillRandom(v);
+        std::sort(v.begin(), v.end());
+        const int time = GetTickCount() - start;
+        cout << "std::sort\t" << time/1000.0 << " sec" << endl;
+    }
+
+    {
+        const int start = GetTickCount();
+        FillRandom(v);
+        qsort(&v[0], v.size(), sizeof(int), compare);
+        const int time = GetTickCount() - start;
+        cout << "qsort\t\t" << time/1000.0 << " sec" << endl;
+    }
+
+    {
+        const int start = GetTickCount();
+        FillRandom(v);
+        HeapSort(v.begin(), v.end());
+        const int time = GetTickCount() - start;
+        cout << "HeapSort\t" << time/1000.0 << " sec" << endl;
+    }
 }
 
 int main( int argc, char** argv ) {
     try {
-        //srand(time(NULL));
-        //for (int i = 1024; i < 1e9; i <<= 1)
-        //    SortsTest(i);
-        TestHeapSort();
+        srand(time(NULL));
+        for (int i = 128*1024; i < 1e9; i <<= 1)
+            SortsTest(i);
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
