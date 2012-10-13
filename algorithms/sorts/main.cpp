@@ -11,6 +11,7 @@
 
 #include <heap.h>
 #include <heap_sort.h>
+#include <quick_sort.h>
 
 using namespace std;
 using namespace ystd;
@@ -46,19 +47,27 @@ static void SortsTest(int n) {
     }
 
     {
-        const int start = GetTickCount();
         FillRandom(v);
+        const int start = GetTickCount();
         qsort(&v[0], v.size(), sizeof(int), compare);
         const int time = GetTickCount() - start;
         cout << "qsort\t\t" << time/1000.0 << " sec" << endl;
     }
 
     {
-        const int start = GetTickCount();
         FillRandom(v);
+        const int start = GetTickCount();
         HeapSort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "HeapSort\t" << time/1000.0 << " sec" << endl;
+    }
+
+    {
+        FillRandom(v);
+        const int start = GetTickCount();
+        QuickSort(v.begin(), v.end());
+        const int time = GetTickCount() - start;
+        cout << "QuickSort\t" << time/1000.0 << " sec" << endl;
     }
 }
 

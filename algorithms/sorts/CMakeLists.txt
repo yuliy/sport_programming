@@ -19,6 +19,8 @@ include_directories("./")
 
 set(HDRS
     heap.h
+    heap_sort.h
+    quick_sort.h
 )
 
 set(SRCS
