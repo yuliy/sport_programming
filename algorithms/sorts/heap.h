@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
+#include <iterator>
 
 namespace ystd {
 
@@ -56,38 +58,24 @@ public:
     typedef typename TCont::const_iterator TConstIterator;
 
     THeap() {
-        /*
-        Cont.push_back(16);
-        Cont.push_back(4);
-        Cont.push_back(10);
-        Cont.push_back(14);
-        Cont.push_back(7);
-        Cont.push_back(9);
-        Cont.push_back(3);
-        Cont.push_back(2);
-        Cont.push_back(8);
-        Cont.push_back(1);
-        */
-        Cont.push_back(4);
-        Cont.push_back(1);
-        Cont.push_back(3);
-        Cont.push_back(2);
-        Cont.push_back(16);
-        Cont.push_back(9);
-        Cont.push_back(10);
-        Cont.push_back(14);
-        Cont.push_back(8);
-        //Cont.push_back(7);
+    }
 
-        BuildHeap();
+    THeap(TCompare cmp)
+        : Cmp(cmp) {
     }
 
     THeap(const THeap &other)
-        : Cont(other.Cont) {
+        : Cont(other.Cont),
+        Cmp(other.Cmp) {
     }
 
-    template<typename TContIter>
-    THeap(TContIter beg, TContIter end) {
+    template<typename TOtherIter>
+    THeap(TOtherIter beg, TOtherIter end, TCompare cmp = TCompare()) {
+        std::copy(
+            beg, end,
+            std::back_inserter< TCont >(Cont)
+        );
+        BuildHeap();
     }
 
     bool Empty() const {

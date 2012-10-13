@@ -1,6 +1,7 @@
 #include <iostream>
 #include <exception>
 #include <vector>
+#include <deque>
 #include <set>
 #include <algorithm>
 #include <functional>
@@ -21,8 +22,21 @@ i64 GetTickCount() {
 int main( int argc, char** argv ) {
     try {
         //srand(time(NULL));
-        THeap<int> h;
+        deque<int> cont;
+        cont.push_back(4);
+        cont.push_back(1);
+        cont.push_back(3);
+        cont.push_back(2);
+        cont.push_back(16);
+        cont.push_back(9);
+        cont.push_back(10);
+        cont.push_back(14);
+        cont.push_back(8);
+        cont.push_back(7);
+        THeap<int> h(cont.begin(), cont.end());
         h.Print();
+        THeap<int> h2(h);
+        h2.Print();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
