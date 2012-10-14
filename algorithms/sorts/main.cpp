@@ -19,13 +19,26 @@ using namespace ystd;
 typedef unsigned int ui32;
 typedef long long i64;
 
-i64 GetTickCount() {
+static i64 GetTickCount() {
     return clock() * 1000 / CLOCKS_PER_SEC;
 }
 
-void FillRandom(vector<int> &v) {
+static void FillRandom(vector<int> &v) {
     for (vector<int>::iterator iter = v.begin(); iter != v.end(); ++iter)
         *iter = rand();
+}
+
+static bool CheckSorted(const vector<int> &v) {
+    vector<int>::const_iterator iter = v.begin();
+    vector<int>::const_iterator prev = iter;
+    ++iter;
+    for (; iter != v.end(); ++iter) {
+        if (*prev > *iter) {
+            cout << "ACHTUNG!!! Array is not sorted!!!!!" << endl;
+            return false;
+        }
+    }
+    return true;
 }
 
 static int compare (const void * a, const void * b) {
@@ -44,6 +57,7 @@ static void SortsTest(int n) {
         std::sort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "std::sort\t" << time/1000.0 << " sec" << endl;
+        CheckSorted(v);
     }
 
     {
@@ -52,6 +66,7 @@ static void SortsTest(int n) {
         qsort(&v[0], v.size(), sizeof(int), compare);
         const int time = GetTickCount() - start;
         cout << "qsort\t\t" << time/1000.0 << " sec" << endl;
+        CheckSorted(v);
     }
 
     {
@@ -60,6 +75,7 @@ static void SortsTest(int n) {
         HeapSort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "HeapSort\t" << time/1000.0 << " sec" << endl;
+        CheckSorted(v);
     }
 
     {
@@ -68,6 +84,7 @@ static void SortsTest(int n) {
         QuickSort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "QuickSort\t" << time/1000.0 << " sec" << endl;
+        CheckSorted(v);
     }
 }
 
