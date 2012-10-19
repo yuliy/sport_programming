@@ -7,12 +7,13 @@
 #include <set>
 #include <list>
 #include <algorithm>
+#include <unordered_map>
 using namespace std;
 
 int main() {
     int N;
     scanf("%d", &N);
-    typedef map<string, int> TMap;
+    typedef unordered_map<string, int> TMap;
     TMap name2count;
     for (int i = 0; i < N; ++i) {
         char buf[64];
