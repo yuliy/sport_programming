@@ -12,6 +12,7 @@
 #include <heap.h>
 #include <heap_sort.h>
 #include <quick_sort.h>
+#include <radix_sort.h>
 
 using namespace std;
 using namespace ystd;
@@ -88,11 +89,19 @@ static void SortsTest(int n) {
     }
 }
 
+static void TestRadixSort() {
+    vector<int> v(10);
+    FillRandom(v);
+    RadixSort(v.begin(), v.end());
+    CheckSorted(v);
+}
+
 int main( int argc, char** argv ) {
     try {
-        srand(time(NULL));
-        for (int i = 128*1024; i < 1e9; i <<= 1)
-            SortsTest(i);
+        //srand(time(NULL));
+        //for (int i = 128*1024; i < 1e9; i <<= 1)
+        //    SortsTest(i);
+        TestRadixSort();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
