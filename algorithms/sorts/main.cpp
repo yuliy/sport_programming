@@ -24,18 +24,18 @@ static i64 GetTickCount() {
     return clock() * 1000 / CLOCKS_PER_SEC;
 }
 
-template<typename T>
-void FillRandom(vector<T> &v) {
-    for (typename vector<T>::iterator iter = v.begin(); iter != v.end(); ++iter)
+template<typename TIterator>
+void FillRandom(TIterator beg, TIterator end) {
+    for (TIterator iter = beg; iter != end; ++iter)
         *iter = rand();
 }
 
-template<typename T>
-bool CheckSorted(const vector<T> &v) {
-    typename vector<T>::const_iterator iter = v.begin();
-    typename vector<T>::const_iterator prev = iter;
+template<typename TIterator>
+bool CheckSorted(TIterator beg, TIterator end) {
+    TIterator iter = beg;
+    TIterator prev = beg;
     ++iter;
-    for (; iter != v.end(); ++iter) {
+    for (; iter != end; ++iter) {
         if (*prev > *iter) {
             cout << "ACHTUNG!!! Array is not sorted!!!!!" << endl;
             return false;
@@ -56,49 +56,46 @@ static void SortsTest(size_t n) {
 
     {
         const int start = GetTickCount();
-        FillRandom(v);
+        FillRandom(v.begin(), v.end());
         std::sort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "std::sort\t" << time/1000.0 << " sec" << endl;
-        CheckSorted(v);
+        CheckSorted(v.begin(), v.end());
     }
 
     {
-        FillRandom(v);
+        FillRandom(v.begin(), v.end());
         const int start = GetTickCount();
         qsort(&v[0], v.size(), sizeof(int), compare);
         const int time = GetTickCount() - start;
         cout << "qsort\t\t" << time/1000.0 << " sec" << endl;
-        CheckSorted(v);
+        CheckSorted(v.begin(), v.end());
     }
 
     {
-        FillRandom(v);
+        FillRandom(v.begin(), v.end());
         const int start = GetTickCount();
         HeapSort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "HeapSort\t" << time/1000.0 << " sec" << endl;
-        CheckSorted(v);
+        CheckSorted(v.begin(), v.end());
     }
 
     {
-        FillRandom(v);
+        FillRandom(v.begin(), v.end());
         const int start = GetTickCount();
         QuickSort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "QuickSort\t" << time/1000.0 << " sec" << endl;
-        CheckSorted(v);
+        CheckSorted(v.begin(), v.end());
     }
 }
 
 static void TestRadixSort() {
-    const int SIZE = 10;
-    vector<ui32> v(SIZE);
-    for (int i = 0; i < SIZE; ++i)
-        v[i] = rand() % 100;
-
+    vector<ui32> v(10);
+    FillRandom(v.begin(), v.end());
     RadixSort(v.begin(), v.end());
-    CheckSorted(v);
+    CheckSorted(v.begin(), v.end());
 }
 
 int main( int argc, char** argv ) {
