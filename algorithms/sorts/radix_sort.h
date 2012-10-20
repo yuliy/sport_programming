@@ -1,16 +1,12 @@
 #pragma once
 
 #include <algorithm>
+#include <vector>
 
 namespace ystd {
 
-template<typename TIterator, typename TCompare>
-void RadixSort(TIterator beg, TIterator end, TCompare cmp) {
-}
-
-template<typename TIterator>
-void RadixSort(TIterator beg, TIterator end) {
-    RadixSort(beg, end, std::less< typename TIterator::value_type >());
+typedef unsigned int ui32;
+void RadixSort(std::vector<ui32>::iterator beg, std::vector<ui32>::iterator end) {
 }
 
 } // namespace ystd

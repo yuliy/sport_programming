@@ -24,14 +24,16 @@ static i64 GetTickCount() {
     return clock() * 1000 / CLOCKS_PER_SEC;
 }
 
-static void FillRandom(vector<int> &v) {
-    for (vector<int>::iterator iter = v.begin(); iter != v.end(); ++iter)
+template<typename T>
+void FillRandom(vector<T> &v) {
+    for (typename vector<T>::iterator iter = v.begin(); iter != v.end(); ++iter)
         *iter = rand();
 }
 
-static bool CheckSorted(const vector<int> &v) {
-    vector<int>::const_iterator iter = v.begin();
-    vector<int>::const_iterator prev = iter;
+template<typename T>
+bool CheckSorted(const vector<T> &v) {
+    typename vector<T>::const_iterator iter = v.begin();
+    typename vector<T>::const_iterator prev = iter;
     ++iter;
     for (; iter != v.end(); ++iter) {
         if (*prev > *iter) {
@@ -46,7 +48,7 @@ static int compare (const void * a, const void * b) {
     return ( *(int*)a - *(int*)b );
 }
 
-static void SortsTest(int n) {
+static void SortsTest(size_t n) {
     vector<int> v(n);
 
     cout << "======================================================================" << endl;
@@ -90,18 +92,21 @@ static void SortsTest(int n) {
 }
 
 static void TestRadixSort() {
-    vector<int> v(10);
-    FillRandom(v);
+    const int SIZE = 10;
+    vector<ui32> v(SIZE);
+    for (int i = 0; i < SIZE; ++i)
+        v[i] = rand() % 100;
+
     RadixSort(v.begin(), v.end());
     CheckSorted(v);
 }
 
 int main( int argc, char** argv ) {
     try {
-        //srand(time(NULL));
-        //for (int i = 128*1024; i < 1e9; i <<= 1)
-        //    SortsTest(i);
-        TestRadixSort();
+        srand(time(NULL));
+        for (size_t i = 128*1024; i < 1e9; i <<= 1)
+            SortsTest(i);
+        //TestRadixSort();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
