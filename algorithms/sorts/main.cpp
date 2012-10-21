@@ -13,6 +13,7 @@
 #include <heap_sort.h>
 #include <quick_sort.h>
 #include <radix_sort.h>
+#include <merge_sort.h>
 
 using namespace std;
 using namespace ystd;
@@ -27,7 +28,7 @@ static i64 GetTickCount() {
 template<typename TIterator>
 void FillRandom(TIterator beg, TIterator end) {
     for (TIterator iter = beg; iter != end; ++iter)
-        *iter = rand() % 100;
+        *iter = rand();
 }
 
 template<typename TIterator>
@@ -54,6 +55,7 @@ static void SortsTest(size_t n) {
     cout << "======================================================================" << endl;
     cout << "n=" << n/1024 << "K" << endl;
 
+    /*
     {
         const int start = GetTickCount();
         FillRandom(v.begin(), v.end());
@@ -63,7 +65,6 @@ static void SortsTest(size_t n) {
         CheckSorted(v.begin(), v.end());
     }
 
-    /*
     {
         FillRandom(v.begin(), v.end());
         const int start = GetTickCount();
@@ -90,7 +91,6 @@ static void SortsTest(size_t n) {
         cout << "QuickSort\t" << time/1000.0 << " sec" << endl;
         CheckSorted(v.begin(), v.end());
     }
-    */
 
     {
         vector<ui32> v(n);
@@ -101,12 +101,22 @@ static void SortsTest(size_t n) {
         cout << "RadixSort\t" << time/1000.0 << " sec" << endl;
         CheckSorted(v.begin(), v.end());
     }
+    */
+
+    {
+        FillRandom(v.begin(), v.end());
+        const int start = GetTickCount();
+        MergeSort(v.begin(), v.end());
+        const int time = GetTickCount() - start;
+        cout << "MergeSort\t" << time/1000.0 << " sec" << endl;
+        CheckSorted(v.begin(), v.end());
+    }
 }
 
-static void TestRadixSort() {
+static void Test() {
     vector<ui32> v(10);
     FillRandom(v.begin(), v.end());
-    RadixSort(v.begin(), v.end());
+    MergeSort(v.begin(), v.end());
     CheckSorted(v.begin(), v.end());
 }
 
@@ -115,7 +125,7 @@ int main( int argc, char** argv ) {
         srand(time(NULL));
         for (size_t i = 128*1024; i < 1e9; i <<= 1)
             SortsTest(i);
-        //TestRadixSort();
+        Test();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {

@@ -22,6 +22,7 @@ set(HDRS
     heap_sort.h
     quick_sort.h
     radix_sort.h
+    merge_sort.h
 )
 
 set(SRCS

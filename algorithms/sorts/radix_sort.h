@@ -5,13 +5,6 @@
 
 namespace ystd {
 
-template<typename TIter>
-void Print(TIter beg, TIter end) {
-    for (; beg != end; ++beg)
-        std::cout << *beg << " ";
-    std::cout << std::endl;
-}
-
 typedef unsigned int ui32;
 //typedef int ui32;
 
