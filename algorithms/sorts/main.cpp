@@ -27,7 +27,7 @@ static i64 GetTickCount() {
 template<typename TIterator>
 void FillRandom(TIterator beg, TIterator end) {
     for (TIterator iter = beg; iter != end; ++iter)
-        *iter = rand();
+        *iter = rand() % 100;
 }
 
 template<typename TIterator>
@@ -63,6 +63,7 @@ static void SortsTest(size_t n) {
         CheckSorted(v.begin(), v.end());
     }
 
+    /*
     {
         FillRandom(v.begin(), v.end());
         const int start = GetTickCount();
@@ -87,6 +88,17 @@ static void SortsTest(size_t n) {
         QuickSort(v.begin(), v.end());
         const int time = GetTickCount() - start;
         cout << "QuickSort\t" << time/1000.0 << " sec" << endl;
+        CheckSorted(v.begin(), v.end());
+    }
+    */
+
+    {
+        vector<ui32> v(n);
+        FillRandom(v.begin(), v.end());
+        const int start = GetTickCount();
+        RadixSort(v.begin(), v.end());
+        const int time = GetTickCount() - start;
+        cout << "RadixSort\t" << time/1000.0 << " sec" << endl;
         CheckSorted(v.begin(), v.end());
     }
 }
