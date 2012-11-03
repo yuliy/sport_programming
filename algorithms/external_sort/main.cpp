@@ -199,8 +199,8 @@ static void Test() {
     const char inputFileName[] = "input.bin";
     const char outputFileName[] = "output.bin";
 
-    const int size = 128 * 1024 * 1024;
-    const int maxChunkSize = 8 * 1024 * 1024;
+    const int size = 1024 * 1024 * 1024;
+    const int maxChunkSize = 128 * 1024 * 1024;
 
     cout << "Generating input file..." << endl;
     GenerateInputFile(inputFileName, size);
