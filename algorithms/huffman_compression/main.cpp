@@ -22,13 +22,16 @@ static i64 GetTickCount() {
 }
 
 static void Test() {
-    Zip("book.fb2", "book.fb2.zip");
-    Unzip("book.fb2.zip", "book_unzipped.fb2");
+    vector<unsigned char> data;
+    Zip("book.fb2", data);
+    //Unzip("book.fb2.zip", "book_unzipped.fb2");
 }
 
 int main( int argc, char** argv ) {
     try {
         Test();
+    } catch (const TZipException &xcp) {
+        cout << "A TZipException occured in main routine: " << xcp.what() << endl;
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
