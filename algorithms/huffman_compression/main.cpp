@@ -9,6 +9,8 @@
 #include <iomanip>
 #include <cmath>
 
+#include <zip.h>
+
 using namespace std;
 using namespace ystd;
 
@@ -20,10 +22,13 @@ static i64 GetTickCount() {
 }
 
 static void Test() {
+    Zip("book.fb2", "book.fb2.zip");
+    Unzip("book.fb2.zip", "book_unzipped.fb2");
 }
 
 int main( int argc, char** argv ) {
     try {
+        Test();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {

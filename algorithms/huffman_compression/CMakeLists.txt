@@ -18,15 +18,12 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
 include_directories("./")
 
 set(HDRS
-    heap.h
-    heap_sort.h
-    quick_sort.h
-    radix_sort.h
-    merge_sort.h
+    zip.h
 )
 
 set(SRCS
-    ./main.cpp
+    zip.cpp
+    main.cpp
 )
 
 add_executable(${TARGET_FILE_NAME} WIN32 ${HDRS} ${SRCS})
