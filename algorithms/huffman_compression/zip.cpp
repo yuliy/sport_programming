@@ -1,5 +1,6 @@
 #include <zip.h>
 
+#include <cstdio>
 #include <iostream>
 
 using namespace std;
@@ -23,7 +24,7 @@ const char *TZipException::what() const throw() {
 
 const int DIC_SIZE = 256;
 
-void Zip(std::string inFileName, std::vector<unsigned char> &out) {
+void Zip(const string &inFileName, vector<unsigned char> &out) {
     FILE *file = fopen(inFileName.c_str(), "rb");
     if (!file)
         throw TZipException("Couldn't open file " + inFileName);
@@ -44,7 +45,7 @@ void Zip(std::string inFileName, std::vector<unsigned char> &out) {
     fclose(file);
 }
 
-static void WriteToFile(string fileName, const vector<unsigned char> &data) {
+static void WriteToFile(const string &fileName, const vector<unsigned char> &data) {
     FILE *file = fopen(fileName.c_str(), "wb");
     if (!file)
         throw TZipException("Couldn't open file " + fileName);
@@ -53,17 +54,17 @@ static void WriteToFile(string fileName, const vector<unsigned char> &data) {
         throw TZipException("Failed writing data to file fileName=" + fileName);
 }
 
-void Zip(std::string inFileName, std::string outFileName) {
+void Zip(const string &inFileName, const string &outFileName) {
     vector<unsigned char> data;
     Zip(inFileName, data);
     WriteToFile(outFileName, data);
 }
 
-void Unzip(std::string inFileName, std::vector<unsigned char> &out) {
+void Unzip(const string &inFileName, vector<unsigned char> &out) {
     throw TZipException("Not implemented!");
 }
 
-void Unzip(std::string inFileName, std::string outFileName) {
+void Unzip(const string &inFileName, const string &outFileName) {
     throw TZipException("Not implemented!");
 }
 

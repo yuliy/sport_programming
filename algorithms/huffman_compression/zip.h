@@ -14,9 +14,9 @@ namespace ystd {
         virtual const char *what() const throw();
     };
 
-    void Zip(std::string inFileName, std::vector<unsigned char> &out);
-    void Zip(std::string inFileName, std::string outFileName);
+    void Zip(const std::string &inFileName, std::vector<unsigned char> &out);
+    void Zip(const std::string &inFileName, const std::string &outFileName);
 
-    void Unzip(std::string inFileName, std::vector<unsigned char> &out);
-    void Unzip(std::string inFileName, std::string outFileName);
+    void Unzip(const std::string &inFileName, std::vector<unsigned char> &out);
+    void Unzip(const std::string &inFileName, const std::string &outFileName);
 } // namespace ystd
