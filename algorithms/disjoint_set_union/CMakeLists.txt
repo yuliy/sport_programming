@@ -1,7 +1,6 @@
-set(TARGET_FILE_NAME "x")
-#define_property(VARIABLE "TARGET_FILE_NAME")
+cmake_minimum_required(VERSION 2.8)
 
-cmake_minimum_required(VERSION 2.6)
+set(TARGET_FILE_NAME "x")
 
 project(${TARGET_FILE_NAME})
 
@@ -12,10 +11,15 @@ if (CMAKE_BUILD_TYPE STREQUAL "")
 endif ()
 
 set(CMAKE_DEBUG_POSTFIX "_d")
-
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
 
+find_package(Boost REQUIRED)
+
 include_directories("./")
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+link_directories ( ${Boost_LIBRARY_DIRS} )
+include_directories(${Boost_INCLUDE_DIRS})
 
 set(HDRS
 )
@@ -28,16 +32,16 @@ add_executable(${TARGET_FILE_NAME} WIN32 ${HDRS} ${SRCS})
 
 set_target_properties(${TARGET_FILE_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
-target_link_libraries(${TARGET_FILE_NAME})
-
-#file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../bin)
+target_link_libraries(
+    ${TARGET_FILE_NAME}
+    ${Boost_LIBRARIES}
+)
 
 if(UNIX)
 	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 endif(UNIX)
 
 if(UNIX)
-
 	install(TARGETS ${TARGET_FILE_NAME}
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
@@ -63,5 +67,4 @@ if(UNIX)
 		ARGS -Rf CMakeTmp ${DISTCLEANED}
 		TARGET distclean
 	)
-
 endif(UNIX)

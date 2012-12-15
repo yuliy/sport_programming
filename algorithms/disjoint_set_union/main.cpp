@@ -9,6 +9,8 @@
 #include <iomanip>
 #include <cmath>
 
+#include <disjoint_set_union.h>
+
 using namespace std;
 
 typedef unsigned int ui32;
@@ -19,6 +21,21 @@ static i64 GetTickCount() {
 }
 
 static void Test() {
+    ystd::TDisjointSetUnion<int> dsu;
+
+    for (int i = 0; i < 5; ++i)
+        dsu.MakeSet(i);
+
+    ystd::TDisjointSetUnion<int>::TPNodes &ns = dsu.PNodes;
+
+    cout << "Unions: " << endl;
+    cout << dsu.Union(ns[0], ns[1]) << endl;
+    cout << dsu.Union(ns[2], ns[3]) << endl;
+    cout << dsu.Union(ns[0], ns[3]) << endl;
+
+    cout << "Finds: " << endl;
+    cout << (dsu.FindSet(ns[0]) == dsu.FindSet(ns[2])) << endl;
+    cout << (dsu.FindSet(ns[0]) == dsu.FindSet(ns[4])) << endl;
 }
 
 int main( int argc, char** argv ) {
