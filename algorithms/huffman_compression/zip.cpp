@@ -183,7 +183,72 @@ public:
     }
 };
 
-//static void CreateCodeTree(
+class TBitBuf {
+private:
+    //TBuf Buf;
+    //i64 BitsCount;
+    vector<bool> Bits;
+public:
+    TBitBuf() {
+    }
+
+    /*
+    void WriteByte(unsigned char symbol) {
+        const long long bytesCount = BitsCount >> 3;
+        const long long freeBits = BitsCount - (bytesCount << 3);
+        if (freeBits == 8) {
+            Buf.push_back(symbol);
+        } else {
+            //
+        }
+    }
+    */
+
+    void WriteByte(unsigned char symbol) {
+        const int sym = symbol;
+        for (int i = 0; i < 8; ++i) {
+            const int mask = 1 << i;
+            const bool bit = sym & mask;
+            Bits.push_back(bit);
+        }
+    }
+
+    void WriteBit(bool bit) {
+        Bits.push_back(bit);
+    }
+
+    void Clear() {
+        Bits.clear();
+    }
+
+    const vector<bool> &GetBits() const {
+        return Bits;
+    }
+};
+
+/*
+Zip:
+    file ->
+    bytes in TBuf ->
+    encoded bits in TBitBuf ->
+    encoded bits in TBuf with bit-length as prefix ->
+    file
+
+Unzip:
+    file ->
+    bytes in TBuf ->
+    decoded
+*/
+
+static void MemBytesToBitBuf(const TBuf &buf, TBitBuf &bitBuf) {
+    for (TBuf::const_iterator iter = buf.begin(), end = buf.end(); iter != end; ++iter)
+        bitBuf.WriteByte(*iter);
+}
+
+static void MemBitsToBitBuf(const TBuf &buf, TBitBuf &bitBuf) {
+    //
+}
+
 
 void Zip(const TBuf &in, TBuf &out) {
     TSymbol2Freq symbol2freq(DIC_SIZE);
