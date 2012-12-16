@@ -123,7 +123,12 @@ private:
     TPNodes InternalNodes;
     TNode *Root;
 private:
-    //
+    int CalcSymbolLength(TNode *node) {
+        int res = 0;
+        for (; node && node->Parent; node = node->Parent)
+            ++res;
+        return res;
+    }
 public:
     TCodeTree(const TSymbol2Freq &symbol2freq)
         : Root(0) {
@@ -167,8 +172,14 @@ public:
             delete *iter;
     }
 
-    double CalcMeanSymbolLenth() const {
-
+    double CalcMeanSymbolLenth() {
+        double res = 0.0;
+        for (TPNodes::iterator iter = SymbolNodes.begin(); iter != SymbolNodes.end(); ++iter) {
+            TNode *node = *iter;
+            const int len = CalcSymbolLength(node);
+            res += (node->Probability * len);
+        }
+        return res;
     }
 };
 
