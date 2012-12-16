@@ -85,12 +85,11 @@ public:
         //if (x != x->Parent)
         //    x->Parent = FindSet(x->Parent);
         //return x->Parent;
-        for (TNode *node = x; node != node->Parent; node = node->Parent)
-            x->Parent = node;
-
-        for (TNode *node = x; node != node->Parent; node = node->Parent) {
-            node->Parent = x->Parent;
+        for (TNode *node = x; node != node->Parent; node = node->Parent, x->Parent = node) {
         }
+
+        for (TNode *node = x->Parent; node != node->Parent; node = node->Parent)
+            node->Parent = x->Parent;
 
         return x->Parent;
     }
