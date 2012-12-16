@@ -33,19 +33,12 @@ public:
             , Parent(this)
             , Value(val) {
         }
-
-        TNode(const T &val, int rank, TNode *parent)
-            : Rank(rank)
-            , Parent(parent)
-            , Value(val) {
-        }
     };
 
 public:
     typedef boost::shared_ptr<TNode> TPNode;
     typedef std::vector< TPNode > TPNodes;
     TPNodes PNodes;
-    //std::list<TNode> Forest;
 
 public:
     TDisjointSetUnion() {
@@ -53,6 +46,7 @@ public:
 
     TNode *MakeSet(const T &val) {
         TPNode p(new TNode(val));
+        p->Parent = p.get();
         PNodes.push_back(p);
         return p.get();
     }
@@ -63,8 +57,8 @@ public:
 
         TNode *sx = FindSet(x);
         TNode *sy = FindSet(y);
-        if (sx == sy)
-            return false;
+        if (!sx || !sy)
+            throw "Achtung!";
 
         if (sx->Rank > sy->Rank) {
             y->Parent = x;
@@ -74,7 +68,7 @@ public:
                 sy->Rank += 1;
         }
 
-        return true;
+        return sx != sy;
     }
 
     bool Union(TPNode x, TPNode y) {
