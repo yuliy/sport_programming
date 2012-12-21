@@ -15,6 +15,8 @@
 
 using namespace std;
 
+typedef unsigned int num_t;
+
 long long GetTickCount() {
     return clock() * 1000 / CLOCKS_PER_SEC;
 }
@@ -38,8 +40,8 @@ public:
 static void GenerateInputFile(const char *fname, int size) {
     FILE *pFile = fopen(fname, "wb");
     for (int i = 0; i < size; ++i) {
-        const int num = rand();
-        if (!fwrite(&i, sizeof(int), 1, pFile))
+        const num_t num = rand();
+        if (!fwrite(&i, sizeof(num_t), 1, pFile))
             throw TException("Failed writing number to file!");
     }
 }
@@ -53,7 +55,7 @@ private:
     int Size;
     string TmpFileName;
     FILE *TmpFile;
-    int CurrentValue;
+    num_t CurrentValue;
     bool Valid;
 private:
     void MakeTmpFileName(int offset) {
@@ -80,10 +82,10 @@ public:
         if (!ifile)
             throw TException("Couldn't open input file in TChunk::Init!");
 
-        vector<int> v(MaxSize);
-        if (fseek(ifile, Offset * sizeof(int), SEEK_SET))
+        vector<num_t> v(MaxSize);
+        if (fseek(ifile, Offset * sizeof(num_t), SEEK_SET))
             throw TException("Seek failed!");
-        Size = fread(&v[0], sizeof(int), MaxSize, ifile);
+        Size = fread(&v[0], sizeof(num_t), MaxSize, ifile);
         v.resize(Size);
         std::sort(v.begin(), v.end());
         fclose(ifile);
@@ -93,7 +95,7 @@ public:
         if (!tfile)
             throw TException("Couldn't open temp file in TChunk::Init!");
 
-        fwrite(&v[0], sizeof(int), Size, tfile);
+        fwrite(&v[0], sizeof(num_t), Size, tfile);
         fclose(tfile);
         Size = 32 * 1024 * 1024;
 
@@ -114,7 +116,7 @@ public:
         if (!Valid)
             throw TException("Error! Trying to call next for invalid chunk!");
 
-        const int cnt = fread(&CurrentValue, sizeof(int), 1, TmpFile);
+        const int cnt = fread(&CurrentValue, sizeof(num_t), 1, TmpFile);
         if (cnt != 1)
             Valid = false;
     }
@@ -178,8 +180,8 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
     for (int i = 0; !q.empty(); ++i) {
         boost::shared_ptr<TChunk> pchunk = q.top();
         q.pop();
-        const int val = pchunk->GetCurrentValue();
-        const int cnt = fwrite(&val, sizeof(int), 1, ofile);
+        const num_t val = pchunk->GetCurrentValue();
+        const num_t cnt = fwrite(&val, sizeof(num_t), 1, ofile);
         if (cnt != 1)
             throw TException("Failed writing num to output file!");
 
@@ -197,14 +199,11 @@ static void DistributedSort(const char *inputFileName, const char *outputFileNam
 
 static void Test() {
     const char inputFileName[] = "input.bin";
+    //const char inputFileName[] = "Arrah.bin";
     const char outputFileName[] = "output.bin";
 
     const int size = 1024 * 1024 * 1024;
-<<<<<<< HEAD
-    const int maxChunkSize = 16 * 1024 * 1024;
-=======
     const int maxChunkSize = 128 * 1024 * 1024;
->>>>>>> 771e0b893d00d3aaac1f0d4566bb42142c6fb2f8
 
     cout << "Generating input file..." << endl;
     GenerateInputFile(inputFileName, size);
