@@ -18,10 +18,12 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
 include_directories("./")
 
 set(HDRS
+    tools.h
     zip.h
 )
 
 set(SRCS
+    tools.cpp
     zip.cpp
     main.cpp
 )

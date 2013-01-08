@@ -3,7 +3,10 @@
 #include <iostream>
 #include <set>
 
+#include "tools.h"
+
 using namespace std;
+using namespace ystd;
 
 namespace ystd {
 
@@ -83,6 +86,18 @@ static void CalcAlphabetStats(const TBuf &buf, TSymbol2Freq &symbol2freq) {
         symbol2freq[i] /= buf.size();
 }
 
+/*
+static void SerializeAlphabetStats(const TSymbol2Freq &symbol2freq, TBitBuf &bitBuf) {
+    for (int i = 0; i < DIC_SIZE; ++i) {
+        bitBuf.
+    }
+}
+
+static void DeserializeAlphabetStats(const TBuf &buf, TSymbol2Freq &symbol2freq) {
+
+}
+*/
+
 struct TNode {
     TNode *Parent;
     TNode *Left;
@@ -122,6 +137,10 @@ private:
     TPNodes SymbolNodes;
     TPNodes InternalNodes;
     TNode *Root;
+private:
+    TCodeTree();
+    TCodeTree(const TCodeTree&);
+    TCodeTree& operator=(const TCodeTree&);
 private:
     int CalcSymbolLength(TNode *node) {
         int res = 0;
@@ -172,6 +191,21 @@ public:
             delete *iter;
     }
 
+    void Encode(unsigned char symbol, TBitBuf &out) const {
+        TNode *node = SymbolNodes[(int)symbol];
+        for (; node && node->Parent; node = node->Parent) {
+        /*
+            const TNode *parent = node->Parent;
+            if (node == parent->Left) {
+                out.push_back(false);
+            } else (node == parent->Right) {
+                out.push_back(true);
+            } else
+                throw TZipException("Error encoding symbol!");
+                */
+        }
+    }
+
     double CalcMeanSymbolLenth() {
         double res = 0.0;
         for (TPNodes::iterator iter = SymbolNodes.begin(); iter != SymbolNodes.end(); ++iter) {
@@ -183,78 +217,36 @@ public:
     }
 };
 
-class TBitBuf {
-private:
-    //TBuf Buf;
-    //i64 BitsCount;
-    vector<bool> Bits;
-public:
-    TBitBuf() {
-    }
-
-    /*
-    void WriteByte(unsigned char symbol) {
-        const long long bytesCount = BitsCount >> 3;
-        const long long freeBits = BitsCount - (bytesCount << 3);
-        if (freeBits == 8) {
-            Buf.push_back(symbol);
-        } else {
-            //
-        }
-    }
-    */
-
-    void WriteByte(unsigned char symbol) {
-        const int sym = symbol;
-        for (int i = 0; i < 8; ++i) {
-            const int mask = 1 << i;
-            const bool bit = sym & mask;
-            Bits.push_back(bit);
-        }
-    }
-
-    void WriteBit(bool bit) {
-        Bits.push_back(bit);
-    }
-
-    void Clear() {
-        Bits.clear();
-    }
-
-    const vector<bool> &GetBits() const {
-        return Bits;
-    }
-};
-
 /*
 Zip:
     file ->
     bytes in TBuf ->
     encoded bits in TBitBuf ->
-    encoded bits in TBuf with bit-length as prefix ->
+    dictionary + data length in bits + encoded data in TBuf ->
     file
 
 Unzip:
     file ->
     bytes in TBuf ->
-    decoded
+    dictionary + encoded bits in TBitBuf ->
+    decoded bytes in TBuf
 */
 
-static void MemBytesToBitBuf(const TBuf &buf, TBitBuf &bitBuf) {
-    for (TBuf::const_iterator iter = buf.begin(), end = buf.end(); iter != end; ++iter)
-        bitBuf.WriteByte(*iter);
+static void Encode(const TBuf &in, const TCodeTree &ct, TBitBuf &out) {
+    for (TBuf::const_iterator iter = in.begin(), end = in.end(); iter != end; ++iter) {
+        const unsigned char symbol = *iter;
+        ct.Encode(symbol, out);
+    }
 }
-
-static void MemBitsToBitBuf(const TBuf &buf, TBitBuf &bitBuf) {
-    //
-}
-
 
 void Zip(const TBuf &in, TBuf &out) {
     TSymbol2Freq symbol2freq(DIC_SIZE);
     CalcAlphabetStats(in, symbol2freq);
     TCodeTree codeTree(symbol2freq);
     cout << "Mean symbol length: " << codeTree.CalcMeanSymbolLenth() << endl;
+
+    TBitBuf bitBuf;
+    Encode(in, codeTree, bitBuf);
 }
 
 void Unzip(const TBuf &in, TBuf &out) {

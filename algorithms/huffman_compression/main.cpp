@@ -58,6 +58,5 @@ int main( int argc, char** argv ) {
     } catch (...) {
         cout << "An unknown exception occured in main routine!" << endl;
     }
-
     return 0;
 }
