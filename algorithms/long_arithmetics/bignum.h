@@ -37,7 +37,10 @@ namespace ystd {
         TBigInt(const TBigInt &other);
         TBigInt(int num);
         TBigInt(long long num);
+        explicit TBigInt(const char *str);
         explicit TBigInt(const std::string &s);
+
+        void FromString(const std::string &str);
 
         TBigInt &operator=(const TBigInt &other);
         TBigInt operator+(const TBigInt &other);
@@ -61,8 +64,10 @@ namespace ystd {
         //bool operator<=(const TBigInt &other);
         //bool operator>=(const TBigInt &other);
 
-        friend std::ostream &operator<<(std::ostream &ous, const TBigInt &num);
+        friend std::ostream &operator<<(std::ostream &out, const TBigInt &num);
+        friend std::istream &operator>>(std::istream &in, TBigInt &num);
     };
 
-    std::ostream &operator<<(std::ostream &ous, const TBigInt &num);
+    std::ostream &operator<<(std::ostream &out, const TBigInt &num);
+    std::istream &operator>>(std::istream &in, TBigInt &num);
 } // namespace ystd

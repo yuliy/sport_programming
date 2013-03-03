@@ -27,6 +27,59 @@ namespace ystd {
     // TBigInt
     //
 
+    TBigInt::TBigInt() {
+    }
+
+    TBigInt::TBigInt(const TBigInt &other)
+        : Digits(other.Digits) {
+    }
+
+    TBigInt::TBigInt(int num) {
+        while (num) {
+            Digits.push_back(num % BASE);
+            num /= BASE;
+        }
+    }
+
+    TBigInt::TBigInt(long long num) {
+        while (num) {
+            Digits.push_back(num % BASE);
+            num /= BASE;
+        }
+    }
+
+    TBigInt::TBigInt(const char *str) {
+        const string s(str);
+        FromString(s);
+    }
+
+    TBigInt::TBigInt(const string &str) {
+        FromString(str);
+    }
+
+    void TBigInt::FromString(const std::string &str) {
+        TDigits digits;
+        const int len = str.size();
+        int m = 1, tmp = 0, dcnt = 0;
+        for (int pos = len - 1; pos >= 0; --pos) {
+            const int digit = str[pos] - '0';
+            tmp += digit * m;
+            ++dcnt;
+            if (dcnt == BASE_DIGITS_CNT) {
+                m = 1;
+                dcnt = 0;
+                digits.push_back(tmp);
+            } else {
+                m *= 10;
+            }
+        }
+
+        if (tmp)
+            digits.push_back(tmp);
+
+        Digits.swap(digits);
+    }
+
     void TBigInt::Normalize() {
         while (Digits.size() && Digits.back() == 0)
             Digits.pop_back();
@@ -72,27 +125,6 @@ namespace ystd {
         if (scale > 1) {
             u = u * scale;
             b = b * scale;
-        }
-    }
-
-    TBigInt::TBigInt() {
-    }
-
-    TBigInt::TBigInt(const TBigInt &other)
-        : Digits(other.Digits) {
-    }
-
-    TBigInt::TBigInt(int num) {
-        while (num) {
-            Digits.push_back(num % BASE);
-            num /= BASE;
-        }
-    }
-
-    TBigInt::TBigInt(long long num) {
-        while (num) {
-            Digits.push_back(num % BASE);
-            num /= BASE;
         }
     }
 
@@ -256,19 +288,26 @@ namespace ystd {
     //bool TBigInt::operator>=(const TBigInt &other) {
     //}
 
-    ostream &operator<<(ostream &ous, const TBigInt &num) {
+    ostream &operator<<(ostream &out, const TBigInt &num) {
         if (num.Digits.empty()) {
-            ous << '0';
-            return ous;
+            out << '0';
+            return out;
         }
 
         TBigInt::TCRIter beg = num.Digits.rbegin(),
                          end = num.Digits.rend();
         for (TBigInt::TCRIter iter = beg; iter != end; ++iter) {
             if (iter != beg)
-                ous << setfill('0') << setw(TBigInt::BASE_DIGITS_CNT);
-            ous << *iter;
+                out << setfill('0') << setw(TBigInt::BASE_DIGITS_CNT);
+            out << *iter;
         }
-        return ous;
+        return out;
+    }
+
+    istream &operator>>(istream &in, TBigInt &num) {
+        string s;
+        in >> s;
+        num = TBigInt(s);
+        return in;
     }
 } // namespace ystd
