@@ -61,7 +61,7 @@ namespace ystd {
         //bool operator<=(const TBigInt &other);
         //bool operator>=(const TBigInt &other);
 
-        friend ostream &operator<<(ostream &ous, const TBigInt &num);
+        friend std::ostream &operator<<(std::ostream &ous, const TBigInt &num);
     };
 
     std::ostream &operator<<(std::ostream &ous, const TBigInt &num);

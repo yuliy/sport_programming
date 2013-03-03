@@ -10,6 +10,7 @@
 #include "bignum.h"
 
 using namespace std;
+using namespace ystd;
 
 int main( int argc, char** argv ) {
     try {
