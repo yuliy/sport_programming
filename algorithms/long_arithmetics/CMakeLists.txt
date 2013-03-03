@@ -18,9 +18,11 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
 include_directories("./")
 
 set(HDRS
+    ./bignum.h
 )
 
 set(SRCS
+    ./bignum.cpp
     ./main.cpp
 )
 
