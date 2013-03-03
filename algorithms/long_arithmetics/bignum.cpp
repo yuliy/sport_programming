@@ -66,9 +66,10 @@ namespace ystd {
             tmp += digit * m;
             ++dcnt;
             if (dcnt == BASE_DIGITS_CNT) {
+                digits.push_back(tmp);
                 m = 1;
                 dcnt = 0;
-                digits.push_back(tmp);
+                tmp = 0;
             } else {
                 m *= 10;
             }
