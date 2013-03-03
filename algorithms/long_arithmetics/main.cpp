@@ -19,9 +19,12 @@ int main( int argc, char** argv ) {
         cout << a << endl
             << b << endl;
 
-        TBigInt c = a * b;
-        cout << c << endl;
-
+        cout << "== " << (a == b ? "yes" : "no") << endl
+            << "!= " << (a != b ? "yes" : "no") << endl
+            << " < " << (a < b ? "yes" : "no") << endl
+            << " > " << (a > b ? "yes" : "no") << endl
+            << "<= " << (a <= b ? "yes" : "no") << endl
+            << ">= " << (a >= b ? "yes" : "no") << endl;
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {

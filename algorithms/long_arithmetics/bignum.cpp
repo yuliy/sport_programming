@@ -62,7 +62,14 @@ namespace ystd {
         const int len = str.size();
         int m = 1, tmp = 0, dcnt = 0;
         for (int pos = len - 1; pos >= 0; --pos) {
-            const int digit = str[pos] - '0';
+            const char ch = str[pos];
+            if (ch < '0' || ch > '9') {
+                string msg = "Error converting string to TBigInt: (string: \"";
+                msg += str;
+                msg += "\")!";
+                throw TBigIntException(msg.c_str());
+            }
+            const int digit = ch - '0';
             tmp += digit * m;
             ++dcnt;
             if (dcnt == BASE_DIGITS_CNT) {
@@ -230,20 +237,30 @@ namespace ystd {
 
     TBigInt TBigInt::operator/(const TBigInt &other) {
         // TODO
-        throw TBigIntException("TBigInt::operator/ not implemented!");
+        throw TBigIntException("TBigInt::operator/(const TBigInt&) not implemented!");
     }
 
-    //TBigInt &TBigInt::operator++() {
-    //}
+    TBigInt &TBigInt::operator++() {
+        *this += 1;
+        return *this;
+    }
 
-    //TBigInt &TBigInt::operator++(int) {
-    //}
+    TBigInt TBigInt::operator++(int) {
+        TBigInt tmp(*this);
+        ++(*this);
+        return tmp;
+    }
 
-    //TBigInt TBigInt::operator--() {
-    //}
+    TBigInt &TBigInt::operator--() {
+        *this -= 1;
+        return *this;
+    }
 
-    //TBigInt TBigInt::operator--(int) {
-    //}
+    TBigInt TBigInt::operator--(int) {
+        TBigInt tmp(*this);
+        --(*this);
+        return tmp;
+    }
 
     TBigInt &TBigInt::operator+=(const TBigInt &other) {
         *this = *this + other;
@@ -270,24 +287,53 @@ namespace ystd {
         return *this;
     }
 
-    //bool TBigInt::operator==(const TBigInt &other) {
-    //}
+    bool TBigInt::operator==(const TBigInt &other) {
+        return Digits == other.Digits;
+    }
 
-    //bool TBigInt::operator!=(const TBigInt &other) {
-    //    return !(*this == other);
-    //}
+    bool TBigInt::operator!=(const TBigInt &other) {
+        return !(*this == other);
+    }
 
-    //bool TBigInt::operator<(const TBigInt &other) {
-    //}
+    bool TBigInt::operator<(const TBigInt &other) {
+        const size_t asize = Digits.size();
+        const size_t bsize = other.Digits.size();
+        if (asize < bsize)
+            return true;
+        if (asize > bsize)
+            return false;
 
-    //bool TBigInt::operator>(const TBigInt &other) {
-    //}
+        TCRIter aiter   = Digits.rbegin(),
+                aend    = Digits.rend(),
+                biter   = other.Digits.rbegin(),
+                bend    = other.Digits.rend();
 
-    //bool TBigInt::operator<=(const TBigInt &other) {
-    //}
+        for (; aiter != aend; ++aiter, ++biter) {
+            if (*aiter < *biter)
+                return true;
+            else if (*aiter > *biter)
+                return false;
+        }
 
-    //bool TBigInt::operator>=(const TBigInt &other) {
-    //}
+        return false;
+    }
+
+    bool TBigInt::operator>(const TBigInt &other) {
+        const bool less = this->operator<(other);
+        const bool eq = *this == other;
+        return !less && !eq;
+    }
+
+    bool TBigInt::operator<=(const TBigInt &other) {
+        const bool less = this->operator<(other);
+        const bool eq = *this == other;
+        return less || eq;
+    }
+
+    bool TBigInt::operator>=(const TBigInt &other) {
+        const bool less = this->operator<(other);
+        return !less;
+    }
 
     ostream &operator<<(ostream &out, const TBigInt &num) {
         if (num.Digits.empty()) {
