@@ -228,6 +228,10 @@ namespace ystd {
         return res;
     }
 
+    TBigInt TBigInt::KaratsubaMultiply(const TBigInt &lhs, const TBigInt &rhs) {
+        throw TBigIntException("TBigInt::KaratsubaMultiply not implemented!");
+    }
+
     TBigInt TBigInt::operator/(int other) {
         TBigInt res;
         int remainder;

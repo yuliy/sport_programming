@@ -46,6 +46,7 @@ namespace ystd {
         TBigInt operator+(const TBigInt &other);
         TBigInt operator-(const TBigInt &other);
         TBigInt operator*(const TBigInt &other);
+        static TBigInt KaratsubaMultiply(const TBigInt &lhs, const TBigInt &rhs);
         TBigInt operator/(int other);
         TBigInt operator/(const TBigInt &other);
         TBigInt &operator++();
