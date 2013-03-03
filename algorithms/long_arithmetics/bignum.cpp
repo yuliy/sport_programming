@@ -74,7 +74,7 @@ namespace ystd {
             }
         }
 
-        if (tmp)
+        if (tmp && (dcnt < BASE_DIGITS_CNT))
             digits.push_back(tmp);
 
         Digits.swap(digits);
@@ -307,7 +307,7 @@ namespace ystd {
     istream &operator>>(istream &in, TBigInt &num) {
         string s;
         in >> s;
-        num = TBigInt(s);
+        num.FromString(s);
         return in;
     }
 } // namespace ystd

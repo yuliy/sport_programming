@@ -16,6 +16,9 @@ int main( int argc, char** argv ) {
     try {
         TBigInt a, b;
         cin >> a >> b;
+        cout << a << endl
+            << b << endl;
+
         TBigInt c = a * b;
         cout << c << endl;
 
