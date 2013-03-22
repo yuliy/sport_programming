@@ -19,7 +19,7 @@ int main() {
 
     int lcnt = 0;
     int rcnt = 0;
-    int curLen = 0;
+    //int curLen = 0;
     int maxLen = 0;
     int maxCnt = 1;
     for (int i = 0; i < len; ++i) {
@@ -30,22 +30,33 @@ int main() {
             ++rcnt;
 
         if (lcnt >= rcnt) {
-            ++curLen;
+            //++curLen;
         } else {
-            curLen = 0;
+            //curLen = 0;
             lcnt = 0;
             rcnt = 0;
         }
 
-        if (lcnt == rcnt) {
-            if (curLen > maxLen) {
-                maxLen = curLen;
-                maxCnt = 1;
-            } else if (curLen == maxCnt) {
-                ++maxCnt;
-            }
+        const int curLen = 2 * rcnt;
+        if (curLen > maxLen) {
+            maxLen = curLen;
+            maxCnt = 1;
+        } else if (lcnt == rcnt && curLen == maxLen) {
+            ++maxCnt;
         }
+
+        /*
+        cout << "=== i=" << i << " =============" << endl;
+        cout << "lcnt=" << lcnt << endl
+            << "rcnt=" << rcnt << endl
+            << "curLen=" << curLen << endl
+            << "maxLen=" << maxLen << endl
+            << "maxCnt=" << maxCnt << endl;
+        */
     }
+
+    if (maxLen == 0)
+        maxCnt = 1;
 
     printf("%d %d\n", maxLen, maxCnt);
     return 0;
