@@ -19,7 +19,6 @@ int main() {
 
     int lcnt = 0;
     int rcnt = 0;
-    //int curLen = 0;
     int maxLen = 0;
     int maxCnt = 1;
     for (int i = 0; i < len; ++i) {
@@ -42,14 +41,13 @@ int main() {
             ++maxCnt;
         }
 
-        /*
         cout << "=== i=" << i << " =============" << endl;
         cout << "lcnt=" << lcnt << endl
             << "rcnt=" << rcnt << endl
             << "curLen=" << curLen << endl
             << "maxLen=" << maxLen << endl
-            << "maxCnt=" << maxCnt << endl;
-        */
+            << "maxCnt=" << maxCnt << endl
+            << endl;
     }
 
     if (maxLen == 0)
