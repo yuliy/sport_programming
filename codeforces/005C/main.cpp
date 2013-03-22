@@ -9,9 +9,11 @@
 #include <algorithm>
 using namespace std;
 
+const int MAX_SIZE = 10 * 1000 * 1000 + 1;
+
+char buf[MAX_SIZE];
+
 int main() {
-    const int MAX_SIZE = 10 * 1000 * 1000 + 1;
-    char buf[MAX_SIZE];
     scanf("%s", buf);
     const int len = strlen(buf);
 
@@ -27,10 +29,13 @@ int main() {
         else
             ++rcnt;
 
-        if (lcnt >= rcnt)
+        if (lcnt >= rcnt) {
             ++curLen;
-        else
+        } else {
             curLen = 0;
+            lcnt = 0;
+            rcnt = 0;
+        }
 
         if (lcnt == rcnt) {
             if (curLen > maxLen) {
