@@ -29,10 +29,7 @@ int main() {
         else
             ++rcnt;
 
-        if (lcnt >= rcnt) {
-            //++curLen;
-        } else {
-            //curLen = 0;
+        if (lcnt < rcnt) {
             lcnt = 0;
             rcnt = 0;
         }
