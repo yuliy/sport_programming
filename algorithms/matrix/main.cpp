@@ -202,7 +202,7 @@ void Join(TMatrix<T> &res,
 template<typename T>
 TMatrix<T> ShtrassenMultiply(const TMatrix<T> &A, const TMatrix<T> &B) {
     const int N = A.GetRows();
-    if (N <= 1024)
+    if (N <= 128)
         return A * B;
 
     const int n = N >> 1;
