@@ -69,6 +69,12 @@ int TMemManager::Alloc(int size) {
         }
     }
 
+    if (pos == Blocks.begin()) {
+        TMemBlock b(1, size);
+        Blocks.push_back(b);
+        return 1;
+    }
+
     if (pos != Blocks.end()) {
         const int ptr = pos->Ptr + pos->Size + 1;
         TMemBlock b(ptr, size);
@@ -131,7 +137,7 @@ int main() {
             if (p == 0)
                 printf("NULL\n");
             else
-                printf("%d", sz);
+                printf("%d\n", sz);
         } break;
         case 'e': {
             int ptr;
