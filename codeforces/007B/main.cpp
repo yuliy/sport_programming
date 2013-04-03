@@ -9,6 +9,8 @@
 #include <algorithm>
 using namespace std;
 
+//#define DEBUG_LOG
+
 struct TMemBlock {
     int Ptr;
     int Size;
@@ -41,9 +43,9 @@ private:
     TMemManager(const TMemManager&);
     TMemManager& operator=(const TMemManager&);
 private:
-    TMemBlocks::iterator FindBlockByPtr(int ptr) {
+    TMemBlocks::iterator FindBlockByID(int id) {
         for (TMemBlocks::iterator iter = Blocks.begin(); iter != Blocks.end(); ++iter) {
-            if (iter->Ptr == ptr)
+            if (iter->ID == id)
                 return iter;
         }
         return Blocks.end();
@@ -53,6 +55,17 @@ public:
     int Alloc(int size);
     bool Erase(int ptr);
     void Defragment();
+
+#ifdef DEBUG_LOG
+    void PrintBlocks() const {
+        cout << "\t-----------------------------" << endl
+            << "\tblocks count: " << Blocks.size() << endl;
+        for (TMemBlocks::const_iterator iter = Blocks.begin(); iter != Blocks.end(); ++iter) {
+            const TMemBlock &b = *iter;
+            cout << "\t" << b.ID << ":\t" << b.Ptr << "\t" << b.Size << endl;
+        }
+    }
+#endif
 };
 
 TMemManager::TMemManager(int memSize)
@@ -74,14 +87,18 @@ int TMemManager::Alloc(int size) {
         return b.ID;
     }
 
-    TMemBlocks::iterator pos = ++Blocks.begin();
+    TMemBlocks::iterator pos = Blocks.begin();
+    ++pos;
     for (; pos != Blocks.end(); ++pos) {
         TMemBlocks::iterator prev = pos;
         --prev;
 
         const int gap = pos->Ptr - prev->Ptr - prev->Size;
+        //cout << "(1)" << endl;
         if (gap >= size) {
-            const int ptr = pos->Ptr + pos->Size;
+            //cout << "(2)" << endl;
+            //cout << "gap=" << gap << endl;
+            const int ptr = prev->Ptr + prev->Size;
             TMemBlock b(ptr, size);
             Blocks.insert(pos, b);
             return b.ID;
@@ -100,8 +117,8 @@ int TMemManager::Alloc(int size) {
     return 0;
 }
 
-bool TMemManager::Erase(int ptr) {
-    TMemBlocks::iterator iter = FindBlockByPtr(ptr);
+bool TMemManager::Erase(int id) {
+    TMemBlocks::iterator iter = FindBlockByID(id);
     if (iter != Blocks.end()) {
         Blocks.erase(iter);
         return true;
@@ -113,7 +130,7 @@ void TMemManager::Defragment() {
     if (Blocks.empty())
         return;
 
-    Blocks.front().Ptr = 0;
+    Blocks.front().Ptr = 1;
     if (Blocks.size() < 2)
         return;
 
@@ -137,6 +154,9 @@ int main() {
         const char fch = buf[0];
         switch(fch) {
         case 'a': {
+#ifdef DEBUG_LOG
+            cout << "\n======= ALLOC =======" << endl;
+#endif
             int sz;
             scanf("%d", &sz);
             const int p = mm.Alloc(sz);
@@ -144,15 +164,30 @@ int main() {
                 printf("NULL\n");
             else
                 printf("%d\n", p);
+#ifdef DEBUG_LOG
+            mm.PrintBlocks();
+#endif
         } break;
         case 'e': {
+#ifdef DEBUG_LOG
+            cout << "\n======= ERASE =======" << endl;
+#endif
             int ptr;
             scanf("%d", &ptr);
             if (!mm.Erase(ptr))
                 printf("ILLEGAL_ERASE_ARGUMENT\n");
+#ifdef DEBUG_LOG
+            mm.PrintBlocks();
+#endif
         } break;
         case 'd': {
+#ifdef DEBUG_LOG
+            cout << "\n======= DEFRAGMENT =======" << endl;
+#endif
             mm.Defragment();
+#ifdef DEBUG_LOG
+            mm.PrintBlocks();
+#endif
         } break;
         default: {
         } break;
