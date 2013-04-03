@@ -12,17 +12,23 @@ using namespace std;
 struct TMemBlock {
     int Ptr;
     int Size;
+    int ID;
+    static int NewID;
 
     TMemBlock()
         : Ptr(0)
-        , Size(0) {
+        , Size(0)
+        , ID(++NewID) {
     }
 
     TMemBlock(int ptr, int size)
         : Ptr(ptr)
-        , Size(size) {
+        , Size(size)
+        , ID(++NewID) {
     }
 };
+
+int TMemBlock::NewID = 0;
 
 typedef list<TMemBlock> TMemBlocks;
 
@@ -54,41 +60,41 @@ TMemManager::TMemManager(int memSize)
 }
 
 int TMemManager::Alloc(int size) {
-    TMemBlocks::iterator pos = Blocks.begin();
-    for (; pos != Blocks.end(); ++pos) {
-        if (pos == Blocks.begin()) {
-            if (size < pos->Ptr)
-                break;
-        } else {
-            TMemBlocks::iterator prev = pos;
-            --prev;
-
-            const int gap = pos->Ptr - prev->Ptr - prev->Size;
-            if (gap >= size)
-                break;
-        }
-    }
-
-    if (pos == Blocks.begin()) {
+    if (Blocks.empty()) {
+        if (size > MemSize)
+            return 0;
         TMemBlock b(1, size);
-        Blocks.push_back(b);
-        return 1;
+        Blocks.push_front(b);
+        return b.ID;
     }
 
-    if (pos != Blocks.end()) {
-        const int ptr = pos->Ptr + pos->Size - 1;
-        TMemBlock b(ptr, size);
-        Blocks.insert(pos, b);
-        return ptr;
+    if (size < Blocks.front().Ptr) {
+        TMemBlock b(1, size);
+        Blocks.push_front(b);
+        return b.ID;
+    }
+
+    TMemBlocks::iterator pos = ++Blocks.begin();
+    for (; pos != Blocks.end(); ++pos) {
+        TMemBlocks::iterator prev = pos;
+        --prev;
+
+        const int gap = pos->Ptr - prev->Ptr - prev->Size;
+        if (gap >= size) {
+            const int ptr = pos->Ptr + pos->Size;
+            TMemBlock b(ptr, size);
+            Blocks.insert(pos, b);
+            return b.ID;
+        }
     }
 
     const TMemBlock &last = Blocks.back();
     const int gap = MemSize - last.Ptr - last.Size + 1;
     if (gap >= size) {
-        const int ptr = last.Ptr + last.Size + 1;
+        const int ptr = last.Ptr + last.Size;
         TMemBlock b(ptr, size);
         Blocks.push_back(b);
-        return ptr;
+        return b.ID;
     }
 
     return 0;
