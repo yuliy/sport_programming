@@ -8,8 +8,51 @@
 #include <algorithm>
 using namespace std;
 
+int n;
+
+static bool Check(const vector<string> &v, int k, int p) {
+    //cout << "=================================" << endl;
+    //cout << "p=" << p << endl;
+    set<string> langs;
+    for (int l = 0; l < p; ++l) {
+        //cout << "(1)" << endl;
+        const int offset = l * k;
+        int firstPhrase = -1;
+        string lang;
+        for (int i = 0; i < k; ++i) {
+            lang = v[i + offset];
+            if (lang != "unknown") {
+                firstPhrase = i;
+                break;
+            }
+        }
+
+        //cout << "(2)" << endl;
+        //cout << "lang=" << lang << endl;
+        if (firstPhrase == -1)
+            continue;
+
+        set<string>::const_iterator liter = langs.find(lang);
+        if (liter != langs.end())
+            return false;
+
+        langs.insert(lang);
+        //cout << "(3)" << endl;
+
+        for (int i = firstPhrase; i < k; ++i) {
+            //cout << "(4)" << endl;
+            //cout << v[i+offset] << endl;
+            if (v[i+offset] == "unknown")
+                continue;
+            if (v[i+offset] != lang)
+                return false;
+        }
+    }
+
+    return true;
+}
+
 int main() {
-    int n;
     scanf("%d", &n);
     vector<string> v;
     char buf[32];
@@ -18,34 +61,22 @@ int main() {
         v.push_back(buf);
     }
 
-    int res = 1;
-    set<string> langs;
-    string curLang = v[0];
-    langs.insert(curLang);
-    int gap = 0;
-    for (int i = 1; i < n; ++i) {
-        const string &s = v[i];
-        if (s == "unknown") {
-            ++gap;
-        } else if (s == curLang) {
-            gap = 0;
-        } else {
-            set<string>::const_iterator iter = langs.find(s);
-            if (iter != langs.end()) {
-                printf("Igor is wrong.\n");
-                return 0;
-            }
+    vector<int> res;
+    for (int k = n; k > 0; --k) {
+        if (n % k)
+            continue;
 
-            //++res;
-            res += gap;
-            gap = 0;
-            langs.insert(s);
-        }
+        const int p = n / k;
+        if (Check(v, k, p))
+            res.push_back(p);
     }
 
-    res += gap;
-    for (int i = langs.size(); i <= res; ++i)
-        printf("%d ", i);
-    printf("\n");
+    if (res.empty()) {
+        printf("Igor is wrong.\n");
+    } else {
+        for (vector<int>::const_iterator iter = res.begin(); iter != res.end(); ++iter)
+            printf("%d ", *iter);
+        printf("\n");
+    }
     return 0;
 }
