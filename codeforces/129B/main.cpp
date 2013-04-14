@@ -27,7 +27,7 @@ int main() {
 
     int res = 0;
     for (;;) {
-        int curRes = 0;
+        vector< pair<int, int> > curRes;
         for (int i = 1; i <= n; ++i) {
             if (done[i])
                 continue;
@@ -46,16 +46,21 @@ int main() {
                 }
             }
 
-            if (connectedCnt == 1) {
-                ++curRes;
-                done[i] = true;
-                done[connectedIdx] = true;
-            }
+            if (connectedCnt == 1)
+                curRes.push_back( make_pair(i, connectedIdx) );
         }
 
-        res += curRes;
-        if (curRes == 0)
+        if (curRes.empty())
             break;
+        else
+            ++res;
+
+        for (vector< pair<int, int> >::const_iterator iter = curRes.begin(); iter != curRes.end(); ++iter) {
+            const int from = iter->first;
+            const int to = iter->second;
+            done[from] = true;
+            mat[from][to] = mat[to][from] = false;
+        }
     }
     printf("%d\n", res);
     return 0;
