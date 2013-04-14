@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <deque>
 #include <cstring>
 #include <string>
 #include <map>
@@ -73,16 +74,36 @@ static void DFSVisit(int u) {
 }
 
 static void BFS(int u) {
-    //deque<int> 
+    deque<int> q;
+    q.push_back(u);
+    while (false == q.empty()) {
+        const int v = q.front();
+        q.pop_front();
+        TAdjList &lst = AdjLists[v];
+        for (TAdjList::iterator iter = lst.begin(); iter != lst.end(); ++iter) {
+            const int t = *iter;
+            if (Points[t].Colour == WHITE) {
+                Points[t].Colour = GRAY;
+                Points[t].Distance = min(Points[t].Distance, Points[v].Distance + 1);
+            }
+        }
+    }
 }
 
 int main() {
     Init();
+
     DFSVisit(0);
+
     for (int i = 0; i < N; ++i) {
         for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
             iter->Colour = WHITE;
         BFS(i);
     }
+
+    for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
+        cout << iter->Distance << " ";
+    cout << endl;
+
     return 0;
 }
