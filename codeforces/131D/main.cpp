@@ -52,25 +52,30 @@ static void Init() {
 }
 
 static void MarkCycle() {
+    cout << "Cycle:" << endl;
     for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter) {
-        if (iter->Colour == GRAY)
+        if (iter->Colour == GRAY) {
             iter->Distance = 0;
+            cout << "\t" << (iter - Points.begin() + 1) << endl;
+        }
     }
 }
 
-static void DFSVisit(int u) {
+static bool DFSVisit(int u) {
     TAdjList &lst = AdjLists[u];
     Points[u].Colour = GRAY;
     for (TAdjList::iterator iter = lst.begin(); iter != lst.end(); ++iter) {
         const int v = *iter;
         if (Points[v].Colour == WHITE) {
-            DFSVisit(v);
+            if (DFSVisit(v))
+                return true;
         } else if (Points[v].Colour == GRAY) {
             MarkCycle();
-            return;
+            return true;
         }
     }
     Points[u].Colour = BLACK;
+    return false;
 }
 
 static void BFS(int u) {
@@ -93,7 +98,10 @@ static void BFS(int u) {
 int main() {
     Init();
 
-    DFSVisit(0);
+    for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
+        iter->Colour = WHITE;
+    if (!DFSVisit(0))
+        cout << "Achtung! Cycle not found!" << endl;
 
     for (int i = 0; i < N; ++i) {
         for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
