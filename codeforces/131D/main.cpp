@@ -50,11 +50,15 @@ static void Init() {
     }
 }
 
+deque<int> Cycle;
+
 static void MarkCycle() {
     //cout << "Cycle:" << endl;
-    for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter) {
-        if (iter->Colour == GRAY) {
-            iter->Distance = 0;
+    for (int i = 0; i < N; ++i) {
+        TPoint &p = Points[i];
+        if (p.Colour == GRAY) {
+            //p.Distance = 0;
+            Cycle.push_back(i);
             //cout << "\t" << (iter - Points.begin() + 1) << endl;
         }
     }
@@ -68,7 +72,7 @@ static bool DFSVisit(int u, int uParent) {
         if (Points[v].Colour == WHITE) {
             if (DFSVisit(v, u))
                 return true;
-        } else if (v != uParent && Points[v].Colour == GRAY) {
+        } else if ((v != uParent) && (Points[v].Colour == GRAY)) {
             MarkCycle();
             return true;
         }
@@ -77,9 +81,13 @@ static bool DFSVisit(int u, int uParent) {
     return false;
 }
 
-static void BFS(int u) {
-    deque<int> q;
-    q.push_back(u);
+static void BFS() {
+    deque<int> q = Cycle;
+    for (deque<int>::iterator iter = q.begin(); iter != q.end(); ++iter) {
+        Points[*iter].Colour = GRAY;
+        Points[*iter].Distance = 0;
+    }
+
     while (false == q.empty()) {
         const int v = q.front();
         q.pop_front();
@@ -88,25 +96,29 @@ static void BFS(int u) {
             const int t = *iter;
             if (Points[t].Colour == WHITE) {
                 Points[t].Colour = GRAY;
-                Points[t].Distance = min(Points[t].Distance, Points[v].Distance + 1);
+                //Points[t].Distance = min(Points[t].Distance, Points[v].Distance + 1);
+                Points[t].Distance = Points[v].Distance + 1;
+                q.push_back(t);
             }
         }
+        Points[v].Colour = BLACK;
     }
+}
+
+static void MarkAllPointsWhite() {
+    for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
+        iter->Colour = WHITE;
 }
 
 int main() {
     Init();
 
-    for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
-        iter->Colour = WHITE;
+    MarkAllPointsWhite();
     if (!DFSVisit(0, -1))
         cout << "Achtung! Cycle not found!" << endl;
 
-    for (int i = 0; i < N; ++i) {
-        for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
-            iter->Colour = WHITE;
-        BFS(i);
-    }
+    MarkAllPointsWhite();
+    BFS();
 
     for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
         cout << iter->Distance << " ";
