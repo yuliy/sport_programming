@@ -21,10 +21,12 @@ enum EColour {
 struct TPoint {
     EColour Colour;
     int Distance;
+    int Parent;
 
     TPoint()
         : Colour(WHITE)
         , Distance(1000000)
+        , Parent(-1)
     {}
 };
 
@@ -52,15 +54,11 @@ static void Init() {
 
 deque<int> Cycle;
 
-static void MarkCycle() {
-    //cout << "Cycle:" << endl;
-    for (int i = 0; i < N; ++i) {
-        TPoint &p = Points[i];
-        if (p.Colour == GRAY) {
-            //p.Distance = 0;
-            Cycle.push_back(i);
-            //cout << "\t" << (iter - Points.begin() + 1) << endl;
-        }
+static void MarkCycle(int u, int v) {
+    Cycle.push_back(v);
+    while (u != v) {
+        Cycle.push_back(u);
+        u = Points[u].Parent;
     }
 }
 
@@ -70,10 +68,11 @@ static bool DFSVisit(int u, int uParent) {
     for (TAdjList::iterator iter = lst.begin(); iter != lst.end(); ++iter) {
         const int v = *iter;
         if (Points[v].Colour == WHITE) {
+            Points[v].Parent = u;
             if (DFSVisit(v, u))
                 return true;
         } else if ((v != uParent) && (Points[v].Colour == GRAY)) {
-            MarkCycle();
+            MarkCycle(u, v);
             return true;
         }
     }
@@ -96,7 +95,6 @@ static void BFS() {
             const int t = *iter;
             if (Points[t].Colour == WHITE) {
                 Points[t].Colour = GRAY;
-                //Points[t].Distance = min(Points[t].Distance, Points[v].Distance + 1);
                 Points[t].Distance = Points[v].Distance + 1;
                 q.push_back(t);
             }
