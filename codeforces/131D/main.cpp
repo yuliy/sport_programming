@@ -1,8 +1,7 @@
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <vector>
 #include <deque>
-#include <cstring>
 #include <string>
 #include <map>
 #include <set>
@@ -25,7 +24,7 @@ struct TPoint {
 
     TPoint()
         : Colour(WHITE)
-        , Distance(std::numeric_limits<int>::max())
+        , Distance(1000000)
     {}
 };
 
@@ -52,24 +51,24 @@ static void Init() {
 }
 
 static void MarkCycle() {
-    cout << "Cycle:" << endl;
+    //cout << "Cycle:" << endl;
     for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter) {
         if (iter->Colour == GRAY) {
             iter->Distance = 0;
-            cout << "\t" << (iter - Points.begin() + 1) << endl;
+            //cout << "\t" << (iter - Points.begin() + 1) << endl;
         }
     }
 }
 
-static bool DFSVisit(int u) {
+static bool DFSVisit(int u, int uParent) {
     TAdjList &lst = AdjLists[u];
     Points[u].Colour = GRAY;
     for (TAdjList::iterator iter = lst.begin(); iter != lst.end(); ++iter) {
         const int v = *iter;
         if (Points[v].Colour == WHITE) {
-            if (DFSVisit(v))
+            if (DFSVisit(v, u))
                 return true;
-        } else if (Points[v].Colour == GRAY) {
+        } else if (v != uParent && Points[v].Colour == GRAY) {
             MarkCycle();
             return true;
         }
@@ -100,7 +99,7 @@ int main() {
 
     for (TPoints::iterator iter = Points.begin(); iter != Points.end(); ++iter)
         iter->Colour = WHITE;
-    if (!DFSVisit(0))
+    if (!DFSVisit(0, -1))
         cout << "Achtung! Cycle not found!" << endl;
 
     for (int i = 0; i < N; ++i) {
