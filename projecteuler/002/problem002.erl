@@ -1,11 +1,12 @@
 -module(problem002).
--export([solve/2]).
+-export([fib/1]).
 
-solve({PNum, PSum}, {PPNum, PPSum}) when PFibNum == 1; PPFibNum == 1 ->
-    {2, 0};
-solve({PNum, PSum}, {PPNum, PPSum}) ->
-    Num = PNum + PPNum.
-    case Num rem 2 of
-        0 -> {Num, PSum + Num};
-        1 -> {Num, PSum};
-    end.
+fib_ex(1) -> {1, 0};
+fib_ex(2) -> {1, 1};
+fib_ex(Num) ->
+    {P, PP} = fib_ex(Num-1),
+    {P + PP, P}.
+
+fib(N) ->
+    {P, _PP} = fib_ex(N),
+    P.
