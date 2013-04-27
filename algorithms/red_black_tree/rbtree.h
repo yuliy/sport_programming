@@ -38,8 +38,11 @@ public:
         }
 
         explicit TNode(const T &key)
-            : TNode() {
-            Key = key;
+            : Colour(C_BLACK)
+            , Parent(0)
+            , Left(0)
+            , Right(0)
+            , Key(key) {
         }
 
         TNode(EColour colour, TNode *parent, TNode *left, TNode *right, const T &key)
@@ -57,14 +60,26 @@ private:
     TRBTree& operator=(const TRBTree&); // TODO
 public: // TODO
     /**
+      * Destroys whole subtree tree with root node
+      * Warning! Destroy assumes that node param is not NULL
+      */
+    void Destroy(TNode *node) {
+        if (node->Left != NULL)
+            Destroy(node->Left);
+        if (node->Right != NULL)
+            Destroy(node->Right);
+        delete node;
+    }
+
+    /**
       * Inserts element z into the binary search tree without rebalancing the tree
       */
     void SimpleInsert(TNode *z) {
         if (z == NULL)
             throw TRBTException("TRBTree<T>::SimpleInsert received z == NULL!");
 
-        const TNode *y = NULL;
-        const TNode *x = this->Root;
+        TNode *y = NULL;
+        TNode *x = this->Root;
         while (x != NULL) {
             y = x;
             x = (z->Key < x->Key) ? x->Left : x->Right;
@@ -122,6 +137,10 @@ public: // TODO
     }
 public:
     TRBTree() : Root(0) {}
+    ~TRBTree() {
+        if (this->Root != NULL)
+            Destroy(this->Root);
+    }
 
     /**
       * Searches node with a key given in a sub-tree with root x

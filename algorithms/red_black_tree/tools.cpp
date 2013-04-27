@@ -54,6 +54,10 @@ TFoo::~TFoo() {
     ++Deleted;
 }
 
+bool TFoo::operator<(const TFoo &other) const {
+    return Value < other.Value;
+}
+
 void TFoo::PrintStats() {
     cout << "TFoo::Created = " << TFoo::Created << endl
         << "TFoo::Deleeted = " << TFoo::Deleted << endl;

@@ -27,10 +27,12 @@ struct TFoo {
     static int Deleted;
 
     TFoo();
-    explicit TFoo(const TFoo& other);
+    TFoo(const TFoo& other);
     explicit TFoo(int value);
     TFoo &operator=(const TFoo& other);
     ~TFoo();
+
+    bool operator<(const TFoo &other) const;
 
     static void PrintStats();
 };
