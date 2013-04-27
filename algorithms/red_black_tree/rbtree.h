@@ -154,6 +154,21 @@ public: // TODO
 
         delete z;
     }
+
+    /**
+      *        Rotations:
+      *
+      *       |                             |
+      *       y                             x
+      *      / \       LeftRotate          / \
+      *     x   g   <---------------      a   y
+      *    / \      --------------->         / \
+      *   a   b        RightRotate          b   g
+      *
+      */
+    void LeftRotate(TNode *x) {
+        //
+    }
 public:
     TRBTree() : Root(0) {}
     ~TRBTree() {
