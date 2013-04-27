@@ -18,11 +18,13 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
 include_directories("./")
 
 set(HDRS
-    ./rbtree.h
+    tools.h
+    rbtree.h
 )
 
 set(SRCS
-    ./main.cpp
+    tools.cpp
+    main.cpp
 )
 
 add_executable(${TARGET_FILE_NAME} WIN32 ${HDRS} ${SRCS})
