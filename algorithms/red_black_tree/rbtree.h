@@ -160,7 +160,35 @@ public: // TODO
       *
       */
     void LeftRotate(TNode *x) {
-        //
+        TNode *y = x->Right;
+        x->Right = y->Left;
+        if (y->Left != NULL)
+            y->Left->Parent = x;
+        y->Parent = x->Parent;
+        if (x->Parent == NULL)
+            this->Root = y;
+        else if (x == x->Parent->Left)
+            x->Parent->Left = y;
+        else
+            x->Parent->Right = y;
+        y->Left = x;
+        x->Parent = y;
+    }
+
+    void RightRotate(TNode *x) {
+        TNode *y = x->Parent;
+        y->Left = x->Right;
+        if (x->Right != NULL)
+            x->Right->Parent = y;
+        x->Parent = y->Parent;
+        if (y->Parent == NULL)
+            this->Root = x;
+        else if (y == y->Parent->Left)
+            y->Parent->Left = x;
+        else
+            y->Parent->Right = x;
+        x->Right = y;
+        y->Parent = x;
     }
 public:
     TRBTree() : Root(0) {}
