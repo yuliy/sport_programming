@@ -1,12 +1,22 @@
 #pragma once
 
+#include <exception>
+
+class TRBTException : public std::exception {
+private:
+    std::string Descr;
+public:
+    explicit TRBTException(const std::string &descr) : Descr(descr) {}
+    explicit TRBTException(const char *descr) : Descr(descr) {}
+    ~TRBTException() throw() {}
+    const char *what() throw() { return Descr.c_str(); }
+};
+
+/**
+  * TRBTree implements Red-Black Tree without iterators interface
+  */
 template<typename T>
 class TRBTree {
-private:
-    TNode *Root;
-private:
-    TRBTree(const TRBTree&); // TODO
-    TRBTree& operator=(const TRBTree&); // TODO
 public:
     enum EColour {
         C_BLACK,
@@ -35,8 +45,78 @@ public:
             , Key(key) {
         }
     };
+private:
+    TNode *Root;
+private:
+    TRBTree(const TRBTree&); // TODO
+    TRBTree& operator=(const TRBTree&); // TODO
+public: // TODO
+    /**
+      * Inserts element z into the binary search tree without rebalancing the tree
+      */
+    void SimpleInsert(TNode *z) {
+        if (z == NULL)
+            throw TRBTException("TRBTree<T>::SimpleInsert received z == NULL!");
+
+        const TNode *y = NULL;
+        const TNode *x = this->Root;
+        while (x != NULL) {
+            y = x;
+            x = (z->Key < x->Key) ? x->Left : x->Right;
+        }
+        z->Parent = y;
+        if (y == NULL)
+            this->Root = z;
+        else if (z->Key < y->Key)
+            y->Left = z;
+        else
+            y->Right = z;
+    }
+
+    /**
+      * Replaces u with v, assuming that v is a child of u.
+      * Warning! u->Left and u->Right are not initialized.
+      */
+    void Transplant(TNode *u, TNode *v) {
+        if (u == NULL)
+            throw TRBTException("TRBTree<T>::Transplant received u == NULL!");
+
+        if (u->Parent == NULL)
+            this->Root = v;
+        else if (u == u->Parent->Left)
+            u->Parent->Left = v;
+        else
+            u->Parent->Right = v;
+
+        if (v != NULL)
+            v->Parent = u->Parent;
+    }
+
+    /**
+      * Deletes element z from the binary search tree without rebalancing the tree
+      */
+    void SimpleDelete(TNode *z) {
+        if (z == NULL)
+            throw TRBTException("TRBTree<T>::SimpleDelete received z == NULL!");
+
+        if (z->Left == NULL)
+            Transplant(z, z->Right);
+        else if (z->Right == NULL)
+            Transplant(z, z->Left);
+        else {
+            const TNode *y = Minimum(z->Right);
+            if (y->Parent != z) {
+                Transplant(y, y->Right);
+                y->Right = z->Right;
+                y->Right->Parent = y;
+            }
+            Transplant(z, y);
+            y->Left = z->Left;
+            y->Left->Parent = y;
+        }
+    }
 public:
-    TRedBlackTree() : Root(0) {}
+    TRBTree() : Root(0) {}
 
     /**
       * Searches node with a key given in a sub-tree with root x
@@ -97,19 +177,5 @@ public:
             y = y->Parent;
         }
         return y;
-    }
-
-    /**
-      * Inserts element z into the binary search tree without rebalancing the tree
-      */
-    void SimpleInsert(TNode *z) {
-        // TODO
-    }
-
-    /**
-      * Deletes element z from the binary search tree without rebalancing the tree
-      */
-    void SimpleDelete(TNode *z) {
-        // TODO
     }
 };
