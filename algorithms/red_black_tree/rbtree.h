@@ -158,12 +158,12 @@ public: // TODO
     /**
       *        Rotations:
       *
-      *       |                             |
-      *       y                             x
-      *      / \       LeftRotate          / \
-      *     x   g   <---------------      a   y
-      *    / \      --------------->         / \
-      *   a   b        RightRotate          b   g
+      *       |                           |
+      *       y                           x
+      *      / \       LeftRotate        / \
+      *     x   g   <---------------    a   y
+      *    / \      --------------->       / \
+      *   a   b        RightRotate        b   g
       *
       */
     void LeftRotate(TNode *x) {
