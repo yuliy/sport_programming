@@ -18,7 +18,11 @@ using namespace ystd;
 typedef TRBTree<TFoo> TTree;
 typedef vector< const TTree::TNode* > TCPNodes;
 
-static void PrintNode(const TTree::TNode &node) {
+static void PrintNode(const TTree::TNode *pnode) {
+    if (!pnode)
+        throw TRBTException("Error in PrintNode: pnode == NULL");
+
+    const TTree::TNode &node = *pnode;
     cout << "-------------- NODE -------------------" << endl
         << "Key: " << node.Key.Value << endl
         << "Colour: " << ((node.Colour == TTree::C_BLACK) ? "BLACK" : "RED") << endl;
@@ -42,20 +46,29 @@ static void PrintNode(const TTree::TNode &node) {
         cout << "NULL" << endl;
 }
 
+static void PrintTree(const TTree::TNode *node) {
+    if (!node) {
+        cout << "Empty tree." << endl;
+        return;
+    }
+
+    if (node->Left)
+        PrintNode(node->Left);
+    PrintNode(node);
+    if (node->Right)
+        PrintNode(node->Right);
+}
+
 static void TestRBTree() {
     // Creating random tree
     TTree tree;
-    TCPNodes nodes;
     for (int i = 0; i < 10; ++i) {
         TFoo foo(rand() % 100);
         TTree::TNode *node = new TTree::TNode(foo);
-        nodes.push_back(node);
         tree.SimpleInsert(node);
     }
 
-    // Printing tree content
-    for (TCPNodes::const_iterator iter = nodes.begin(); iter != nodes.end(); ++iter)
-        PrintNode(**iter);
+    PrintTree(tree.GetRoot());
 
     // Printing tree in ascending order
     cout << "Tree elements in ascending order:" << endl;
@@ -69,12 +82,11 @@ static void TestRBTree() {
 
     while (!tree.Empty()) {
         const TTree::TNode *root = tree.GetRoot();
+        cout << "root: " << (root->Key.Value) << endl;
         tree.SimpleDelete(root);
     }
 
-    // Printing tree content
-    for (TCPNodes::const_iterator iter = nodes.begin(); iter != nodes.end(); ++iter)
-        PrintNode(**iter);
+    PrintTree(tree.GetRoot());
 }
 
 int main( int argc, char** argv ) {

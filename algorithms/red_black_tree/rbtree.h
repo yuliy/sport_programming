@@ -9,7 +9,7 @@ public:
     explicit TRBTException(const std::string &descr) : Descr(descr) {}
     explicit TRBTException(const char *descr) : Descr(descr) {}
     ~TRBTException() throw() {}
-    const char *what() throw() { return Descr.c_str(); }
+    const char *what() const throw() { return Descr.c_str(); }
 };
 
 /**
@@ -119,6 +119,13 @@ public: // TODO
         TNode *z = const_cast<TNode*>(zz);
         if (z == NULL)
             throw TRBTException("TRBTree<T>::SimpleDelete received z == NULL!");
+
+        /*
+        if (z == Root && Root->Left == NULL && Root->Right == NULL) {
+            Root = 0;
+            delete z;
+        }
+        */
 
         if (z->Left == NULL)
             Transplant(z, z->Right);
