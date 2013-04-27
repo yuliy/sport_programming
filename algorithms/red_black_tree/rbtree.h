@@ -37,6 +37,11 @@ public:
             , Key(T()) {
         }
 
+        explicit TNode(const T &key)
+            : TNode() {
+            Key = key;
+        }
+
         TNode(EColour colour, TNode *parent, TNode *left, TNode *right, const T &key)
             : Colour(colour)
             , Parent(parent)

@@ -13,10 +13,15 @@
 #include "tools.h"
 
 using namespace std;
+using namespace ystd;
+
+static void TestRBTree() {
+    //TRBTree<
+}
 
 int main( int argc, char** argv ) {
     try {
-        //
+        TestRBTree();
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
