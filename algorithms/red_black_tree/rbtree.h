@@ -129,13 +129,6 @@ public: // TODO
         if (z == NULL)
             throw TRBTException("TRBTree<T>::SimpleDelete received z == NULL!");
 
-        /*
-        if (z == Root && Root->Left == NULL && Root->Right == NULL) {
-            Root = 0;
-            delete z;
-        }
-        */
-
         if (z->Left == NULL)
             Transplant(z, z->Right);
         else if (z->Right == NULL)
