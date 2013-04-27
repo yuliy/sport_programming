@@ -115,7 +115,8 @@ public: // TODO
     /**
       * Deletes element z from the binary search tree without rebalancing the tree
       */
-    void SimpleDelete(TNode *z) {
+    void SimpleDelete(const TNode *zz) {
+        TNode *z = const_cast<TNode*>(zz);
         if (z == NULL)
             throw TRBTException("TRBTree<T>::SimpleDelete received z == NULL!");
 
@@ -124,7 +125,7 @@ public: // TODO
         else if (z->Right == NULL)
             Transplant(z, z->Left);
         else {
-            const TNode *y = Minimum(z->Right);
+            TNode *y = const_cast<TNode*>( Minimum(z->Right) );
             if (y->Parent != z) {
                 Transplant(y, y->Right);
                 y->Right = z->Right;
@@ -134,12 +135,22 @@ public: // TODO
             y->Left = z->Left;
             y->Left->Parent = y;
         }
+
+        delete z;
     }
 public:
     TRBTree() : Root(0) {}
     ~TRBTree() {
         if (this->Root != NULL)
             Destroy(this->Root);
+    }
+
+    const TNode *GetRoot() const {
+        return Root;
+    }
+
+    bool Empty() const {
+        return Root == NULL;
     }
 
     /**

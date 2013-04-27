@@ -66,6 +66,15 @@ static void TestRBTree() {
     cout << "Tree elements in descending order:" << endl;
     for (const TTree::TNode *node = tree.Maximum(); node; node = tree.Predecessor(node))
         cout << node->Key.Value << endl;
+
+    while (!tree.Empty()) {
+        const TTree::TNode *root = tree.GetRoot();
+        tree.SimpleDelete(root);
+    }
+
+    // Printing tree content
+    for (TCPNodes::const_iterator iter = nodes.begin(); iter != nodes.end(); ++iter)
+        PrintNode(**iter);
 }
 
 int main( int argc, char** argv ) {
