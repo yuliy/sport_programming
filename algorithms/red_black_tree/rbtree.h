@@ -149,7 +149,7 @@ public: // TODO
     }
 
     /**
-      *        Rotations:
+      * Rotations:
       *
       *       |                           |
       *       y                           x
