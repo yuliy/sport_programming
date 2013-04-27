@@ -43,6 +43,7 @@ static void PrintNode(const TTree::TNode &node) {
 }
 
 static void TestRBTree() {
+    // Creating random tree
     TTree tree;
     TCPNodes nodes;
     for (int i = 0; i < 10; ++i) {
@@ -52,9 +53,19 @@ static void TestRBTree() {
         tree.SimpleInsert(node);
     }
 
-    for (TCPNodes::const_iterator iter = nodes.begin(); iter != nodes.end(); ++iter) {
+    // Printing tree content
+    for (TCPNodes::const_iterator iter = nodes.begin(); iter != nodes.end(); ++iter)
         PrintNode(**iter);
-    }
+
+    // Printing tree in ascending order
+    cout << "Tree elements in ascending order:" << endl;
+    for (const TTree::TNode *node = tree.Minimum(); node; node = tree.Successor(node))
+        cout << node->Key.Value << endl;
+
+    // Printing tree in descending order
+    cout << "Tree elements in descending order:" << endl;
+    for (const TTree::TNode *node = tree.Maximum(); node; node = tree.Predecessor(node))
+        cout << node->Key.Value << endl;
 }
 
 int main( int argc, char** argv ) {

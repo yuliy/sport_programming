@@ -162,6 +162,13 @@ public:
     }
 
     /**
+      * Returns node with a minimum key in a whole tree
+      */
+    const TNode *Minimum() const {
+        return Minimum(Root);
+    }
+
+    /**
       * Returns node with a maximum key in a sub-tree with root x
       */
     const TNode *Maximum(const TNode *x) const {
@@ -169,6 +176,13 @@ public:
             while (x->Right != NULL)
                 x = x->Right;
         return x;
+    }
+
+    /**
+      * Returns node with a maximum key in a whole tree
+      */
+    const TNode *Maximum() const {
+        return Maximum(Root);
     }
 
     /**
