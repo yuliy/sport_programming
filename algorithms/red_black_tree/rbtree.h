@@ -1,10 +1,5 @@
 #pragma once
 
-enum EColour {
-    C_BLACK,
-    C_RED,
-};
-
 template<typename T>
 class TRBTree {
 private:
@@ -13,6 +8,11 @@ private:
     TRBTree(const TRBTree&); // TODO
     TRBTree& operator=(const TRBTree&); // TODO
 public:
+    enum EColour {
+        C_BLACK,
+        C_RED,
+    };
+
     //template<typename T>
     struct TNode {
         EColour Colour;
@@ -100,16 +100,16 @@ public:
     }
 
     /**
-      *
+      * Inserts element z into the binary search tree without rebalancing the tree
       */
-    void Insert(TNode *z) {
+    void SimpleInsert(TNode *z) {
         // TODO
     }
 
     /**
-      * Delete
+      * Deletes element z from the binary search tree without rebalancing the tree
       */
-    void Delete(TNode *z) {
+    void SimpleDelete(TNode *z) {
         // TODO
     }
 };
