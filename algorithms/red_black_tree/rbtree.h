@@ -295,7 +295,7 @@ public:
     }
 
     /**
-      * Insert node into the tree and rebalances the tree
+      * Inserts node into the tree and rebalances the tree
       */
     void Insert(TNode *z) {
         TNode *y = NULL;
@@ -317,5 +317,12 @@ public:
         z->Colour = C_RED;
 
         InsertFixup(z);
+    }
+
+    /**
+      * Deletes node from the tree and rebalances the tree
+      */
+    void Delete(TNode *z) {
+        // TODO
     }
 };
