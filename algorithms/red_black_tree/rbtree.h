@@ -190,6 +190,20 @@ public: // TODO
         x->Right = y;
         y->Parent = x;
     }
+
+    /**
+      * Implements rebalancing the tree after calling Insert procedure
+      */
+    void InsertFixup(TNode *x) {
+        // TODO
+    }
+
+    /**
+      * Implements rebalancing the tree after calling Delete procedure
+      */
+    void DeleteFixup(TNode *x) {
+        // TODO
+    }
 public:
     TRBTree() : Root(0) {}
     ~TRBTree() {
@@ -278,5 +292,30 @@ public:
             y = y->Parent;
         }
         return y;
+    }
+
+    /**
+      * Insert node into the tree and rebalances the tree
+      */
+    void Insert(TNode *z) {
+        TNode *y = NULL;
+        TNode *x = this->Root;
+        while (x != NULL) {
+            y = x;
+            x = (z->Key < x->Key) ? x->Left : x->Right;
+        }
+        z->Parent = y;
+        if (y == NULL)
+            this->Root = z;
+        else if (z->Key < y->Key)
+            y->Left = z;
+        else
+            y->Right = z;
+
+        z->Left = NULL;
+        z->Right = NULL;
+        z->Colour = C_RED;
+
+        InsertFixup(z);
     }
 };
