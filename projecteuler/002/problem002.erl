@@ -1,12 +1,13 @@
 -module(problem002).
--export([fib/1]).
+-export([solve/1, fib_ex/4]).
 
-fib_ex(1) -> {1, 0};
-fib_ex(2) -> {1, 1};
-fib_ex(Num) ->
-    {P, PP} = fib_ex(Num-1),
-    {P + PP, P}.
+fib_ex(Max, Sum, P, PP) ->
+    Next = P + PP,
+    if
+        Next < Max, Next rem 2 == 0 -> fib_ex(Max, Next + Sum, Next, P);
+        Next < Max, Next rem 2 == 1 -> fib_ex(Max, Sum, Next, P);
+        Next >= Max -> Sum
+    end.
 
-fib(N) ->
-    {P, _PP} = fib_ex(N),
-    P.
+solve(Max) ->
+    fib_ex(Max, 0, 1, 1).
