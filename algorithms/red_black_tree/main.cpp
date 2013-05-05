@@ -65,7 +65,7 @@ static void TestRBTree() {
     for (int i = 0; i < 10; ++i) {
         TFoo foo(rand() % 100);
         TTree::TNode *node = new TTree::TNode(foo);
-        tree.SimpleInsert(node);
+        tree.Insert(node);
     }
 
     PrintTree(tree.GetRoot());
@@ -83,7 +83,7 @@ static void TestRBTree() {
     while (!tree.Empty()) {
         const TTree::TNode *root = tree.GetRoot();
         cout << "root: " << (root->Key.Value) << endl;
-        tree.SimpleDelete(root);
+        tree.Delete(root);
     }
 
     PrintTree(tree.GetRoot());

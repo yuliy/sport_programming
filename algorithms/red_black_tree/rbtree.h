@@ -83,6 +83,7 @@ public: // TODO
     /**
       * Inserts element z into the binary search tree without rebalancing the tree
       */
+    /*
     void SimpleInsert(TNode *z) {
         if (z == NULL)
             throw TRBTException("TRBTree<T>::SimpleInsert received z == NULL!");
@@ -101,11 +102,13 @@ public: // TODO
         else
             y->Right = z;
     }
+    */
 
     /**
       * Replaces u with v, assuming that v is a child of u.
       * Warning! u->Left and u->Right are not initialized.
       */
+    /*
     void Transplant(TNode *u, TNode *v) {
         if (u == NULL)
             throw TRBTException("TRBTree<T>::Transplant received u == NULL!");
@@ -120,10 +123,12 @@ public: // TODO
         if (v != NULL)
             v->Parent = u->Parent;
     }
+    */
 
     /**
       * Deletes element z from the binary search tree without rebalancing the tree
       */
+    /*
     void SimpleDelete(const TNode *zz) {
         TNode *z = const_cast<TNode*>(zz);
         if (z == NULL)
@@ -147,6 +152,7 @@ public: // TODO
 
         delete z;
     }
+    */
 
     /**
       * Rotations:
@@ -194,14 +200,42 @@ public: // TODO
     /**
       * Implements rebalancing the tree after calling Insert procedure
       */
-    void InsertFixup(TNode *x) {
-        // TODO
+    void InsertFixup(TNode *z) {
+        if (this->Root == z) {
+            z->Colour = C_BLACK;
+            return;
+        }
+
+        while (z->Parent && (z->Parent.Colour == C_RED)) {
+            if (z->Parent == z->Parent->Parent->Left) {
+                TNode *y = z->Parent->Parent->Right;
+                if (y->Colour == C_RED) {
+                    z->Parent->Colour = C_BLACK;
+                    y->Colour = C_BLACK;
+                    z->Parent->Parent->Colour = RED;
+                    z = z->Parent->Parent;
+                } else {
+                    if (z == z->Parent->Right) {
+                        z = z->Parent;
+                        LeftRotate(z);
+                    }
+
+                    z->Parent->Colour = C_BLACK;
+                    z->Parent->Parent->Colour = C_RED;
+                    RightRotate(z->Parent->Parent);
+                }
+            } else {
+                // TODO
+            }
+        }
+
+        this->Root->Colour = C_BLACK;
     }
 
     /**
       * Implements rebalancing the tree after calling Delete procedure
       */
-    void DeleteFixup(TNode *x) {
+    void DeleteFixup(TNode *z) {
         // TODO
     }
 public:
@@ -322,7 +356,7 @@ public:
     /**
       * Deletes node from the tree and rebalances the tree
       */
-    void Delete(TNode *z) {
+    void Delete(const TNode *z) {
         // TODO
     }
 };
