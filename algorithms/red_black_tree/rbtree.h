@@ -175,8 +175,8 @@ public: // TODO
         x->Parent = y;
     }
 
-    void RightRotate(TNode *x) {
-        TNode *y = x->Parent;
+    void RightRotate(TNode *y) {
+        TNode *x = y->Left;
         y->Left = x->Right;
         if (x->Right != NULL)
             x->Right->Parent = y;
