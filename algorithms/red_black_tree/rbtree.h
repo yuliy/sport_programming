@@ -206,13 +206,13 @@ public: // TODO
             return;
         }
 
-        while (z->Parent && (z->Parent.Colour == C_RED)) {
+        while (z->Parent && (z->Parent->Colour == C_RED)) {
             if (z->Parent == z->Parent->Parent->Left) {
                 TNode *y = z->Parent->Parent->Right;
                 if (y->Colour == C_RED) {
                     z->Parent->Colour = C_BLACK;
                     y->Colour = C_BLACK;
-                    z->Parent->Parent->Colour = RED;
+                    z->Parent->Parent->Colour = C_RED;
                     z = z->Parent->Parent;
                 } else {
                     if (z == z->Parent->Right) {
