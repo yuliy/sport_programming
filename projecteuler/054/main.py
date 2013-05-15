@@ -34,14 +34,29 @@ name2cost = {
 }
 
 def convert_hand(hand):
-    return [(name2cost[card[0]], card[1]) for card in hand]
+    res = [(name2cost[card[0]], card[1]) for card in hand]
+    return sorted(res, key = lambda c: c[0])
+
+def IsStraight(hand):
+    first = hand[0][0]
+    for i in xrange(1, 5):
+        if hand[i][0] != (first+i):
+            return False
+    return True
+
+def IsFlush(hand):
+    first = hand[0][1]
+    for i in xrange(1, 5):
+        if hand[i][1] != first:
+            return False
+    return True
 
 def main():
     ifile = open('poker.txt', 'r')
     for line in ifile:
         cards = line.split('\n')[0].split(' ')
-        hand1 = sorted(cards[0:5])
-        hand2 = sorted(cards[5:])
+        hand1 = cards[0:5]
+        hand2 = cards[5:]
 
         print '-----------------'
         print 'src="%s"' % line.split('\n')[0]
