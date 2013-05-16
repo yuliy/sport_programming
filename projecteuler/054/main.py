@@ -1,21 +1,6 @@
 #!/usr/bin/env python
 
-"""
-In the card game poker, a hand consists of five cards and are ranked, from lowest to highest, in the following way:
-
-High Card:          Highest value card.
-One Pair:           Two cards of the same value.
-Two Pairs:          Two different pairs.
-Three of a Kind:    Three cards of the same value.
-Straight:           All cards are consecutive values.
-Flush:              All cards of the same suit.
-Full House:         Three of a kind and a pair.
-Four of a Kind:     Four cards of the same value.
-Straight Flush:     All cards are consecutive values of same suit.
-Royal Flush:        Ten, Jack, Queen, King, Ace, in same suit.
-The cards are valued in the order:
-2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace.
-"""
+DEBUG_LOG = False
 
 HIGH_CARD = 0
 ONE_PAIR = 1
@@ -57,24 +42,6 @@ name2cost = {
     'A': 14,
 }
 
-"""
-name2cost = {
-    '2': '2',
-    '3': '3',
-    '4': '4',
-    '5': '5',
-    '6': '6',
-    '7': '7',
-    '8': '8',
-    '9': '9',
-    'T': 'A',
-    'J': 'B',
-    'Q': 'C',
-    'K': 'D',
-    'A': 'E',
-}
-"""
-
 def convert_hand(hand):
     res = [(name2cost[card[0]], card[1]) for card in hand]
     return sorted(res, key = lambda c: c[0], reverse = True)
@@ -82,7 +49,7 @@ def convert_hand(hand):
 def IsStraight(hand):
     first = hand[0][0]
     for i in xrange(1, 5):
-        if hand[i][0] != (first+i):
+        if hand[i][0] != (first-i):
             return False
     return True
 
@@ -190,79 +157,99 @@ def Hand2Str(hand):
         13: 'D',
         14: 'E',
     }
-    res = ''
-    for card in hand:
-        res += cost2char[card[0]]
-        res += card[1]
-    return res
+    return [cost2char[card[0]] for card in hand]
 
-def SolveCollision(r, h1, h2):
-    s1 = Hand2Str(h1)
-    s2 = Hand2Str(h2)
-
-    return 1 if s1 > s1 else 2
-
-    if r == STRAIGHT_FLUSH:
-        return 1 if h1[0][0] > h2[0][0] else 2
+def NormalizeHand(r, h):
+    if r in [STRAIGHT_FLUSH, FLUSH, STRAIGHT, HIGH_CARD]:
+        return h[:]
 
     if r == FOUR_OF_A_KIND:
-        pass
+        if h[0][0] == h[1][0]:
+            return h[:]
+        return h[1:] + h[0:1]
 
     if r == FULL_HOUSE:
-        pass
-
-    if r == FLUSH:
-        pass
-
-    if r == STRAIGHT:
-        pass
+        return h[:]
+        if h[1][0] == h[2][0]:
+            return h[:]
+        return h[2:] + h[0:2]
 
     if r == THREE_OF_A_KIND:
-        pass
+        if h[1][0] == h[2][0] and h[2][0] == h[3][0]:
+            return h[1:4] + h[0:1] + h[4:]
+        if h[2][0] == h[3][0] and h[3][0] == h[4][0]:
+            return h[2:] + h[0:2]
+        return h[:]
 
     if r == TWO_PAIRS:
-        pass
+        if h[0][0] == h[1][0] and h[3][0] == h[4][0]:
+            return h[0:2] + h[3:] + h[2:3]
+        if h[1][0] == h[2][0] and h[3][0] == h[4][0]:
+            return h[1:] + h[0:1]
+        return h[:]
 
     if r == ONE_PAIR:
-        pass
+        if h[1][0] == h[2][0]:
+            return h[1:3] + h[0:1] + h[3:]
+        if h[2][0] == h[3][0]:
+            return h[2:4] + h[0:2] + h[4:]
+        if h[3][0] == h[4][0]:
+            return h[3:] + h[0:3]
+        return h[:]
 
-    raise Exception('Failed solving collision!')
+    raise Exception('Failed normalizing hand!')
+
+def SolveCollision(r, h1, h2):
+    h1 = NormalizeHand(r, h1)
+    h2 = NormalizeHand(r, h2)
+    s1 = Hand2Str(h1)
+    s2 = Hand2Str(h2)
+    if DEBUG_LOG:
+        print 'normalized h1: %r' % h1
+        print 'normalized h2: %r' % h2
+        print 's1=%s' % s1
+        print 's2=%s' % s2
+
+    return 1 if s1 > s2 else 2
 
 def main():
     ifile = open('poker.txt', 'r')
     p1wins = 0
+    num = 0
     for line in ifile:
         cards = line.split('\n')[0].split(' ')
-        hand1 = cards[0:5]
-        hand2 = cards[5:]
-
-        print '============================================'
-        print 'src="%s"' % line.split('\n')[0]
-        print 'hand1: %r' % hand1
-        print 'hand2: %r' % hand2
-
-        print '--------------------------------------------'
-        hand1 = convert_hand(hand1)
-        hand2 = convert_hand(hand2)
-        print 'hand1: %r' % hand1
-        print 'hand2: %r' % hand2
-        print '--------------------------------------------'
+        hand1 = convert_hand(cards[0:5])
+        hand2 = convert_hand(cards[5:])
         (r1, h1) = CalcCombination(hand1)
         (r2, h2) = CalcCombination(hand2)
-        print (rank2name[r1], h1)
-        print (rank2name[r2], h2)
+
+        if DEBUG_LOG:
+            print '============================================'
+            print 'num=%d' % num
+            print 'src="%s"' % line.split('\n')[0]
+            print 'hand1: %r' % hand1
+            print 'hand2: %r' % hand2
+
+            print '--------------------------------------------'
+            print 'hand1: %r' % hand1
+            print 'hand2: %r' % hand2
+            print '--------------------------------------------'
+            print (rank2name[r1], h1)
+            print (rank2name[r2], h2)
 
         winner = None
         if r1 != r2:
             winner = 1 if r1 > r2 else 2
         else:
+            if DEBUG_LOG:
+                print 'INFO: collision!'
             winner = SolveCollision(r1, hand1, hand2)
         if winner == 1:
             p1wins += 1
         print 'winner: %d' % winner
-        print ''
+        num += 1
 
-    print 'Answer: %d' % p1wins
+    print '\n\tAnswer: %d' % p1wins
 
 if __name__ == '__main__':
     main()
