@@ -17,6 +17,17 @@ The cards are valued in the order:
 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace.
 """
 
+HIGH_CARD = 0
+ONE_PAIR = 1
+TWO_PAIRS = 2
+THREE_OF_A_KIND = 3
+STRAIGHT = 4
+FLUSH = 5
+FULL_HOUSE = 6
+FOUR_OF_A_KIND = 7
+STRAIGHT_FLUSH = 8
+ROYAL_FLUSH = 9
+
 name2cost = {
     '2': 2,
     '3': 3,
@@ -35,7 +46,7 @@ name2cost = {
 
 def convert_hand(hand):
     res = [(name2cost[card[0]], card[1]) for card in hand]
-    return sorted(res, key = lambda c: c[0])
+    return sorted(res, key = lambda c: c[0], reverse = True)
 
 def IsStraight(hand):
     first = hand[0][0]
@@ -50,6 +61,54 @@ def IsFlush(hand):
         if hand[i][1] != first:
             return False
     return True
+
+def IsFourOfAKind(h):
+    f = h[0][0]
+    if f == h[1][0] and f == h[2][0] and f == h[3][0]:
+        return True
+
+    f = h[1][0]
+    if f == h[2][0] and f == h[3][0] and f == h[4][0]:
+        return True
+
+    return False
+
+def IsFullHouse(h):
+    # 2 and 3
+    if h[0][0] == h[1][0] and h[2][0] == h[3][0] and h[3][0] == h[4][0]:
+        return True
+
+    # 3 and 2
+    if h[0][0] == h[1][0] and h[1][0] == h[2][0] and h[3][0] == h[4][0]:
+        return True
+
+    return False
+
+def CalcCombination(hand):
+    fl = IsFlush(hand)
+    st = IsStraight(hand)
+
+    if fl and st:
+        return (ROYAL_FLUSH, hand) if hand[0] == 10 else (STRAIGHT_FLUSH, hand)
+
+    if IsFourOfAKind(hand):
+        if hand[0][0] != hand[1][0]:
+            h = hand[1:]
+            h.append(h[0])
+            return (FOUR_OF_A_KIND, h)
+        return (FOUR_OF_A_KIND, hand)
+
+    if IsFullHouse(hand):
+        if hand[1][0] != hand[2][0]:
+            h = hand[2:] + h[0:3]
+            return (FULL_HOUSE, h)
+        return (FULL_HOUSE, hand)
+
+    if fl:
+        return (FLUSH, hand)
+
+    if st:
+        return (STRAIGHT, hand)
 
 def main():
     ifile = open('poker.txt', 'r')
