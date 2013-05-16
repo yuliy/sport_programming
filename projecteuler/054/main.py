@@ -28,6 +28,19 @@ FOUR_OF_A_KIND = 7
 STRAIGHT_FLUSH = 8
 ROYAL_FLUSH = 9
 
+rank2name = {
+    0: 'HIGH_CARD',
+    1: 'ONE_PAIR',
+    2: 'TWO_PAIRS',
+    3: 'THREE_OF_A_KIND',
+    4: 'STRAIGHT',
+    5: 'FLUSH',
+    6: 'FULL_HOUSE',
+    7: 'FOUR_OF_A_KIND',
+    8: 'STRAIGHT_FLUSH',
+    9: 'ROYAL_FLUSH',
+}
+
 name2cost = {
     '2': 2,
     '3': 3,
@@ -84,24 +97,53 @@ def IsFullHouse(h):
 
     return False
 
+def IsThreeOfAKind(h):
+    if h[0][0] == h[1][0] and h[1][0] == h[2][0]:
+        return True
+    if h[1][0] == h[2][0] and h[2][0] == h[3][0]:
+        return True
+    if h[2][0] == h[3][0] and h[3][0] == h[4][0]:
+        return True
+    return False
+
+def IsTwoPairs(h):
+    if h[0][0] == h[1][0] and h[2][0] == h[3][0]:
+        return True
+    if h[0][0] == h[1][0] and h[3][0] == h[4][0]:
+        return True
+    if h[1][0] == h[2][0] and h[3][0] == h[4][0]:
+        return True
+    return False
+
+def IsPair(h):
+    if h[0][0] == h[1][0]:
+        return True
+    if h[1][0] == h[2][0]:
+        return True
+    if h[2][0] == h[3][0]:
+        return True
+    if h[3][0] == h[4][0]:
+        return True
+    return False
+
 def CalcCombination(hand):
     fl = IsFlush(hand)
     st = IsStraight(hand)
 
     if fl and st:
-        return (ROYAL_FLUSH, hand) if hand[0] == 10 else (STRAIGHT_FLUSH, hand)
+        return (ROYAL_FLUSH, hand) if hand[0] == 14 else (STRAIGHT_FLUSH, hand)
 
     if IsFourOfAKind(hand):
-        if hand[0][0] != hand[1][0]:
-            h = hand[1:]
-            h.append(h[0])
-            return (FOUR_OF_A_KIND, h)
+        #if hand[0][0] != hand[1][0]:
+        #    h = hand[1:]
+        #    h.append(h[0])
+        #    return (FOUR_OF_A_KIND, h)
         return (FOUR_OF_A_KIND, hand)
 
     if IsFullHouse(hand):
-        if hand[1][0] != hand[2][0]:
-            h = hand[2:] + h[0:3]
-            return (FULL_HOUSE, h)
+        #if hand[1][0] != hand[2][0]:
+        #    h = hand[2:] + h[0:3]
+        #    return (FULL_HOUSE, h)
         return (FULL_HOUSE, hand)
 
     if fl:
@@ -110,6 +152,21 @@ def CalcCombination(hand):
     if st:
         return (STRAIGHT, hand)
 
+    if IsThreeOfAKind(hand):
+        return (THREE_OF_A_KIND, hand)
+
+    if IsTwoPairs(hand):
+        return (TWO_PAIRS, hand)
+
+    if IsPair(hand):
+        return (ONE_PAIR, hand)
+
+    return (HIGH_CARD, hand)
+
+def SolveCollision(r, h1, h2):
+    if r == STRAIGHT_FLUSH:
+        pass
+
 def main():
     ifile = open('poker.txt', 'r')
     for line in ifile:
@@ -117,15 +174,28 @@ def main():
         hand1 = cards[0:5]
         hand2 = cards[5:]
 
-        print '-----------------'
+        print '============================================'
         print 'src="%s"' % line.split('\n')[0]
         print 'hand1: %r' % hand1
         print 'hand2: %r' % hand2
 
+        print '--------------------------------------------'
         hand1 = convert_hand(hand1)
         hand2 = convert_hand(hand2)
         print 'hand1: %r' % hand1
         print 'hand2: %r' % hand2
+        print '--------------------------------------------'
+        (r1, h1) = CalcCombination(hand1)
+        (r2, h2) = CalcCombination(hand2)
+        print (rank2name[r1], h1)
+        print (rank2name[r2], h2)
+
+        winner = None
+        if r1 != r2:
+            winner = 1 if r1 > r2 else 2
+        winner = SolveCollision(r1, hand1, hand2)
+        print 'winner: %d' % winner
+        print ''
 
 if __name__ == '__main__':
     main()
