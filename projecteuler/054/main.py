@@ -246,7 +246,11 @@ def main():
             winner = SolveCollision(r1, hand1, hand2)
         if winner == 1:
             p1wins += 1
-        print 'winner: %d' % winner
+
+        if DEBUG_LOG:
+            print 'winner: %d' % winner
+        else:
+            print str(winner)
         num += 1
 
     print '\n\tAnswer: %d' % p1wins
