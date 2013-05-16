@@ -57,6 +57,24 @@ name2cost = {
     'A': 14,
 }
 
+"""
+name2cost = {
+    '2': '2',
+    '3': '3',
+    '4': '4',
+    '5': '5',
+    '6': '6',
+    '7': '7',
+    '8': '8',
+    '9': '9',
+    'T': 'A',
+    'J': 'B',
+    'Q': 'C',
+    'K': 'D',
+    'A': 'E',
+}
+"""
+
 def convert_hand(hand):
     res = [(name2cost[card[0]], card[1]) for card in hand]
     return sorted(res, key = lambda c: c[0], reverse = True)
@@ -134,16 +152,9 @@ def CalcCombination(hand):
         return (ROYAL_FLUSH, hand) if hand[0] == 14 else (STRAIGHT_FLUSH, hand)
 
     if IsFourOfAKind(hand):
-        #if hand[0][0] != hand[1][0]:
-        #    h = hand[1:]
-        #    h.append(h[0])
-        #    return (FOUR_OF_A_KIND, h)
         return (FOUR_OF_A_KIND, hand)
 
     if IsFullHouse(hand):
-        #if hand[1][0] != hand[2][0]:
-        #    h = hand[2:] + h[0:3]
-        #    return (FULL_HOUSE, h)
         return (FULL_HOUSE, hand)
 
     if fl:
@@ -163,12 +174,63 @@ def CalcCombination(hand):
 
     return (HIGH_CARD, hand)
 
+def Hand2Str(hand):
+    cost2char = {
+        2: '2',
+        3: '3',
+        4: '4',
+        5: '5',
+        6: '6',
+        7: '7',
+        8: '8',
+        9: '9',
+        10: 'A',
+        11: 'B',
+        12: 'C',
+        13: 'D',
+        14: 'E',
+    }
+    res = ''
+    for card in hand:
+        res += cost2char[card[0]]
+        res += card[1]
+    return res
+
 def SolveCollision(r, h1, h2):
+    s1 = Hand2Str(h1)
+    s2 = Hand2Str(h2)
+
+    return 1 if s1 > s1 else 2
+
     if r == STRAIGHT_FLUSH:
+        return 1 if h1[0][0] > h2[0][0] else 2
+
+    if r == FOUR_OF_A_KIND:
         pass
+
+    if r == FULL_HOUSE:
+        pass
+
+    if r == FLUSH:
+        pass
+
+    if r == STRAIGHT:
+        pass
+
+    if r == THREE_OF_A_KIND:
+        pass
+
+    if r == TWO_PAIRS:
+        pass
+
+    if r == ONE_PAIR:
+        pass
+
+    raise Exception('Failed solving collision!')
 
 def main():
     ifile = open('poker.txt', 'r')
+    p1wins = 0
     for line in ifile:
         cards = line.split('\n')[0].split(' ')
         hand1 = cards[0:5]
@@ -193,9 +255,14 @@ def main():
         winner = None
         if r1 != r2:
             winner = 1 if r1 > r2 else 2
-        winner = SolveCollision(r1, hand1, hand2)
+        else:
+            winner = SolveCollision(r1, hand1, hand2)
+        if winner == 1:
+            p1wins += 1
         print 'winner: %d' % winner
         print ''
+
+    print 'Answer: %d' % p1wins
 
 if __name__ == '__main__':
     main()
