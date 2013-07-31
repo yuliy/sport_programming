@@ -40,6 +40,7 @@ static void Init() {
     inv_fact[0] = 1;
     for (size_t i = 1; i <= MAX_N; ++i) {
         fact[i] = fact[i-1] * i;
+        fact[i] %= MOD;
         inv_fact[i] = Pow(fact[i], MOD-2);
     }
 }
@@ -59,11 +60,11 @@ int main() {
     Init();
 
     int l = 0, g = 0, s = 0;
-    const int ax = c[k-1];
+    const int ak = c[k-1];
     for (int i = 0; i < n; ++i) {
-        if (c[i] < ax)
+        if (c[i] < ak)
             ++l;
-        else if (ax < c[i])
+        else if (ak < c[i])
             ++g;
         else
             ++s;
