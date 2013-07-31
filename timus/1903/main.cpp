@@ -47,7 +47,7 @@ static void Init() {
 static ui64 Comb(ui32 n, ui32 k) {
     if (n < k || k < 0)
         return 0;
-    return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD;
+    return (((fact[n] * inv_fact[k]) % MOD) * inv_fact[n-k]) % MOD;
 }
 
 int main() {
@@ -75,8 +75,10 @@ int main() {
             if ((sl+sr) >= s)
                 break;
 
-            const ui64 curRes =
-                ((Comb(s-1, sl+sr) * Comb(l, x-sl-1)) % MOD * Comb(g, t-x-sr)) % MOD;
+            ui64 curRes = Comb(s-1, sl+sr) * Comb(l, x-sl-1);
+            curRes %= MOD;
+            curRes *= Comb(g, t-x-sr);
+            curRes %= MOD;
 
             res += curRes;
             res %= MOD;
