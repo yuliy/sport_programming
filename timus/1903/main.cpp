@@ -59,7 +59,7 @@ int main() {
     Init();
 
     int l = 0, g = 0, s = 0;
-    const int ax = c[x-1];
+    const int ax = c[k-1];
     for (int i = 0; i < n; ++i) {
         if (c[i] < ax)
             ++l;
