@@ -22,14 +22,24 @@ int c[MAX_N+1];
 ui64 fact[MAX_N + 1];
 ui64 inv_fact[MAX_N + 1];
 
-static ui64 Pow(ui64 num) {
-
+static ui64 Pow(ui64 a, ui32 p) {
+    ui64 res = 1;
+    for (; p; p >>= 1) {
+        if (p & 1) {
+            res *= a;
+            res %= MOD;
+        }
+        a *= a;
+    }
+    return res;
 }
 
 static void Init() {
     fact[0] = 1;
-    for (int i = 1; i <= MAX_N; ++i) {
+    inv_fact[0] = 1;
+    for (size_t i = 1; i <= MAX_N; ++i) {
         fact[i] = fact[i-1] * i;
+        inv_fact[i] = Pow(i, MOD-2);
     }
 }
 
