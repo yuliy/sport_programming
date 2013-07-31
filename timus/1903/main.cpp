@@ -30,6 +30,7 @@ static ui64 Pow(ui64 a, ui32 p) {
             res %= MOD;
         }
         a *= a;
+        a %= MOD;
     }
     return res;
 }
@@ -43,14 +44,45 @@ static void Init() {
     }
 }
 
+static ui64 Comb(ui32 n, ui32 k) {
+    return fact[n] * inv_fact[k] * inv_fact[n-k];
+}
+
 int main() {
     scanf("%d\t%d", &n, &t);
-    vector<int> c(n);
     for (int i = 0; i < n; ++i)
         scanf("%d", &c[i]);
     scanf("%d\t%d", &k, &x);
 
     Init();
+
+    int l = 0, g = 0, s = 0;
+    int ax = c[x-1];
+    for (int i = 0; i < n; ++i) {
+        if (i == x)
+            continue;
+
+        if (c[i] < ax)
+            ++l;
+        else if (ax < c[i])
+            ++g;
+        else
+            ++s;
+    }
+
+    ui64 res = 0;
+    for (int sl = 0; sl < x; ++sl) {
+        for (int sr = 0; sr < (t-x); ++sr) {
+            if ((sl+sr) >= s)
+                continue;
+
+            const ui64 curRes = Comb(s-1, sl+sr) * Comb(l, x-sl-1) * Comb(g, t - x - sr);
+            res += curRes;
+            res %= MOD;
+        }
+    }
+
+    printf("%lld\n", res);
 
     return 0;
 }
