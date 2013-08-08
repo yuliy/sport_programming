@@ -36,8 +36,34 @@ public:
     }
 };
 
+template<typename TCont>
+void Print(TCont &cont) {
+    for (typename TCont::const_iterator iter = cont.begin(); iter != cont.end(); ++iter) {
+        cout << *iter << "\t" << endl;
+    }
+}
+
 static void Test() {
-    //
+    const int N = 8;
+    vector<ui32> v1;
+    for (int i = 0; i < N; ++i)
+        v1.push_back(rand());
+
+    vector<ui32> v2(v1);
+
+    TTimePrinter tp;
+    RadixSort(v1);
+    tp.PrintTime();
+    std::sort(v2.begin(), v2.end());
+    tp.PrintTime();
+
+    cout << "Correct: " << ((v1 == v2) ? "yes" : "no") << endl;
+    if (N < 1024) {
+        cout << "\tv1:" << endl;
+        Print(v1);
+        cout << "\tv2:" << endl;
+        Print(v2);
+    }
 }
 
 int main( int argc, char** argv ) {
