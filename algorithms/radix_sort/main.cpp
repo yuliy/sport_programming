@@ -44,7 +44,7 @@ void Print(TCont &cont) {
 }
 
 static void Test() {
-    const int N = 8;
+    const int N = 1000000;
     vector<ui32> v1;
     for (int i = 0; i < N; ++i)
         v1.push_back(rand());
