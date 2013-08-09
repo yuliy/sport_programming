@@ -17,7 +17,7 @@ using namespace ystd;
 typedef long long i64;
 
 static i64 GetTickCount() {
-    return clock() * 1000 / CLOCKS_PER_SEC;
+    return clock() * 1000000 / CLOCKS_PER_SEC;
 }
 
 class TTimePrinter {
@@ -32,7 +32,7 @@ public:
     }
 
     double GetTime() const {
-        return (GetTickCount() - Start) * 0.001;
+        return (GetTickCount() - Start) * 0.000001;
     }
 };
 
@@ -44,7 +44,7 @@ void Print(TCont &cont) {
 }
 
 static void Test() {
-    const int N = 1000000;
+    const int N = 1000;
     vector<ui32> v1;
     for (int i = 0; i < N; ++i)
         v1.push_back(rand());
@@ -58,7 +58,7 @@ static void Test() {
     tp.PrintTime();
 
     cout << "Correct: " << ((v1 == v2) ? "yes" : "no") << endl;
-    if (N < 1024) {
+    if (N < 10) {
         cout << "\tv1:" << endl;
         Print(v1);
         cout << "\tv2:" << endl;
