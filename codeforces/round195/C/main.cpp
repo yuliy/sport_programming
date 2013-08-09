@@ -12,13 +12,25 @@ using namespace std;
 
 typedef unsigned int ui32;
 
-const int MAX_N = 100000 + 10;
-ui32 a[MAX_N];
+int N;
+vector<ui32> a;
+
+static void ReadInput() {
+    scanf("%d", &N);
+
+    set<ui32> dict;
+    for (int i = 0; i < N; ++i) {
+        ui32 tmp;
+        scanf("%u", &tmp);
+        if (dict.find(tmp) == dict.end()) {
+            a.push_back(tmp);
+            dict.insert(tmp);
+        }
+    }
+}
 
 int main() {
-    int n;
-    scanf("%d", &n);
-    for (int i = 0; i < n; ++i)
-        scanf("%u", a + i);
+    ReadInput();
+    //
     return 0;
 }
