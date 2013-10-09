@@ -202,7 +202,7 @@ static void Test() {
     //const char inputFileName[] = "Arrah.bin";
     const char outputFileName[] = "output.bin";
 
-    const int size = 1024 * 1024 * 1024;
+    const int size = 256 * 1024 * 1024;
     const int maxChunkSize = 128 * 1024 * 1024;
 
     cout << "Generating input file..." << endl;
