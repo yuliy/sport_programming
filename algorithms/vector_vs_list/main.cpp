@@ -43,8 +43,8 @@ void Print(TCont &cont) {
     }
 }
 
-static void Test() {
-    const int N = 1000000;
+static void Test(int N) {
+    cout << "___N=" << N << "________________" << endl;
     vector<ui32> vec;
     for (int i = 0; i < N; ++i)
         vec.push_back(rand());
@@ -68,7 +68,8 @@ static void Test() {
 
 int main( int argc, char** argv ) {
     try {
-        Test();
+        for (int i = 100; i <= 1e9; i *= 10)
+            Test(i);
     } catch (const exception &xcp) {
         cout << "An std::exception occured in main routine: " << xcp.what() << endl;
     } catch (...) {
