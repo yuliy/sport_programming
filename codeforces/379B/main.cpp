@@ -26,6 +26,9 @@ int main() {
             --total;
         }
 
+        if (0 == total)
+            break;
+
         if (movingRight) {
             if (pos == n) {
                 --pos;
@@ -36,7 +39,7 @@ int main() {
                 printf("R");
             }
         } else {
-            if (pos == 0) {
+            if (pos == 1) {
                 ++pos;
                 printf("R");
                 movingRight = true;
