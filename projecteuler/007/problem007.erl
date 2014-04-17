@@ -3,6 +3,7 @@
 
 is_prime_ex(N, CurDivisor) when CurDivisor < N ->
     Rem = N rem CurDivisor,
+    %io:format("~p rem ~p = ~p~n", [N, CurDivisor, Rem]),
     case Rem of
         0 -> false;
         _ -> is_prime_ex(N, CurDivisor + 1)
@@ -11,7 +12,7 @@ is_prime_ex(N, CurDivisor) when CurDivisor =:= N ->
     true.
 
 is_prime(N) ->
-    MinDivisor = erlang:round( math:sqrt(N) ) - 1,
+    MinDivisor = erlang:round( math:sqrt(N) ),
     is_prime_ex(N, MinDivisor).
 
 slave_proc(MasterPID) ->
@@ -19,8 +20,11 @@ slave_proc(MasterPID) ->
     receive
         {stop} -> ChildPID;
         {calc_is_prime, N} ->
+            %io:format("[SLAVE]: {calc_is_prime, ~p}~n", [N]),
             Res = is_prime(N),
-            MasterPID ! {is_prime_result, ChildPID, N, Res};
+            MasterPID ! {is_prime_result, ChildPID, N, Res},
+            %io:format("[SLAVE]: Result: {is_prime_result, ~p, ~p, ~p}~n", [ChildPID, N, Res]),
+            slave_proc(MasterPID);
         Message ->
             io:format("[SLAVE]: Invalid message format: ~p~n", [Message])
     end.
@@ -43,11 +47,11 @@ calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, _MaxCalculatedN) when CurPrimeI
 calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIndex < IndexOfPrimeToFind ->
     receive
         {is_prime_result, ChildPID, N, true} ->
-            %io:format("N=~p CurPrimeIndex=~p~n", [N, CurPrimeIndex]),
+            %io:format("[MASTER]: N=~p CurPrimeIndex=~p MaxCalculatedN=~p ~n", [N, CurPrimeIndex, MaxCalculatedN]),
             ChildPID ! {calc_is_prime, MaxCalculatedN + 1},
             calc_prime(IndexOfPrimeToFind, CurPrimeIndex + 1, N + 1, MaxCalculatedN + 1);
         {is_prime_result, ChildPID, N, false} ->
-            %io:format("N=~p CurPrimeIndex=~p~n", [N, CurPrimeIndex]),
+            %io:format("[MASTER]: N=~p CurPrimeIndex=~p MaxCalculatedN=~p ~n", [N, CurPrimeIndex, MaxCalculatedN]),
             ChildPID ! {calc_is_prime, MaxCalculatedN + 1},
             calc_prime(IndexOfPrimeToFind, CurPrimeIndex + 0, N + 1, MaxCalculatedN + 1)
         %Message ->
@@ -60,7 +64,7 @@ calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIn
 
 main(_) ->
     io:fwrite("Running problem007...~n"),
-    IndexOfPrimeToFind = 6,
+    IndexOfPrimeToFind = 10001,
     PoolSize = 1000,
 
     MasterPID = self(),
