@@ -42,7 +42,7 @@ run_pool([SlavePID, Pool], N) ->
     true.
 
 calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, _MaxCalculatedN) when CurPrimeIndex =:= IndexOfPrimeToFind ->
-    N;
+    N - 1;
 calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIndex < IndexOfPrimeToFind ->
     receive
         {is_prime_result, ChildPID, N, true} ->
@@ -64,7 +64,7 @@ calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIn
 main(_) ->
     io:fwrite("Running problem007...~n"),
     IndexOfPrimeToFind = 10001,
-    PoolSize = 1000,
+    PoolSize = 100,
 
     MasterPID = self(),
     Pool = create_pool(MasterPID, PoolSize),
