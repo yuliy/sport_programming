@@ -16,17 +16,17 @@ is_prime(N) ->
     is_prime_ex(N, MinDivisor).
 
 calc_nth_prime(IndexOfPrimeToFind, CurIndex, N) when CurIndex =:= IndexOfPrimeToFind ->
-    N;
+    N - 1;
 calc_nth_prime(IndexOfPrimeToFind, CurIndex, N) when CurIndex < IndexOfPrimeToFind ->
-    case is_prime(N) of
-        true -> calc_nth_prime(IndexOfPrimeToFind, CurIndex + 1, N + 1);
-        false -> calc_nth_prime(IndexOfPrimeToFind, CurIndex, N + 1)
+    NewIndex = case is_prime(N) of
+        true -> CurIndex + 1;
+        false -> CurIndex
     end,
-    N.
+    calc_nth_prime(IndexOfPrimeToFind, NewIndex, N + 1).
 
 main(_) ->
     io:fwrite("Running problem007...~n"),
-    IndexOfPrimeToFind = 1001,
+    IndexOfPrimeToFind = 10001,
     Res = calc_nth_prime(IndexOfPrimeToFind, 1, 2),
     io:format("Answer: ~w~n", [Res]),
     io:fwrite("Done.~n").
