@@ -3,7 +3,6 @@
 
 is_prime_ex(N, CurDivisor) when CurDivisor < N ->
     Rem = N rem CurDivisor,
-    %io:format("~p rem ~p = ~p~n", [N, CurDivisor, Rem]),
     case Rem of
         0 -> false;
         _ -> is_prime_ex(N, CurDivisor + 1)
@@ -19,8 +18,11 @@ calc_nth_prime(IndexOfPrimeToFind, CurIndex, N) when CurIndex =:= IndexOfPrimeTo
     N - 1;
 calc_nth_prime(IndexOfPrimeToFind, CurIndex, N) when CurIndex < IndexOfPrimeToFind ->
     NewIndex = case is_prime(N) of
-        true -> CurIndex + 1;
-        false -> CurIndex
+        true ->
+            io:format("CurIndex=~p N=~p~n", [CurIndex+1, N]),
+            CurIndex + 1;
+        false ->
+            CurIndex
     end,
     calc_nth_prime(IndexOfPrimeToFind, NewIndex, N + 1).
 

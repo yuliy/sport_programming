@@ -3,7 +3,6 @@
 
 is_prime_ex(N, CurDivisor) when CurDivisor < N ->
     Rem = N rem CurDivisor,
-    %io:format("~p rem ~p = ~p~n", [N, CurDivisor, Rem]),
     case Rem of
         0 -> false;
         _ -> is_prime_ex(N, CurDivisor + 1)
@@ -47,7 +46,7 @@ calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, _MaxCalculatedN) when CurPrimeI
 calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIndex < IndexOfPrimeToFind ->
     receive
         {is_prime_result, ChildPID, N, true} ->
-            %io:format("[MASTER]: N=~p CurPrimeIndex=~p MaxCalculatedN=~p ~n", [N, CurPrimeIndex, MaxCalculatedN]),
+            io:format("[MASTER]: N=~p CurPrimeIndex=~p MaxCalculatedN=~p ~n", [N, CurPrimeIndex, MaxCalculatedN]),
             ChildPID ! {calc_is_prime, MaxCalculatedN + 1},
             calc_prime(IndexOfPrimeToFind, CurPrimeIndex + 1, N + 1, MaxCalculatedN + 1);
         {is_prime_result, ChildPID, N, false} ->
@@ -64,7 +63,7 @@ calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIn
 
 main(_) ->
     io:fwrite("Running problem007...~n"),
-    IndexOfPrimeToFind = 1001,
+    IndexOfPrimeToFind = 10001,
     PoolSize = 1000,
 
     MasterPID = self(),
