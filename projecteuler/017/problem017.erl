@@ -16,6 +16,7 @@ to_human_readable(Num) when Num < 10 ->
     end;
 to_human_readable(Num) when Num < 20 ->
     case Num of
+        10 -> "ten";
         11 -> "eleven";
         12 -> "twelve";
         13 -> "therteen";
@@ -27,8 +28,8 @@ to_human_readable(Num) when Num < 20 ->
         19 -> "nineteen"
     end;
 to_human_readable(Num) when Num < 100 ->
-    D = Num div 10,
-    HD = case D of
+    Decades = Num div 10,
+    SDecades = case Decades of
         2 -> "twenty";
         3 -> "thirty";
         4 -> "forty";
@@ -39,7 +40,19 @@ to_human_readable(Num) when Num < 100 ->
         9 -> "ninety"
     end,
     Suf = string:concat(" ", to_human_readable(Num rem 10)),
-    string:concat(HD, Suf).
+    string:concat(SDecades, Suf);
+to_human_readable(Num) when Num < 1000 ->
+    Hundreds = Num div 100,
+    SHundreds = string:concat(to_human_readable(Hundreds), " hundred"),
+    Rest = Num - Hundreds * 100,
+    case Rest of
+        0 -> SHundreds;
+        Rest ->
+            Tmp = string:concat(SHundreds, " and "),
+            string:concat(Tmp, to_human_readable(Rest))
+    end;
+to_human_readable(Num) when Num =:= 1000 ->
+    "one thousand".
 
 calc_size([H | Tail]) ->
     case H of
@@ -54,17 +67,13 @@ solve(N) ->
     Size = calc_size(Str),
     io:format("~p: ~p (size=~p)~n", [N, Str, Size]),
     case N of
-        1 -> N;
-        _ -> solve(N-1)
+        1 -> Size;
+        _ -> Size + solve(N-1)
     end.
-%solve(1) ->
-%    Str = to_human_readable(1),
-%    Size = calc_size(Str),
-%    io:format("~p: ~p (size=~p)~n", [1, Str, Size]).
 
 main(_) ->
     io:fwrite("Running problem017...~n"),
-    N = 99,
+    N = 1000,
     Res = solve(N),
     io:format("Answer: ~w~n", [Res]),
     io:fwrite("Done.~n").
