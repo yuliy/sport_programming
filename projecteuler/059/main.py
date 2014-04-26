@@ -2,10 +2,12 @@
 
 def try_hack(numbers, key):
     #dnumbers = [chr(num ^ key) for num in numbers]
+    res = 0
     dnumbers = []
     pos = 0
     for num in numbers:
         dn = numbers[pos] ^ ord(key[pos % 3])
+        res += dn
         dnumbers.append(chr(dn))
         pos += 1
 
@@ -21,6 +23,7 @@ def try_hack(numbers, key):
         print '_______________________________'
         #print 'ratio: %f' % ratio
         print 'key=%s' % key
+        print 'sum=%d' % res
         print text
 
 def main():
