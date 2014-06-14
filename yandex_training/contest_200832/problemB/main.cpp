@@ -37,14 +37,14 @@ int main() {
     }
 
     if (0 == a) {
-        cout << (N * (N+1) * zero_cnt - zero_cnt) << endl;
+        cout << (N * (N+1) * (long long)zero_cnt - (long long)zero_cnt * zero_cnt) << endl;
         return 0;
     }
 
-    int res = 0;
+    long long res = 0;
     for (auto iter = divisors.begin(); iter != divisors.end(); ++iter) {
         const int divisor = iter->first;
-        const int cnt = iter->second;
+        const long long cnt = iter->second;
         const int supplementDivisor = a / divisor;
         auto citer = divisors.find(supplementDivisor);
         if (citer != divisors.end()) {
