@@ -13,14 +13,6 @@ using namespace std;
 const long long MOD = 1000000007;
 
 /*
-int Pow(int a, int p) {
-    int res = 1;
-    for (; p; p >>= 1, a *= a)
-        if (p & 1)
-            res *= a;
-    return res;
-}
-
 long long Pow(long long a, int p) {
     long long res = 1;
     for (; p; p >>= 1, a *= a, a %= MOD) {
@@ -71,6 +63,7 @@ int main() {
     long long lcc = 0;
     long long gcc = 0;
     long long bcc = 0;
+
     long long tmp = 0;
     const char a = s[0];
     const char b = w[0];
@@ -81,6 +74,13 @@ int main() {
         ++bcc;
 
     for (int i = 1; i < n; ++i) {
+        cout << "===========================" << endl
+            << "i=" << i << endl
+            << "ncc=" << ncc << endl
+            << "lcc=" << lcc << endl
+            << "gcc=" << gcc << endl
+            << "bcc=" << bcc << endl;
+
         const char a = s[i];
         const char b = w[i];
         long long less, greater, any;
@@ -103,6 +103,13 @@ int main() {
             gcc = Mult(gcc, eq);
             bcc = Mult(bcc, eq);
         }
+
+        cout << "-------------------" << endl
+            << "i=" << i << endl
+            << "ncc=" << ncc << endl
+            << "lcc=" << lcc << endl
+            << "gcc=" << gcc << endl
+            << "bcc=" << bcc << endl;
     }
 
     cout << bcc << endl;
