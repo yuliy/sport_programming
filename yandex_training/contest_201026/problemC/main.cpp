@@ -18,12 +18,13 @@ int main() {
         return 0;
     }
 
+    if (0 !=  k)
     printf("%d ", k);
     for (int i = 2; i <= k; ++i) {
         printf("%d ", i-1);
     }
-    for (int i = k+1; k <= n; ++i) {
-        printf("%d", i);
+    for (int i = k+1; i <= n; ++i) {
+        printf("%d ", i);
     }
 
     return 0;
