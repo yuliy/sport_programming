@@ -10,7 +10,27 @@
 #include <algorithm>
 using namespace std;
 
-int main() {
+typedef unsigned long long ui64;
+typedef long long i64;
 
+int main() {
+    ui64 a, b;
+    cin >> a >> b;
+
+    int res = 1;
+    while (a && b && (a != b)) {
+        if (a > b) {
+            int delta = a / b;
+            a -= delta * b;
+            res += delta;
+        } else {
+            int delta = b / a;
+            b -= delta * a;
+            res += delta;
+        }
+        cout << a << " " << b << " : " << res << endl;
+    }
+
+    cout << res << endl;
     return 0;
 }
