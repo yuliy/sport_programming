@@ -13,22 +13,23 @@ using namespace std;
 int main() {
     int n, t;
     cin >> n >> t;
-    vector<int> a(n);
+    vector<int> a(n+1);
     for (int i = 0; i < n; ++i) {
         scanf("%d", &a[i]);
     }
 
-    const int max_last = a.size() - 1;
+    const int max_last = n - 1;
     int first = 0;
     int last = 0;
     int sum = a[0];
     int res = (sum <= t) ? 1 : 0;
 
+    //cout << "max_last=" << max_last << endl;
     for (;;) {
         int prev_first = first;
         int prev_last = last;
         if (sum > t) {
-            if (first < last || (first == last && last < max_last)) {
+            if (first < max_last) {
                 sum -= a[first];
                 ++first;
             }
@@ -38,13 +39,15 @@ int main() {
                 ++last;
                 sum += a[last];
             }
-        } else {
+        } else { // sum == t
             res = max(res, last - first + 1);
-            if (first < last)
+            if (first < max_last) {
+                sum -= a[first];
                 ++first;
+            }
         }
 
-        //cout << first << "\t" << last << endl;
+        //cout << first << "\t" << last << "\t" << sum << endl;
         if (prev_first == first && prev_last == last)
             break;
     }
