@@ -27,39 +27,34 @@ int main() {
     for (;;) {
         vector<int> newa;
         n = a.size();
+
         int res = 0;
-        int cur_len = 0;
-        EState state = ST_NONE;
         for (int i = 1; i < n; ++i) {
-            switch(state) {
-            case ST_NONE: {
-                    if (a[i-1] > a[i]) {
-                        state = ST_IN_SEQUENCE;
-                        cur_len = 1;
-                        newa.push_back(a[i-1]);
-                    }
-                } break;
-            case ST_IN_SEQUENCE: {
-                    if (a[i-1] < a[i]) {
-                        ++cur_len;
-                    } else {
-                        res = max(cur_len, res);
-                        state = ST_NONE;
-                    }
-                } break;
+            if (a[i-1] < a[i]) {
+                newa.push_back(a[i-1]);
+            } else {
+                newa.push_back(a[i-1]);
+                ++i;
+
+                for (; i < n && a[i-1] > a[i]; ++i) {
+                }
+                int len = 0;
+                for (; i < n && a[i-1] < a[i] && a[i] < newa.back(); ++i, ++len) {
+                }
+                res = max(res, len);
             }
         }
 
-        if (state == ST_IN_SEQUENCE) {
-            res = max(cur_len, res);
-        }
+        cout << "-------------------" << endl;
+        cout << "res: " << res << endl;
+        for (vector<int>::const_iterator it = newa.begin(); it != newa.end(); ++it)
+            cout << *it << " ";
+        cout << endl;
 
         if (newa.size() == a.size())
             break;
-
         global_res += res;
         a.swap(newa);
-        cout << res << endl;
     }
 
     cout << global_res << endl;
