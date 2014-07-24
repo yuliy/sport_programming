@@ -59,7 +59,7 @@ int main() {
 
         global_res += res;
         a.swap(newa);
-        //cout << res << endl;
+        cout << res << endl;
     }
 
     cout << global_res << endl;
