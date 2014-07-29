@@ -5,8 +5,11 @@ import math
 def is_prime(num):
     if num in [2, 3, 5, 7, 11, 13]:
         return True
-    min_div = math.trunc(num ** .5)
-    for divisor in xrange(min_div, num - 1):
+    if num % 2 == 0:
+        return False
+
+    max_div = math.trunc(num ** .5)
+    for divisor in xrange(3, max_div + 1, 2):
         if num % divisor == 0:
             return False
     return True

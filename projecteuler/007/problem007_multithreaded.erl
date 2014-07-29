@@ -1,18 +1,21 @@
 #!/usr/bin/env escript
 -export([main/1]).
 
-is_prime_ex(N, CurDivisor) when CurDivisor < N ->
+is_prime_ex(N, CurDivisor, MaxDivisor) when CurDivisor =< MaxDivisor ->
     Rem = N rem CurDivisor,
     case Rem of
         0 -> false;
-        _ -> is_prime_ex(N, CurDivisor + 1)
+        _ -> is_prime_ex(N, CurDivisor + 2, MaxDivisor)
     end;
-is_prime_ex(N, CurDivisor) when CurDivisor =:= N ->
+is_prime_ex(_, _, _) ->
     true.
 
+is_prime(N) when N rem 2 =:= 0 ->
+    false;
 is_prime(N) ->
-    MinDivisor = erlang:round( math:sqrt(N) ),
-    is_prime_ex(N, MinDivisor).
+    MaxDivisor = erlang:round( math:sqrt(N) ),
+    is_prime_ex(N, 3, MaxDivisor).
+
 
 slave_proc(MasterPID) ->
     ChildPID = self(),
@@ -46,7 +49,7 @@ calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, _MaxCalculatedN) when CurPrimeI
 calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIndex < IndexOfPrimeToFind ->
     receive
         {is_prime_result, ChildPID, N, true} ->
-            io:format("[MASTER]: N=~p CurPrimeIndex=~p MaxCalculatedN=~p ~n", [N, CurPrimeIndex, MaxCalculatedN]),
+            %io:format("[MASTER]: N=~p CurPrimeIndex=~p MaxCalculatedN=~p ~n", [N, CurPrimeIndex, MaxCalculatedN]),
             ChildPID ! {calc_is_prime, MaxCalculatedN + 1},
             calc_prime(IndexOfPrimeToFind, CurPrimeIndex + 1, N + 1, MaxCalculatedN + 1);
         {is_prime_result, ChildPID, N, false} ->
@@ -56,9 +59,9 @@ calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN) when CurPrimeIn
         %Message ->
         %    io:format("[MASTER]: Invalid message format: ~p~n", [Message])
     after
-            1 ->
-                %io:format("Ping~n"),
-                calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN)
+        1 ->
+            %io:format("Ping~n"),
+            calc_prime(IndexOfPrimeToFind, CurPrimeIndex, N, MaxCalculatedN)
     end.
 
 main(_) ->
