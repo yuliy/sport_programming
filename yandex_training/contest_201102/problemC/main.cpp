@@ -30,18 +30,41 @@ static void PrintGraph(const TAdjLists &g) {
     #endif
 }
 
+static void DFS_Visit(const TAdjLists &g, vector<bool> &visited, int u) {
+    visited[u] = true;
+    cout << u << endl;
+    const TAdjList &lst = g[u];
+    for (TAdjList::const_iterator iter = lst.begin(); iter != lst.end(); ++iter) {
+        const int v = *iter;
+        if (!visited[v]) {
+            DFS_Visit(g, visited, v);
+        }
+    }
+}
+
+static void DFS(const TAdjLists &g, vector<bool> &visited) {
+    const int n = g.size() - 1;
+    for (int u = 1; u <= n; ++u) {
+        if (!visited[u]) {
+            DFS_Visit(g, visited, u);
+        }
+    }
+}
+
 int main() {
     int n;
     cin >> n;
-    TAdjLists adjLists(n+1);
+    TAdjLists g(n+1);
     for (int i = 0; i < n; ++i) {
         int from, to;
         scanf("%d %d", &from, &to);
-        adjLists[from].push_back( to );
-        adjLists[to].push_back( from );
+        g[from].push_back( to );
+        g[to].push_back( from );
     }
 
-    PrintGraph(adjLists);
+    PrintGraph(g);
 
+    vector<bool> visited(n + 1);
+    DFS(g, visited);
     return 0;
 }
