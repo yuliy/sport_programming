@@ -49,7 +49,6 @@ int main() {
     int nc = 0;
     int cur_vertex = 1;
     vector<bool> visited(n+1);
-    //visited[cur_vertex] = true;
     for (int i = 1; i <= n; ++i) {
         const TAdjList &lst = adjLists[cur_vertex];
         bool found = false;
