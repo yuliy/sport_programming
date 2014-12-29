@@ -10,12 +10,47 @@
 #include <algorithm>
 using namespace std;
 
+//#define DEBUG
+
 int main() {
     int n, x;
     scanf("%d %d", &n, &x);
-    vector< pair<int, int> > moments(n);
+
+    int res = 0;
+    int pos = 1;
     for (int i = 0; i < n; ++i) {
-        scanf("%d %d", &moments[i].first, &moments[i].second);
+        int l, r;
+        scanf("%d %d", &l, &r);
+        const int dist = l - pos;
+        const int jumps = dist / x;
+        const int shift = jumps * x;
+#ifdef DEBUG
+        cout << "__________________________" << endl;
+        cout
+            << "pos=" << pos << endl
+            << "dist=" << dist << endl
+            << "shift=" << shift << endl
+            << "res=" << res << endl;
+#endif
+
+        pos += shift;
+
+#ifdef DEBUG
+        cout << endl
+            << "pos=" << pos << endl
+            << "res=" << res << endl;
+#endif
+
+        res += (r - pos + 1);
+        pos = r + 1;
+
+#ifdef DEBUG
+        cout << endl
+            << "pos=" << pos << endl
+            << "res=" << res << endl;
+#endif
     }
+
+    printf("%d\n", res);
     return 0;
 }
