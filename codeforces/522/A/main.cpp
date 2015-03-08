@@ -16,15 +16,14 @@ typedef vector<string> TReposters;
 typedef unordered_map<string, TReposters> TName2reposters;
 
 int dfs(const string& name, const TName2reposters& name2reposters, int curDepth) {
-    //cout << name << "\t" << curDepth << endl;
     TName2reposters::const_iterator it = name2reposters.find(name);
     if (it == name2reposters.end())
         return curDepth;
 
     const TReposters& reposters = it->second;
-    int res = curDepth;
+    int res = curDepth + 1;
     for (const auto& reposter : reposters) {
-        res = max(curDepth, dfs(reposter, name2reposters, curDepth + 1));
+        res = max(res, dfs(reposter, name2reposters, curDepth + 1));
     }
     return res;
 }
@@ -47,7 +46,6 @@ int main() {
         cin >> name1 >> name2 >> name2;
         make_lower(name1);
         make_lower(name2);
-        //cout << name1 << ":" << name2 << endl;
         name2reposters[name2].push_back(name1);
     }
 
