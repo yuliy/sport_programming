@@ -10,8 +10,46 @@
 #include <algorithm>
 using namespace std;
 
+typedef vector<int> TRow;
+typedef vector<TRow> TMat;
+
+static TMat ParseMat() {
+    TMat m;
+    for (int i = 0; i < 4; ++i) {
+        TRow r(4);
+        cin >> r[0] >> r[1] >> r[2] >> r[3];
+        m.push_back(r);
+    }
+    return m;
+}
+
 static string SolveSingleCase() {
-    return to_string(-1);
+    int firstRowIdx;
+    cin >> firstRowIdx;
+    const TMat& firstMat = ParseMat();
+    const TRow& firstRow = firstMat[firstRowIdx-1];
+
+    int secondRowIdx;
+    cin >> secondRowIdx;
+    const TMat& secondMat = ParseMat();
+    const TRow& secondRow = secondMat[secondRowIdx-1];
+
+    set<int> common;
+    for (auto f : firstRow) {
+        if (find(secondRow.begin(), secondRow.end(), f) != secondRow.end()) {
+            common.insert(f);
+        }
+    }
+
+    if (common.size() == 0) {
+        return "Volunteer cheated!";
+    }
+
+    if (common.size() > 1) {
+        return "Bad magician!";
+    }
+
+    return to_string( *common.begin() );
 }
 
 int main() {
