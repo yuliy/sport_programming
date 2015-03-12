@@ -10,9 +10,17 @@
 #include <algorithm>
 using namespace std;
 
+static string SolveSingleCase() {
+    return to_string(-1);
+}
+
 int main() {
     int numberOfTests = 0;
     cin >> numberOfTests;
+
+    for (int i = 0; i < numberOfTests; ++i) {
+        cout << "Case #" << i << ": " << SolveSingleCase() << endl;
+    }
 
     return 0;
 }
