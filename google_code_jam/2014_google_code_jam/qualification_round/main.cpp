@@ -18,7 +18,7 @@ int main() {
     int numberOfTests = 0;
     cin >> numberOfTests;
 
-    for (int i = 0; i < numberOfTests; ++i) {
+    for (int i = 1; i <= numberOfTests; ++i) {
         cout << "Case #" << i << ": " << SolveSingleCase() << endl;
     }
 
