@@ -62,6 +62,11 @@ public:
             throw logic_error("lb should be valid!");
         Start2ID.erase(lb);
 
+        cout << "---AddSplit" << endl
+            << "intervalStart: " << intervalStart << endl
+            << "intervalID: " << intervalID << endl
+            << "intervalLen: " << intervalLen << endl;
+
         //
         TLen2ID::iterator lenIter = FindInterval(intervalLen, intervalID);
         Len2ID.erase(lenIter);
