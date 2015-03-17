@@ -1,2 +1,2 @@
-gf11 main.cpp
+../../build.sh
 ./x < in1.txt

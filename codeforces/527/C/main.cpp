@@ -21,6 +21,7 @@ private:
     TLen2ID Len2ID;
 private:
     TLen2ID::iterator FindInterval(int len, int id) {
+        cout << "Searching for len=" << len << ", id=" << id << endl;
         auto range = Len2ID.equal_range(len);
         for (
             TLen2ID::iterator it = range.first;
@@ -39,10 +40,10 @@ public:
         : Total(total)
     {
         Start2ID.insert(make_pair(
-            0, total
+            Total, 0
         ));
         Len2ID.insert(make_pair(
-            total, 0
+            Total, 0
         ));
     }
 
@@ -62,7 +63,7 @@ public:
             throw logic_error("lb should be valid!");
         Start2ID.erase(lb);
 
-        cout << "---AddSplit" << endl
+        cout << "=====AddSplit" << endl
             << "intervalStart: " << intervalStart << endl
             << "intervalID: " << intervalID << endl
             << "intervalLen: " << intervalLen << endl;
@@ -85,6 +86,16 @@ public:
         Len2ID.insert(make_pair(
             intervalStart + intervalLen - x, id
         ));
+
+        cout << "---Start2ID:" << endl;
+        for (auto elem : Start2ID) {
+            cout << elem.first << "\t" << elem.second << endl;
+        }
+
+        cout << "---Len2ID:" << endl;
+        for (auto elem : Len2ID) {
+            cout << elem.first << "\t" << elem.second << endl;
+        }
     }
 };
 
