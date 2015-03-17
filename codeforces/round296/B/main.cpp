@@ -102,10 +102,21 @@ int main() {
     }
 
     if (commonFound) {
-        const int idx1 = find_char_pos(a, common) + 1;
-        const int idx2 = find_char_pos(b, common) + 1;
+        int idx1 = -1;
+        int idx2 = -1;
+        const int sz = a.size();
+        for (int i = 0; i < sz; ++i) {
+            if (a[i] == b[i])
+                continue;
+
+            if (a[i] == common)
+                idx1 = i;
+            if (b[i] == common)
+                idx2 = i;
+        }
+
         cout << (res.HemDist - 1) << endl
-            << idx1 << " " << idx2 << endl;
+            << (idx1 + 1) << " " << (idx2 + 1) << endl;
     } else {
         cout << res.HemDist << endl
             << "-1 -1" << endl;
