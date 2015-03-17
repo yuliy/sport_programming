@@ -16,12 +16,10 @@ struct TFoo {
     bool BFlags[26];
     bool PairFound;
     pair<int, int> Pair;
-    size_t LastDiffPairIdx;
 
     TFoo()
         : HemDist(0)
         , PairFound(false)
-        , LastDiffPairIdx( static_cast<size_t>(-1) )
     {
         for (int i = 0; i < 26; ++i) {
             AFlags[i] = BFlags[i] = false;
@@ -37,12 +35,13 @@ TFoo calc_hemming(const string& a, const string& b) {
         if (a[i] == b[i])
             continue;
 
-        res.LastDiffPairIdx = i;
-
         res.HemDist += 1;
 
         res.AFlags[ a[i] - 'a' ] = true;
         res.BFlags[ b[i] - 'a' ] = true;
+
+        if (res.PairFound)
+            continue;
 
         string p("  ");
         p[0] = a[i];
@@ -54,14 +53,25 @@ TFoo calc_hemming(const string& a, const string& b) {
             res.Pair = make_pair(it->second, i);
         } else {
             string invp("  ");
-            p[0] = b[i];
-            p[1] = a[i];
+            invp[0] = b[i];
+            invp[1] = a[i];
             para2idx.insert(make_pair(
                 invp, i
             ));
         }
     }
     return res;
+}
+
+int find_char_pos(const string& s, char ch) {
+    const int sz = s.size();
+    for (int i = 0; i < sz; ++i) {
+        if (s[i] == ch) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 int main() {
@@ -78,15 +88,27 @@ int main() {
 
     if (res.PairFound) {
         cout << (res.HemDist - 2) << endl
-            << res.Pair.first << " " << res.Pair.second << endl;
+            << (res.Pair.first + 1) << " " << (res.Pair.second + 1) << endl;
         return 0;
     }
 
+    bool commonFound = false;
+    char common = ' ';
     for (int i = 0; i < 26; ++i) {
         if (res.AFlags[i] && res.BFlags[i]) {
-            cout << (res.HemDist - 1) << endl
-                << i << " " << res.LastDiffPairIdx << endl;
+            commonFound = true;
+            common = 'a' + i;
         }
+    }
+
+    if (commonFound) {
+        const int idx1 = find_char_pos(a, common) + 1;
+        const int idx2 = find_char_pos(b, common) + 1;
+        cout << (res.HemDist - 1) << endl
+            << idx1 << " " << idx2 << endl;
+    } else {
+        cout << res.HemDist << endl
+            << "-1 -1" << endl;
     }
 
     return 0;
