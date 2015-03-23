@@ -32,7 +32,8 @@ int main() {
     for (int i = 1; i <= numberOfTests; ++i) {
         long double C, F, X;
         cin >> C >> F >> X;
-        cout << "Case #" << i << ": " << SolveSingleCase(C, F, X) << endl;
+        const long double res = SolveSingleCase(C, F, X);
+        printf("Case #%d: %f\n", i, static_cast<double>(res));
     }
 
     return 0;
