@@ -31,11 +31,7 @@ int main() {
     }
 
     int to_choose = k;
-    for (
-        TMap::iterator it = colour2count.begin();
-        it != colour2count.end();
-        ++it
-    ) {
+    for (TMap::iterator it = colour2count.begin(); it != colour2count.end(); ++it) {
         if (0 == to_choose)
             break;
         pr(it->first, 1);
@@ -43,11 +39,7 @@ int main() {
         --to_choose;
     }
 
-    for (
-        TMap::iterator it = colour2count.begin();
-        it != colour2count.end();
-        ++it
-    ) {
+    for (TMap::iterator it = colour2count.begin(); it != colour2count.end(); ++it) {
         if (0 == to_choose)
             break;
         if (it->second <= to_choose) {
