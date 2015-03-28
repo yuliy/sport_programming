@@ -1,6 +1,6 @@
 def main():
     t = int(input())
-    for _ in xrange(0, t):
+    for _ in range(0, t):
         x = int(input())
         y = int(input())
         z = int(input())
