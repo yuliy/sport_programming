@@ -32,19 +32,19 @@ int main() {
 
     int to_choose = k;
     for (
-        TMap::iterator iter it = colour2count.begin();
+        TMap::iterator it = colour2count.begin();
         it != colour2count.end();
         ++it
     ) {
         if (0 == to_choose)
             break;
-        pr(iter->first, 1);
+        pr(it->first, 1);
         it->second -= 1;
-        ++chosen;
+        --to_choose;
     }
 
     for (
-        TMap::iterator iter it = colour2count.begin();
+        TMap::iterator it = colour2count.begin();
         it != colour2count.end();
         ++it
     ) {
