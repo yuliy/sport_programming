@@ -1,11 +1,9 @@
-#!/usr/bin/env python
-
 def main():
-    t = int(raw_input())
+    t = int(input())
     for _ in xrange(0, t):
-        x = int(raw_input())
-        y = int(raw_input())
-        z = int(raw_input())
+        x = int(input())
+        y = int(input())
+        z = int(input())
         if x*y == z:
             print('Infinity')
         else:
