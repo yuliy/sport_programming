@@ -18,23 +18,18 @@ static string SolveSingleCase() {
     scanf("%d %d %d", &X, &R, &C);
     const int area = R * C;
 
-    if (1 == X) {
+    if ((X >= 7) || (area % X))
+        return "RICHARD";
+
+    if (X == 1)
         return "GABRIEL";
-    }
 
-    if (2 == X) {
-        return (area % 2) ? "RICHARD" : "GABRIEL";
-    }
+    if (X == 2)
+        return (area % X) ? "RICHARD" : "GABRIEL";
 
-    if (3 == X) {
-        return ((area % 3 == 0) && (R != 1) && (C != 1)) ? "GABRIEL" : "RICHARD";
-    }
-
-    if (4 == X) {
-        return ((4 == R && 4 == C) || (3 == R && 4 == C) || (4 == R && 3 == C)) ? "GABRIEL" : "RICHARD";
-    }
-
-    throw string("ooops!");
+    if (R > C)
+        swap(R, C);
+    return ((R >= (X-1)) && (C >= X)) ? "GABRIEL" : "RICHARD";
 }
 
 int main() {
