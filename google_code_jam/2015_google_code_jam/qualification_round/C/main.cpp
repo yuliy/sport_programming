@@ -27,7 +27,7 @@ struct TQuat {
     TQuat(bool minus, int val) : Minus(minus), Value(val) {}
 };
 
-TQuat Product(int a, int b) {
+static TQuat Product(int a, int b) {
     switch (a.Value) {
         case TQuat::E: {
             case TQuat::E: return TQuat(false, TQuat::E);
@@ -56,7 +56,7 @@ TQuat Product(int a, int b) {
     }
 }
 
-TQuat Product(TQuat a, TQuat b) {
+static TQuat Product(TQuat a, TQuat b) {
     TQuat res = Product(a.Value, b.Value);
     if ((a.Minus && !b.Minus) || (!a.Minus && b.Minus)) {
         res.Minus = !res.Minus;
@@ -71,7 +71,22 @@ static void ExtendString(string& s, int X) {
     }
 }
 
+// Intervals:
+//  [0; d1)
+//  [d1; d2)
+//  [d2; sz)
+static bool CanSplit(const string& s, int d1, int d2, int sz) {
+
+}
+
 static bool CanSplit(const string& s) {
+    const int sz = s.size();
+    for (int d1 = 1; d1 < (sz-2); ++d1) {
+        for (int d2 = d1 + 1; d2 < (sz-1); ++d2) {
+            if (CanSplit(s, d1, d2, sz))
+                return true;
+        }
+    }
     return false;
 }
 
