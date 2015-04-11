@@ -10,9 +10,8 @@
 #include <algorithm>
 using namespace std;
 
-typedef map<int, int> TMap;
-
 static const bool DBG = false;
+static const int MAXSZ = 10001;
 
 struct TQuat {
     static const int E = 0;
@@ -28,31 +27,39 @@ struct TQuat {
 };
 
 static TQuat Product(int a, int b) {
-    switch (a.Value) {
-        case TQuat::E: {
-            case TQuat::E: return TQuat(false, TQuat::E);
-            case TQuat::I: return TQuat(false, TQuat::I);
-            case TQuat::J: return TQuat(false, TQuat::J);
-            case TQuat::K: return TQuat(false, TQuat::K);
-        } break;
-        case TQuat::I: {
-            case TQuat::E: return TQuat(false, TQuat::I);
-            case TQuat::I: return TQuat(true,  TQuat::E);
-            case TQuat::J: return TQuat(false, TQuat::K);
-            case TQuat::K: return TQuat(true,  TQuat::J);
-        } break;
-        case TQuat::J {
-            case TQuat::E: return TQuat(false, TQuat::J);
-            case TQuat::I: return TQuat(true,  TQuat::K);
-            case TQuat::J: return TQuat(true,  TQuat::E);
-            case TQuat::K: return TQuat(false, TQuat::I);
-        } break;
-        case TQuat::K {
-            case TQuat::E: return TQuat(false, TQuat::K);
-            case TQuat::I: return TQuat(false, TQuat::J);
-            case TQuat::J: return TQuat(true,  TQuat::I);
-            case TQuat::K: return TQuat(true,  TQuat::E);
-        } break;
+    switch (a) {
+    case TQuat::E: {
+        switch (b) {
+        case TQuat::E: return TQuat(false, TQuat::E);
+        case TQuat::I: return TQuat(false, TQuat::I);
+        case TQuat::J: return TQuat(false, TQuat::J);
+        case TQuat::K: return TQuat(false, TQuat::K);
+        }
+    } break;
+    case TQuat::I: {
+        switch (b) {
+        case TQuat::E: return TQuat(false, TQuat::I);
+        case TQuat::I: return TQuat(true,  TQuat::E);
+        case TQuat::J: return TQuat(false, TQuat::K);
+        case TQuat::K: return TQuat(true,  TQuat::J);
+        }
+    } break;
+    case TQuat::J: {
+        switch (b) {
+        case TQuat::E: return TQuat(false, TQuat::J);
+        case TQuat::I: return TQuat(true,  TQuat::K);
+        case TQuat::J: return TQuat(true,  TQuat::E);
+        case TQuat::K: return TQuat(false, TQuat::I);
+        }
+    } break;
+    case TQuat::K: {
+        switch (b) {
+        case TQuat::E: return TQuat(false, TQuat::K);
+        case TQuat::I: return TQuat(false, TQuat::J);
+        case TQuat::J: return TQuat(true,  TQuat::I);
+        case TQuat::K: return TQuat(true,  TQuat::E);
+        }
+    } break;
     }
 }
 
@@ -62,6 +69,12 @@ static TQuat Product(TQuat a, TQuat b) {
         res.Minus = !res.Minus;
     }
     return res;
+}
+
+TQuat Precomp[MAXSZ][MAXSZ];
+
+static void CalcPrecomp(const string& s) {
+    //
 }
 
 static void ExtendString(string& s, int X) {
@@ -76,9 +89,12 @@ static void ExtendString(string& s, int X) {
 //  [d1; d2)
 //  [d2; sz)
 static bool CanSplit(const string& s, int d1, int d2, int sz) {
-
+    return (Precomp[0, d1] == TQuat(false, TQuat::I))
+        && (Precomp[d1, d2] == TQuat(false, TQuat::J))
+        && (Precomp[d2, sz] == TQuat(false, TQuat::K));
 }
 
+/*
 static bool CanSplit(const string& s) {
     const int sz = s.size();
     for (int d1 = 1; d1 < (sz-2); ++d1) {
@@ -89,6 +105,7 @@ static bool CanSplit(const string& s) {
     }
     return false;
 }
+*/
 
 static string SolveSingleCase() {
     int L, X;
@@ -96,7 +113,9 @@ static string SolveSingleCase() {
     string s;
     cin >> s;
     ExtendString(s, X);
-    return CanSplit(s) ? "YES" : "NO";
+    CalcPrecomp(s);
+    //return CanSplit(s) ? "YES" : "NO";
+    return "";
 }
 
 int main() {
