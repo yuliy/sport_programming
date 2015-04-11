@@ -67,16 +67,8 @@ static int SolveSingleCase() {
     for (;;) {
         sort(p.begin(), p.end());
         const int val = p.back();
-        if (4 == val || 3 == val) {
-            res += 3;
-            break;
-        }
-        if (2 == val) {
-            res += 2;
-            break;
-        }
-        if (1 == val) {
-            res += 1;
+        if (val <= 3) {
+            res += val;
             break;
         }
 
