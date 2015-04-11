@@ -21,11 +21,8 @@ static string SolveSingleCase() {
     if ((X >= 7) || (area % X))
         return "RICHARD";
 
-    if (X == 1)
+    if ((X == 1) || (X == 2))
         return "GABRIEL";
-
-    if (X == 2)
-        return (area % X) ? "RICHARD" : "GABRIEL";
 
     if (R > C)
         swap(R, C);
