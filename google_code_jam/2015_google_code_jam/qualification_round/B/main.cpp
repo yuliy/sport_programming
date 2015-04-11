@@ -11,6 +11,14 @@
 using namespace std;
 
 static int SolveSingleCase() {
+    int D = 0;
+    scanf("%d", &D);
+    //vector<int> p(D);
+    for (int i = 0; i < D; ++i) {
+        int pi = 0;
+        scanf("%d", &pi);
+    }
+
     int res =0;
     return res;
 }
