@@ -10,16 +10,24 @@
 #include <algorithm>
 using namespace std;
 
+typedef map<int, int> TMap;
+
 static int SolveSingleCase() {
     int D = 0;
     scanf("%d", &D);
-    //vector<int> p(D);
+
+    TMap m;
     for (int i = 0; i < D; ++i) {
         int pi = 0;
         scanf("%d", &pi);
+        ++m[pi];
     }
 
     int res =0;
+    for (;;) {
+
+    }
+
     return res;
 }
 
