@@ -22,8 +22,8 @@ static int SolveSingleCase() {
         if (cnt < i) {
             res += (i - cnt);
             cnt = i;
-            cnt += si;
         }
+        cnt += si;
     }
     return res;
 }
