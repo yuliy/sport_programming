@@ -14,48 +14,6 @@ typedef map<int, int> TMap;
 
 static const bool DBG = false;
 
-/*
-static int SolveSingleCase() {
-    int D = 0;
-    scanf("%d", &D);
-
-    TMap m;
-    for (int i = 0; i < D; ++i) {
-        int pi = 0;
-        scanf("%d", &pi);
-        ++m[pi];
-    }
-
-    int res =0;
-    for (;;) {
-        auto largest = --m.end();
-        const int val = largest->first;
-        const int cnt = largest->second;
-        if (4 == val || 3 == val) {
-            res += 3;
-            break;
-        }
-        if (2 == val) {
-            res += 2;
-            break;
-        }
-        if (1 == val) {
-            res += 1;
-            break;
-        }
-
-        const int a = val / 2;
-        const int b = val - a;
-        m.erase(largest);
-        m[a] += cnt;
-        m[b] += cnt;
-        res += cnt;
-    }
-
-    return res;
-}
-*/
-
 void Print(const vector<int>& v) {
     cout << "p[]: ";
     for (auto elem : v) {
@@ -77,23 +35,18 @@ static int SolveSingleCase() {
     int D = 0;
     scanf("%d", &D);
 
-    vector<int> p(D);
+    TMap m;
     for (int i = 0; i < D; ++i) {
-        scanf("%d", &p[i]);
+        int pi = 0;
+        scanf("%d", &pi);
+        ++m[pi];
     }
 
     int res =0;
-    int splitCount = 0;
-    for (;; ++res, ++splitCount) {
-        sort(p.begin(), p.end());
-
-        if (DBG) {
-            cout << "____________________" << endl;
-            cout << "res=" << res << endl;
-            Print(p);
-        }
-
-        const int val = p.back();
+    for (;;) {
+        auto largest = --m.end();
+        const int val = largest->first;
+        const int cnt = largest->second;
         if (val <= 3) {
             res += val;
             break;
@@ -101,12 +54,14 @@ static int SolveSingleCase() {
 
         const int a = val / 2;
         const int b = val - a;
-        p.back() = a;
-        p.push_back(b);
-
-        if (DBG) {
-            cout << "res=" << res << endl;
-            Print(p);
+        if ( (cnt + max(a, b)) < val) {
+            m.erase(largest);
+            m[a] += cnt;
+            m[b] += cnt;
+            res += cnt;
+        } else {
+            res += val;
+            break;
         }
     }
 
