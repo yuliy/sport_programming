@@ -25,7 +25,7 @@ static int SolveSingleCase() {
 
     int res =0;
     for (;; ++res) {
-        auto largest = m.back();
+        auto largest = --m.end();
         const int val = largest->first;
         const int cnt = largest->second;
         if (4 == val || 3 == val) {
