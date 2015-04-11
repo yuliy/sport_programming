@@ -22,15 +22,6 @@ void Print(const vector<int>& v) {
     cout << endl;
 }
 
-int FindMax(const vector<int>& v) {
-    int res = v.front();
-    for (auto elem : v) {
-        if (elem > res)
-            res = elem;
-    }
-    return res;
-}
-
 static int SolveSingleCase() {
     int D = 0;
     scanf("%d", &D);
@@ -47,19 +38,35 @@ static int SolveSingleCase() {
         auto largest = --m.end();
         const int val = largest->first;
         const int cnt = largest->second;
+        if (DBG) {
+            cout << "val=" << val << "\t" << "cnt=" << cnt << endl;
+        }
         if (val <= 3) {
             res += val;
             break;
         }
+        int prevVal = 0;
+        if (m.size() > 1) {
+            prevVal = (--(--m.end()))->first;
+        }
+        const int diff = val - prevVal;
 
         const int a = val / 2;
         const int b = val - a;
-        if ( (cnt + max(a, b)) < val) {
+        if (
+            ((cnt + max(a, b)) <= val)
+            &&
+            (diff >= cnt)
+        ) {
+            if (DBG)
+                cout << "splitting..." << endl;
             m.erase(largest);
             m[a] += cnt;
             m[b] += cnt;
             res += cnt;
         } else {
+            if (DBG)
+                cout << "waiting..." << endl;
             res += val;
             break;
         }
