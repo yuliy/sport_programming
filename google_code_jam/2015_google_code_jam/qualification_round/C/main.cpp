@@ -39,6 +39,19 @@ struct TQuat {
     }
 };
 
+std::ostream& operator<<(std::ostream& os, const TQuat& q) {
+    if (q.Minus) {
+        os << "-";
+    }
+    switch (q.Value) {
+        case TQuat::E: { os << "1"; } break;
+        case TQuat::I: { os << "i"; } break;
+        case TQuat::J: { os << "j"; } break;
+        case TQuat::K: { os << "k"; } break;
+    }
+    return os;
+}
+
 static TQuat Product(int a, int b) {
     switch (a) {
     case TQuat::E: {
@@ -90,6 +103,9 @@ TQuat Precomp[MAXSZ][MAXSZ];
 
 static void CalcPrecomp(const string& s) {
     const int sz = s.size();
+    if (DBG) {
+        cout << "sz=" << sz << endl;
+    }
     vector<TQuat> seq;
     for (auto ch : s) {
         seq.push_back(TQuat(ch));
@@ -102,6 +118,9 @@ static void CalcPrecomp(const string& s) {
     for (int i = 0; i <= sz; ++i) {
         for (int j = i + 1; j <= sz; ++j) {
             Precomp[i][j] = Product(Precomp[i][j-1], seq[j-1]);
+            if (DBG) {
+                cout << "(" << i << ";" << j << "): " << Precomp[i][j] << endl;
+            }
         }
     }
 }
@@ -121,6 +140,9 @@ static bool CanSplit(const string& s, int d1, int d2, int sz) {
     const TQuat& v1 = Precomp[0][d1];
     const TQuat& v2 = Precomp[d1][d2];
     const TQuat& v3 = Precomp[d2][sz];
+    if (DBG) {
+        cout << "\tcurrent: " << v1 << " " << v2 << " " << v3 << endl;
+    }
     return (v1 == TQuat(false, TQuat::I))
         && (v2 == TQuat(false, TQuat::J))
         && (v3 == TQuat(false, TQuat::K));
@@ -128,8 +150,8 @@ static bool CanSplit(const string& s, int d1, int d2, int sz) {
 
 static bool CanSplit(const string& s) {
     const int sz = s.size();
-    for (int d1 = 1; d1 < (sz-2); ++d1) {
-        for (int d2 = d1 + 1; d2 < (sz-1); ++d2) {
+    for (int d1 = 1; d1 < (sz-1); ++d1) {
+        for (int d2 = d1 + 1; d2 < (sz-0); ++d2) {
             if (CanSplit(s, d1, d2, sz))
                 return true;
         }
