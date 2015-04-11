@@ -14,9 +14,24 @@ typedef map<int, int> TMap;
 
 static const bool DBG = false;
 
-static int SolveSingleCase() {
+static void ExtendString(string& s, int X) {
+    string tmp = s;
+    for (int i = 1; i < X; ++i) {
+        s += tmp;
+    }
+}
 
-    return res;
+static bool CanSplit(const string& s) {
+    return false;
+}
+
+static string SolveSingleCase() {
+    int L, X;
+    scanf("%d %d", &L, &X);
+    string s;
+    cin >> s;
+    ExtendString(s, X);
+    return CanSplit(s) ? "YES" : "NO";
 }
 
 int main() {
