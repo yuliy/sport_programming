@@ -78,7 +78,7 @@ static TQuat Product(TQuat a, TQuat b) {
 TQuat Precomp[MAXSZ][MAXSZ];
 
 static void CalcPrecomp(const string& s) {
-    //
+    Precomp[0][0] = 1;
 }
 
 static void ExtendString(string& s, int X) {
