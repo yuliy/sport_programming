@@ -24,7 +24,7 @@ static int SolveSingleCase() {
     }
 
     int res =0;
-    for (;; ++res) {
+    for (;;) {
         auto largest = --m.end();
         const int val = largest->first;
         const int cnt = largest->second;
@@ -46,6 +46,7 @@ static int SolveSingleCase() {
         m.erase(largest);
         m[a] += cnt;
         m[b] += cnt;
+        res += cnt;
     }
 
     return res;
