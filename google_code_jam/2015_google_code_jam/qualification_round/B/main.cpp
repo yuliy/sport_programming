@@ -24,8 +24,28 @@ static int SolveSingleCase() {
     }
 
     int res =0;
-    for (;;) {
+    for (;; ++res) {
+        auto largest = m.back();
+        const int val = largest->first;
+        const int cnt = largest->second;
+        if (4 == val || 3 == val) {
+            res += 3;
+            break;
+        }
+        if (2 == val) {
+            res += 2;
+            break;
+        }
+        if (1 == val) {
+            res += 1;
+            break;
+        }
 
+        const int a = val / 2;
+        const int b = val - a;
+        m.erase(largest);
+        m[a] += cnt;
+        m[b] += cnt;
     }
 
     return res;
