@@ -24,6 +24,15 @@ struct TQuat {
 
     TQuat() : Minus(false), Value(E) {}
     TQuat(bool minus, int val) : Minus(minus), Value(val) {}
+    explicit TQuat(char ch) : Minus(false) {
+        switch(ch) {
+        case 'i': Value = TQuat::I; break;
+        case 'j': Value = TQuat::J; break;
+        case 'k': Value = TQuat::K; break;
+        default:
+            throw string("TQuat char initialization failed!");
+        }
+    }
 
     bool operator==(const TQuat& other) const {
         return (Minus == other.Minus) && (Value == other.Value);
@@ -65,6 +74,7 @@ static TQuat Product(int a, int b) {
         }
     } break;
     }
+    throw string("Product calculation failed!");
 }
 
 static TQuat Product(TQuat a, TQuat b) {
@@ -75,10 +85,25 @@ static TQuat Product(TQuat a, TQuat b) {
     return res;
 }
 
+// Precomp[i][j] is a product of [si, sj)
 TQuat Precomp[MAXSZ][MAXSZ];
 
 static void CalcPrecomp(const string& s) {
-    Precomp[0][0] = 1;
+    const int sz = s.size();
+    vector<TQuat> seq;
+    for (auto ch : s) {
+        seq.push_back(TQuat(ch));
+    }
+
+    for (int i = 0; i <= sz; ++i) {
+        Precomp[i][i] = TQuat(false, TQuat::E);
+    }
+
+    for (int i = 0; i <= sz; ++i) {
+        for (int j = i + 1; j <= sz; ++j) {
+            Precomp[i][j] = Product(Precomp[i][j-1], seq[j-1]);
+        }
+    }
 }
 
 static void ExtendString(string& s, int X) {
