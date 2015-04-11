@@ -5,4 +5,4 @@ Case #4: 3
 Case #5: 3
 Case #6: 3
 Case #7: 4
-Case #8: 5
+Case #8: 6
