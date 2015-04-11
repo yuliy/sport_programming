@@ -24,6 +24,10 @@ struct TQuat {
 
     TQuat() : Minus(false), Value(E) {}
     TQuat(bool minus, int val) : Minus(minus), Value(val) {}
+
+    bool operator==(const TQuat& other) const {
+        return (Minus == other.Minus) && (Value == other.Value);
+    }
 };
 
 static TQuat Product(int a, int b) {
@@ -89,12 +93,14 @@ static void ExtendString(string& s, int X) {
 //  [d1; d2)
 //  [d2; sz)
 static bool CanSplit(const string& s, int d1, int d2, int sz) {
-    return (Precomp[0, d1] == TQuat(false, TQuat::I))
-        && (Precomp[d1, d2] == TQuat(false, TQuat::J))
-        && (Precomp[d2, sz] == TQuat(false, TQuat::K));
+    const TQuat& v1 = Precomp[0][d1];
+    const TQuat& v2 = Precomp[d1][d2];
+    const TQuat& v3 = Precomp[d2][sz];
+    return (v1 == TQuat(false, TQuat::I))
+        && (v2 == TQuat(false, TQuat::J))
+        && (v3 == TQuat(false, TQuat::K));
 }
 
-/*
 static bool CanSplit(const string& s) {
     const int sz = s.size();
     for (int d1 = 1; d1 < (sz-2); ++d1) {
@@ -105,7 +111,6 @@ static bool CanSplit(const string& s) {
     }
     return false;
 }
-*/
 
 static string SolveSingleCase() {
     int L, X;
@@ -114,8 +119,7 @@ static string SolveSingleCase() {
     cin >> s;
     ExtendString(s, X);
     CalcPrecomp(s);
-    //return CanSplit(s) ? "YES" : "NO";
-    return "";
+    return CanSplit(s) ? "YES" : "NO";
 }
 
 int main() {
