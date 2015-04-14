@@ -28,14 +28,14 @@ static string OnesToString(int ones) {
 
 static string DecsToString(int decs) {
     switch(decs) {
-    case 20: return "twenty";
-    case 30: return "thirty";
-    case 40: return "forty";
-    case 50: return "fifty";
-    case 60: return "sixty";
-    case 70: return "seventy";
-    case 80: return "eighty";
-    case 90: return "ninety";
+    case 2: return "twenty";
+    case 3: return "thirty";
+    case 4: return "forty";
+    case 5: return "fifty";
+    case 6: return "sixty";
+    case 7: return "seventy";
+    case 8: return "eighty";
+    case 9: return "ninety";
     }
     throw string("DecsToString failed!");
 }
@@ -68,8 +68,13 @@ static string NumToString(int num) {
 }
 
 int main() {
-    int s;
-    cin >> s;
-    cout << NumToString(s) << endl;
+    try {
+        int s;
+        cin >> s;
+        cout << NumToString(s) << endl;
+    } catch (const std::string& s) {
+        cout << "shit happend: " << s << endl;
+        throw;
+    }
     return 0;
 }
