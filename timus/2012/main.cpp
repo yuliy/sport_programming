@@ -9,6 +9,9 @@
 using namespace std;
 
 int main() {
+    int f = 0;
+    cin >> f;
 
+    cout << ((f > 6) ? "YES" : "NO") << endl;
     return 0;
 }
