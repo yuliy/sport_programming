@@ -11,15 +11,17 @@
 using namespace std;
 
 int Solve(int n, int k) {
-    const int s = n % k;
-    const int p = (s == 0)
-        ? (n / k)
-        : ((n-s) / (k-1));
+    const int p = (n % k)
+        ? (n / k + 1)
+        : (n / k);
+    const int s = p * k - n;
 
+    /*
     cout
         << endl
         << p << ' ' << s
         << endl;
+    */
 
     if (s == 0) {
         return p * p * k * (k - 1) / 2;
@@ -28,9 +30,11 @@ int Solve(int n, int k) {
     const int a = p * p * (k - 1) * (k - 2) / 2;
     const int b = s * p * (k - 1);
 
+    /*
     cout
         << a << ' ' << b
         << endl;
+    */
 
     return a + b;
 }
