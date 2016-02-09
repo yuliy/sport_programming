@@ -10,33 +10,19 @@
 #include <algorithm>
 using namespace std;
 
+int SolveSimple(int p, int s) {
+    return p * p * s * (s - 1) / 2;
+}
+
 int Solve(int n, int k) {
-    const int p = (n % k)
-        ? (n / k + 1)
-        : (n / k);
-    const int s = p * k - n;
+    const int p = n / k;
+    const int s = k - n % k;
 
-    /*
-    cout
-        << endl
-        << p << ' ' << s
-        << endl;
-    */
+    const int a = SolveSimple(p, s);
+    const int b = SolveSimple(p + 1, k - s);
+    const int c = p * (p + 1) * (k - s) * s;
 
-    if (s == 0) {
-        return p * p * k * (k - 1) / 2;
-    }
-
-    const int a = p * p * (k - 1) * (k - 2) / 2;
-    const int b = s * p * (k - 1);
-
-    /*
-    cout
-        << a << ' ' << b
-        << endl;
-    */
-
-    return a + b;
+    return a + b + c;
 }
 
 int main() {
