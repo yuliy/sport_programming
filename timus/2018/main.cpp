@@ -13,12 +13,7 @@ using namespace std;
 using ui64 = unsigned long long;
 
 static const ui64 MOD = 1e9 + 7;
-static const int MAX_N = 50000;
-static const int MAX_SEQ = 300;
-static ui64 A[MAX_N+1][MAX_SEQ+1];
-static ui64 B[MAX_N+1][MAX_SEQ+1];
-
-void PAdd(ui64& left, ui64 right) {
+void Add(ui64& left, ui64 right) {
     ui64 res = left + right;
     left = res % MOD;
 }
@@ -26,76 +21,62 @@ void PAdd(ui64& left, ui64 right) {
 class TApplication {
 public:
     void Run() {
-        cin >> N >> MaxA >> MaxB;
         Init();
 
-        for (int k = 1; k <= N; ++k) {
+        for (int k = 2; k <= N; ++k) {
             RunDynamics(k);
         }
 
         ui64 res = 0;
         for (int i = 1; i <= MaxA; ++i) {
-            PAdd(res, A[N][i]);
+            Add(res, A[i]);
         }
         for (int i = 1; i <= MaxB; ++i) {
-            PAdd(res, B[N][i]);
+            Add(res, B[i]);
         }
 
         cout << res << endl;
-        //PrintDynamics();
     }
 private:
     int N = 0;
     int MaxA = 0;
     int MaxB = 0;
+    static const int MAX_SEQ = 300;
+    vector<ui64> A;
+    vector<ui64> B;
 private:
     void RunDynamics(int k) {
+        vector<ui64> newA(MaxA + 1);
+        vector<ui64> newB(MaxB + 1);
+
         for (int i = 1; i <= MaxB; ++i) {
-            PAdd( A[k][1], B[k-1][i] );
+            Add( newA[1], B[i] );
         }
 
         for (int i = 2; i <= MaxA; ++i) {
-            A[k][i] = A[k-1][i-1];
+            newA[i] = A[i-1];
         }
 
         for (int i = 1; i <= MaxA; ++i) {
-            PAdd( B[k][1], A[k-1][i] );
+            Add( newB[1], A[i] );
         }
 
         for (int i = 2; i <= MaxB; ++i) {
-            B[k][i] = B[k-1][i-1];
+            newB[i] = B[i-1];
         }
+
+        A.swap(newA);
+        B.swap(newB);
     }
 
     void Init() {
-        for (int k = 0; k <= MAX_N; ++k) {
-            for (int i = 0; i <= MAX_SEQ; ++i) {
-                A[k][i] = B[k][i] = 0;
-            }
-        }
+        cin >> N >> MaxA >> MaxB;
 
-        A[1][1] = 1;
-        B[1][1] = 1;
-    }
+        A.resize(MaxA + 1);
+        B.resize(MaxB + 1);
 
-    void PrintDynamics() {
-        cout << "A:" << endl;
-        for (int k = 1; k <= N; ++k) {
-            for (int i = 1; i <= MaxA; ++i) {
-                cout << A[k][i] << ' ';
-            }
-            cout << endl;
-        }
-        cout << endl;
-
-        cout << "B:" << endl;
-        for (int k = 1; k <= N; ++k) {
-            for (int i = 1; i <= MaxB; ++i) {
-                cout << B[k][i] << ' ';
-            }
-            cout << endl;
-        }
-        cout << endl;
+        A[1] = 1;
+        B[1] = 1;
     }
 };
 
