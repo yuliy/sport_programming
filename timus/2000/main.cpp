@@ -8,17 +8,27 @@
 #include <algorithm>
 using namespace std;
 
-int main() {
-    int n;
-    scanf("%d", &n);
-    vector<int> v(n);
+void SolveSameInitialPositions(int n, const vector<int>& v, int sa, int sb) {
+    int suma = 0;
+    int sumb = 0;
     for (int i = 0; i < n; ++i) {
-        scanf("%d", &v[i]);
+        if (i <= sa) {
+            suma += v[i];
+        } else {
+            sumb += v[i];
+        }
     }
 
-    int sa, sb;
-    scanf("%d %d", &sa, &sb);
-    --sa; --sb;
+    if (suma < sumb) {
+        swap(suma, sumb);
+        sumb -= v[sa];
+        suma += v[sa];
+    }
+
+    cout << suma << "\t" << sumb << endl;
+}
+
+void SolveDifferentInitialPositions(int n, const vector<int>& v, int sa, int sb) {
     bool swapped = false;
     if (sa > sb) {
         swap(sa, sb);
@@ -27,12 +37,15 @@ int main() {
 
     const int dist = sb - sa - 1;
     if (dist % 2) {
-        sa += dist / 2 + 1;
+        if (swapped) {
+            sa += dist / 2;
+        } else {
+            sa += dist / 2 + 1;
+        }
     } else {
         sa += dist / 2;
     }
     sb = sa + 1;
-    //cout << sa << " " << sb << endl;
 
     int suma = 0;
     int sumb = 0;
@@ -44,10 +57,29 @@ int main() {
         }
     }
 
-    if (swapped) {
-        cout << sumb << "\t" << suma << endl;
+    if (swapped)
+        swap(suma, sumb);
+    cout << suma << "\t" << sumb << endl;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    vector<int> v(n);
+    for (int i = 0; i < n; ++i) {
+        scanf("%d", &v[i]);
+
+    }
+
+    int sa, sb;
+    scanf("%d %d", &sa, &sb);
+    --sa; --sb;
+
+    if (sa == sb) {
+        SolveSameInitialPositions(n, v, sa, sb);
     } else {
-        cout << suma << "\t" << sumb << endl;
+        SolveDifferentInitialPositions(n, v, sa, sb);
     }
 
     return 0;
