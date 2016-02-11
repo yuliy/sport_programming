@@ -18,55 +18,50 @@ bool IsGhost(char ch) {
     return ch >= 97;
 }
 
-bool Check(const string& s) {
-    const size_t sz = s.size();
-    for (size_t i = 0, j = sz-1; i < j; ++i, --j) {
-        const char ch1 = s[i];
-        const char ch2 = s[j];
-
-        if (IsGhost(ch1) && IsHunter(ch2) && ((ch1 - 32) == ch2))
-            continue;
-
-        if (IsHunter(ch1) && IsGhost(ch2) && ((ch1 + 32) == ch2))
-            continue;
-
-        return false;
-    }
-
-    return true;
+bool IsPair(char ch1, char ch2) {
+    if (ch1 < ch2)
+        return (ch1 + 32) == ch2;
+    return (ch1 - 32) == ch2;
 }
 
 int main() {
     int n;
-    cin >> n;
     string s;
-    cin >> s;
+    cin >> n >> s;
 
-    if (!Check(s)) {
+    vector< pair<char, int> > v;
+    map<int, int> hunter2ghost;
+    int hunterNum = 0;
+    int ghostNum = 0;
+    for (int pos = 2; pos <= 2*n; ++pos) {
+        const char ch = s[pos-1];
+        int num = -1;
+        if (IsHunter(ch)) {
+            num = ++hunterNum;
+        } else {
+            num = ++ghostNum;
+        }
+
+        if (!v.empty() && IsPair(v.back().first, ch)) {
+            if (IsHunter(ch)) {
+                hunter2ghost[num] = v.back().second;
+            } else {
+                hunter2ghost[v.back().second] = num;
+            }
+            v.pop_back();
+        } else {
+            v.push_back({ch, num});
+        }
+    }
+
+    if (!v.empty()) {
         cout << "Impossible" << endl;
         return 0;
     }
 
-    const size_t sz = s.size();
-    vector<size_t> ghostNumberByPos(sz + 1);
-    for (size_t i = 1, num = 1; i <= sz; ++i) {
-        if (IsGhost(s[i-1])) {
-            ghostNumberByPos[i] = num;
-            //cout << s[i-1] << '\t' << i << '\t' << num << endl;
-            ++num;
-        }
+    for (const auto& h2g : hunter2ghost) {
+        cout << h2g.second << ' ';
     }
-
-    for (size_t i = 1; i <= sz; ++i) {
-        if (IsHunter(s[i-1])) {
-            const size_t pos = (i <= (sz/2))
-                ? (sz - i + 1)
-                : (sz - i + 1);
-            cout << ghostNumberByPos[pos] << ' ';
-            //cout << s[i-1] << '\t' << pos << '\t' << ghostNumberByPos[pos] << endl;
-        }
-    }
-    cout << endl;
 
     return 0;
 }
