@@ -33,14 +33,10 @@ int main() {
     map<int, int> hunter2ghost;
     int hunterNum = 0;
     int ghostNum = 0;
-    for (int pos = 2; pos <= 2*n; ++pos) {
+    for (int pos = 1; pos <= 2*n; ++pos) {
         const char ch = s[pos-1];
-        int num = -1;
-        if (IsHunter(ch)) {
-            num = ++hunterNum;
-        } else {
-            num = ++ghostNum;
-        }
+        const int num = IsHunter(ch) ? ++hunterNum : ++ghostNum;
+        //cout << ch << '\t' << num << endl;
 
         if (!v.empty() && IsPair(v.back().first, ch)) {
             if (IsHunter(ch)) {
@@ -62,6 +58,7 @@ int main() {
     for (const auto& h2g : hunter2ghost) {
         cout << h2g.second << ' ';
     }
+    cout << endl;
 
     return 0;
 }
