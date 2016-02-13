@@ -25,6 +25,7 @@ private:
     int N = 0;
     map<string, int> Player2Rank;
     TGraph Graph;
+    unordered_set<string> Visited;
 private:
     void Init() {
         scanf("%d", &N);
@@ -52,7 +53,11 @@ private:
     }
 
     void BFS() {
+        if (Player2Rank.find("Isenbaev") == Player2Rank.end())
+            return;
+
         Player2Rank["Isenbaev"] = 0;
+        Visited.insert("Isenbaev");
 
         deque<string> q;
         q.push_back("Isenbaev");
@@ -60,13 +65,16 @@ private:
         while (!q.empty()) {
             const string& player = q.front();
             const int rank = Player2Rank[player];
-            q.pop_front();
-
             const TAdjList& adjList = Graph[player];
             for (const auto& p : adjList) {
-                Player2Rank[p] = rank + 1;
-                q.push_back(p);
+                if (Visited.find(p) == Visited.end()) {
+                    Player2Rank[p] = rank + 1;
+                    q.push_back(p);
+                    Visited.insert(p);
+                }
             }
+
+            q.pop_front();
         }
     }
 
