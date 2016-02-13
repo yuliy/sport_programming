@@ -2,48 +2,35 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <string.h>
 #include <map>
 #include <set>
 #include <list>
 #include <algorithm>
 using namespace std;
 
-const char WINDOW[] = "window";
-const char AISLE[] = "aisle";
-const char NEITHER[] = "neither";
+string Solve(int row, char seat) {
+    if (row <= 2) {
+        if (strchr("AD", seat))
+            return "window";
+        return "aisle";
+    } else if (row <= 20) {
+        if (strchr("AF", seat))
+            return "window";
+        return "aisle";
+    } else {
+        if (strchr("AK", seat))
+            return "window";
+        if (strchr("CDGH", seat))
+            return "aisle";
+        return "neither";
+    }
+}
 
 int main() {
-    char buf[32];
-    scanf("%s", buf);
-    
-    const int len = strlen(buf);
-    const char seat = buf[len-1];
-
-    int row = buf[0] - '0';
-    if (len == 3) {
-        row *= 10;
-        row += (buf[1] - '0');
-    }
-
-    if (row < 3) {
-        if (seat == 'A' || seat == 'D')
-            cout << WINDOW;
-        else
-            cout << AISLE;
-    } else if (row < 21) {
-        if (seat == 'A' || seat == 'F')
-            cout << WINDOW;
-        else if (seat == 'B' || seat == 'C' || seat == 'D' || seat == 'E')
-            cout << AISLE;
-    } else {
-        if (seat == 'A' || seat == 'K')
-            cout << WINDOW;
-        else if (seat == 'C' || seat == 'D' || seat == 'H' || seat == 'J')
-            cout << AISLE;
-        else
-            cout << NEITHER;
-    }
-    cout << endl;
-
+    int row;
+    char seat;
+    scanf("%d%c", &row, &seat);
+    cout << Solve(row, seat) << endl;
     return 0;
 }
