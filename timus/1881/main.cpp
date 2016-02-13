@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <string.h>
 #include <map>
 #include <set>
 #include <list>
@@ -15,25 +16,28 @@ int main() {
     int resh = 0;
     int resw = 0;
 
-    char buf[256];
     for (int i = 0; i < n; ++i) {
-        //scanf("%s", buf);
-        gets(buf);
+        char buf[256];
+        scanf("%s", buf);
+        //gets(buf);
         const int len = strlen(buf);
-        if ((resw + len) >= w)
-            ++resh;
 
         if ((resw + len) <= w) {
             resw += len;
         } else {
+            ++resh;
             resw = len;
         }
-        ++resw;
 
-        //cout << resh << "\t" << resw << endl;
+        if (resw == w) {
+            ++resh;
+            resw = 0;
+        } else {
+            ++resw;
+        }
     }
 
-    if (resw > 1)
+    if (resw > 0)
         ++resh;
 
     int res = resh / h;
