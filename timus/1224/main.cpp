@@ -10,7 +10,16 @@
 #include <algorithm>
 using namespace std;
 
-int main() {
+using ui64 = unsigned long long;
 
+int main() {
+    ui64 N, M;
+    cin >> N >> M;
+
+    const ui64 res = (N > M)
+        ? (2 * M - 1)
+        : (2 * N - 2);
+
+    cout << res << endl;
     return 0;
 }
