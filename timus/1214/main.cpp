@@ -9,8 +9,12 @@
 using namespace std;
 
 int main() {
-    int x, y;
-    scanf("%d %d", &x, &y);
-    printf("%d %d\n", y, x);
+    long x, y;
+    cin >> x >> y;
+    if (x > 0 && y > 0) {
+
+    } else {
+        cout << x << ' ' << y << endl;
+    }
     return 0;
 }
