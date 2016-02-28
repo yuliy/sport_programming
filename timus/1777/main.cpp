@@ -8,52 +8,43 @@
 #include <algorithm>
 using namespace std;
 
-static void PrintDic(const set<long long> &dic) {
-    for (set<long long>::const_iterator iter = dic.begin(), end = dic.end(); iter != end; ++iter) {
-        cout << *iter << "\t";
+using ui64 = unsigned long long;
+
+ui64 CalcMinDiff(const set<ui64>& dic) {
+    auto it1 = dic.begin();
+    auto it2 = ++(dic.begin());
+    ui64 res = *it2 - *it1;
+    for (; it2 != dic.end(); ++it1, ++it2) {
+        res = min(res, *it2 - *it1);
     }
-    cout << endl;
+    return res;
 }
 
 int main() {
-    long long a, b, c;
+    ui64 a, b, c;
     cin >> a >> b >> c;
 
-    set<long long> dic;
+    set<ui64> dic;
     dic.insert(a);
     dic.insert(b);
     dic.insert(c);
 
-    long long minDiff = abs(a - b);
-    if (abs(a - c) < minDiff)
-        minDiff = abs(a - c);
-    if (abs(b - c) < minDiff)
-        minDiff = abs(b - c);
+    if (dic.size() < 3) {
+        cout << 1 << endl;
+        return 0;
+    }
 
-    int res = 0;
+    int res = 1;
     for (;;) {
         ++res;
-
-        //cout << "-" << endl;
-        //PrintDic(dic);
-        //cout << minDiff << endl << res << endl << endl;
-
-        long long tmp = minDiff;
-        for (set<long long>::const_iterator iter = dic.begin(), end = dic.end(); iter != end; ++iter) {
-            const long long d = abs(minDiff - *iter);
-            if (d < tmp)
-                tmp = d;
-        }
-        dic.insert(minDiff);
-        minDiff = tmp;
-
+        const ui64 minDiff = CalcMinDiff(dic);
         if (dic.find(minDiff) != dic.end()) {
-            ++res;
             break;
+        } else {
+            dic.insert(minDiff);
         }
     }
 
-    printf("%d\n", res);
-
+    cout << res << endl;
     return 0;
 }
