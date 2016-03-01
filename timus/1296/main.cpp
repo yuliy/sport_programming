@@ -11,6 +11,20 @@
 using namespace std;
 
 int main() {
+    int N;
+    scanf("%d", &N);
+    int sum = 0;
+    int maxSum = 0;
 
+    for (int i = 0; i < N; ++i) {
+        int tmp = 0;
+        scanf("%d", &tmp);
+        sum += tmp;
+        if (sum < 0)
+            sum = 0;
+        maxSum = max(sum, maxSum);
+    }
+
+    printf("%d\n", maxSum);
     return 0;
 }
