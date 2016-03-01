@@ -11,6 +11,7 @@
 using namespace std;
 
 int main() {
-
+    double k1, k2, k3;
+    cin >> k1 >> k2 >> k3;
     return 0;
 }
