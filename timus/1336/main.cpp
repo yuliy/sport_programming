@@ -10,7 +10,12 @@
 #include <algorithm>
 using namespace std;
 
-int main() {
+using ui64 = unsigned long long;
 
+int main() {
+    ui64 n;
+    cin >> n;
+    cout << (n*n) << endl
+        << n << endl;
     return 0;
 }
