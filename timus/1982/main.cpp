@@ -10,7 +10,37 @@
 #include <algorithm>
 using namespace std;
 
-int main() {
+class TApplication {
+public:
+    void Run() {
+        Init();
+    }
+private:
+    int N;
+    int K;
+    vector<int> ECities;
+    vector<vector<int>> Graph;
+private:
+    void Init() {
+        cin >> N >> K;
 
+        ECities.resize(K);
+        for (int i = 0; i < K; ++i) {
+            cin >> ECities[i];
+        }
+
+        Graph.resize(N);
+        for (int i = 0; i < N; ++i) {
+            Graph[i].resize(N);
+            for (int j = 0; j < N; ++j) {
+                cin >> Graph[i][j];
+            }
+        }
+    }
+};
+
+int main() {
+    TApplication app;
+    app.Run();
     return 0;
 }
