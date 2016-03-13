@@ -21,8 +21,21 @@ public:
             q.push_back(city);
         }
 
+        deque<bool> visited(N);
+
         for (; !q.empty();) {
-            //
+            const int v = q[0];
+            q.pop_front();
+            for (int i = 0; i < N; ++i) {
+                if (i == v)
+                    continue;
+
+                if (visited[i]) {
+
+                } else {
+
+                }
+            }
         }
     }
 private:
