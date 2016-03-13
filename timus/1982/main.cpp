@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <list>
+#include <queue>
 #include <algorithm>
 using namespace std;
 
@@ -14,6 +15,15 @@ class TApplication {
 public:
     void Run() {
         Init();
+
+        deque<int> q;
+        for (auto city : ECities) {
+            q.push_back(city);
+        }
+
+        for (; !q.empty();) {
+            //
+        }
     }
 private:
     int N;
@@ -27,6 +37,7 @@ private:
         ECities.resize(K);
         for (int i = 0; i < K; ++i) {
             cin >> ECities[i];
+            --ECities[i];
         }
 
         Graph.resize(N);
