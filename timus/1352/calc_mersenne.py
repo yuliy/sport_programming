@@ -16,10 +16,10 @@ def _split_p(p):
     return (q, k)
 
 def power(num, p, base):
-    res = num % base
-    for _ in xrange(1, p):
-        res = res * num
-        res = res % base
+    res = 1
+    for _ in xrange(p):
+        res *= num
+        res %= base
     return res
 
 def _is_prime_by_rabin_miller(p, a):
@@ -28,7 +28,7 @@ def _is_prime_by_rabin_miller(p, a):
     if g in (1, p-1):
         return None
 
-    for i in xrange(1, k+1):
+    for i in xrange(1, k+1): # iterating i in range [1, k]
         g = power(g, 2, p)
 
         if i == k: # last
