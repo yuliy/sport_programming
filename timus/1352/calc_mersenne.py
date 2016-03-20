@@ -14,7 +14,7 @@ def _split_p(p):
     q = p
     while (q % 2 == 0):
         k += 1
-        q /= 2
+        q = q / 2
     return (q, k)
 
 def power(num, p, base):
@@ -31,8 +31,7 @@ def _is_prime_by_rabin_miller(p, a):
         return None
 
     for i in xrange(k):
-        g = g * g
-        g = g % p
+        g = power(g, 2, p)
 
         if i == (k-1): # last
             if g != 1:
@@ -62,7 +61,6 @@ def is_prime(num):
     res = is_prime_by_rabin_miller(num)
     if res is not None:
         return res
-
     return is_prime_slow(num)
 
 def main():
