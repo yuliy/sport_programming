@@ -10,11 +10,9 @@ def is_prime_slow(num):
     return True
 
 def _split_p(p):
-    k = 0
-    q = p
+    (k, q) = (0, p)
     while (q % 2 == 0):
-        k += 1
-        q = q / 2
+        (k, q) = (k+1, q/2)
     return (q, k)
 
 def power(num, p, base):
@@ -27,29 +25,28 @@ def power(num, p, base):
 def _is_prime_by_rabin_miller(p, a):
     (q, k) = _split_p(p)
     g = power(a, q, p)
-    if g == 1 or g == -1:
+    if g in (1, p-1):
         return None
 
-    for i in xrange(k):
+    for i in xrange(1, k+1):
         g = power(g, 2, p)
 
-        if i == (k-1): # last
+        if i == k: # last
             if g != 1:
                 return False
             return None
         else:
-            if g == -1:
+            if g == (p-1):
                 return None
             if g == 1:
                 return False
 
     return None
 
-def is_prime_by_rabin_miller(num):
-    if num < 50:
+def is_prime_by_rabin_miller(num, maxa=20):
+    if num < (maxa + 5):
         return is_prime_slow(num)
 
-    maxa = 20
     for a in xrange(2, maxa+1):
         res = _is_prime_by_rabin_miller(num, a)
         if res is False:
@@ -61,6 +58,7 @@ def is_prime(num):
     res = is_prime_by_rabin_miller(num)
     if res is not None:
         return res
+    #return True
     return is_prime_slow(num)
 
 def main():
@@ -78,7 +76,7 @@ def main():
         print '\tN=%d' % N
         if is_prime(N) and is_prime(num):
             p += 1
-            print '%d\t%d' % (p, N)
+            print '#%d\tN=%d\tnum=%d' % (p, N, num)
 
 if __name__ == '__main__':
     main()
