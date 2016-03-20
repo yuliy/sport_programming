@@ -10,7 +10,23 @@
 #include <algorithm>
 using namespace std;
 
-int main() {
+using i64 = long long;
 
+int main() {
+    i64 N, K;
+    cin >> N >> K;
+
+    i64 sum = 0;
+    for (i64 i = 0; i < K ; ++i) {
+        i64 tmp = 0;
+        cin >> tmp;
+        sum += tmp;
+    }
+
+    i64 res = sum - (K-1) * N;
+    if (res < 0)
+        res = 0;
+
+    cout << res << endl;
     return 0;
 }
