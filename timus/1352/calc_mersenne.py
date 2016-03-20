@@ -17,7 +17,7 @@ def _split_p(p):
 
 def power(num, p, base):
     res = num % base
-    for _ in xrange(p):
+    for _ in xrange(1, p):
         res = res * num
         res = res % base
     return res
