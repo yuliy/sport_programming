@@ -10,6 +10,7 @@ def is_prime_slow(num):
             return False
     return True
 
+"""
 def _split_p(p):
     #print '\t_split_p'
     (k, q) = (0, p)
@@ -83,6 +84,7 @@ def is_prime(num):
     if res is not None:
         return res
     return is_prime_slow(num)
+"""
 
 def main():
     p = 0
@@ -97,7 +99,7 @@ def main():
             continue
 
         print '\tN=%d' % N
-        if is_prime(num):
+        if is_prime_slow(num):
             p += 1
             print '#%d\tN=%d\tnum=%d' % (p, N, num)
 
