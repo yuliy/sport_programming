@@ -3,7 +3,7 @@
 import math
 
 def is_prime_slow(num):
-    print '\tis_prime_slow (num=%d)' % num
+    #print '\tis_prime_slow (num=%d)' % num
     maxDiv = int( math.sqrt(num) )
     for div in xrange(2, maxDiv +1):
         if num % div == 0:
@@ -11,7 +11,7 @@ def is_prime_slow(num):
     return True
 
 def _split_p(p):
-    print '\t_split_p'
+    #print '\t_split_p'
     (k, q) = (0, p)
     while (q % 2 == 0):
         (k, q) = (k+1, q/2)
@@ -31,8 +31,8 @@ def _power(num, p, base):
 
 def power(num, p, base):
     #print '\tpower (%d, %d, %d)' % (num, p, base)
-    #res = _power(num, p, base)
-    res = (num ** p) % base
+    res = _power(num, p, base)
+    #res = (num ** p) % base
     #print '\tpower (end)'
     return res
 
@@ -93,11 +93,11 @@ def main():
         base *= 2
         num = base - 1
 
-        if not is_prime(N):
+        if not is_prime_slow(N):
             continue
 
         print '\tN=%d' % N
-        if is_prime(N) and is_prime(num):
+        if is_prime(num):
             p += 1
             print '#%d\tN=%d\tnum=%d' % (p, N, num)
 
