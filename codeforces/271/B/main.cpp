@@ -24,11 +24,51 @@ static void CalcEratosphenSieve(set<int>& res, int max) {
     }
 }
 
-int main() {
-    set<int> nums;
-    CalcEratosphenSieve(nums, 1e5);
-    for (auto elem : nums) {
-        cout << elem << endl;
+set<int> nums;
+
+int n, m;
+static const int MAX_SIZE = 500;
+int arr[MAX_SIZE+1][MAX_SIZE+1];
+
+int SolveRow(int row) {
+    int res = 0;
+    for (int j = 0; j < m; ++j) {
+        auto it = nums.lower_bound(arr[row][j]);
+        if (it == nums.end())
+            throw "Logical error!";
+        res += (*it - arr[row][j]);
     }
+    return res;
+}
+
+int SolveColumn(int col) {
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+        auto it = nums.lower_bound(arr[i][col]);
+        if (it == nums.end())
+            throw "Logical error!";
+        res += (*it - arr[i][col]);
+    }
+    return res;
+}
+
+int main() {
+    CalcEratosphenSieve(nums, 1e5);
+
+    scanf("%d %d", &n, &m);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            scanf("%d", &arr[i][j]);
+        }
+    }
+
+    int res = 1e9;
+    for (int i = 0; i < n; ++i) {
+        res = min(res, SolveRow(i));
+    }
+    for (int j = 0; j < m; ++j) {
+        res = min(res, SolveColumn(j));
+    }
+    cout << res << endl;
     return 0;
 }
