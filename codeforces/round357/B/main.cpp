@@ -12,8 +12,22 @@ using namespace std;
 
 using i64 = long long;
 
+const i64 MAX_A = 820;
+const i64 MAX_B = 8200;
+
 bool Solve(i64 N) {
-    //
+    for (i64 a = 0; a <= MAX_A; ++a) {
+        for (i64 b = 0; b <= MAX_B; ++b) {
+            const i64 d = N - (a * 1234567 + b * 123456);
+            if (d < 0) {
+                continue;;
+            }
+            if (d % 1234 == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 int main() {
