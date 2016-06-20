@@ -46,18 +46,18 @@ bool Solve2(i64 N) {
 }
 
 int main() {
+    /*
     i64 N;
     cin >> N;
     cout << (Solve(N) ? "YES" : "NO") << endl;
+    */
 
-    /*
-    for (int i = 123456700; i <= 1e9; ++i) {
+    for (int i = 1e9; i >= 0; --i) {
         cout << i << endl;
         if (Solve(i) != Solve2(i)) {
             cout << "Found! " << i << endl;
             break;
         }
     }
-    */
     return 0;
 }
