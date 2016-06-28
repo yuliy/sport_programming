@@ -13,32 +13,32 @@ using namespace std;
 using i64 = long long;
 
 int N;
-vector<int> X;
-vector<int> A(1e7 + 1);
-vector<int> F(1e7 + 1);
+vector<int> A(1e7 + 1, 0);
+vector<i64> F(1e7 + 1, 0);
 
 int main() {
     scanf("%d", &N);
-    X = vector<int>(N);
     for (int i = 0; i < N; ++i) {
-        scanf("%d", &X[i]);
-        ++A[ X[i] ];
+        int xi;
+        scanf("%d", &xi);
+        ++A[xi];
     }
 
     vector<bool> sieve(1e7 + 1, true);
     for (size_t i = 2; i < sieve.size(); ++i) {
         if (sieve[i]) {
-            ++F[i];
-            for (size_t j = i * i; j < sieve.size(); j +=i) {
-                if (j > 1e7)
-                    break;
-
+            for (size_t j = i; j < sieve.size(); j +=i) {
                 sieve[j] = false;
-                F[j] += A[j];
+                F[i] += A[j];
             }
         }
     }
 
+    /*
+    for (int i = 0; i < 20; ++i) {
+        cout << i << '\t' << F[i] << '\t' << A[i] << endl;
+    }
+    */
     for (int i = 1; i <= 1e7; ++i) {
         F[i] += F[i-1];
     }
@@ -50,9 +50,11 @@ int main() {
         scanf("%d %d", &li, &ri);
         if (ri > 1e7)
             ri = 1e7;
+        if (li > ri)
+            li = ri;
 
-        const int res = F[ri] - F[li-1];
-        printf("%d\n", res);
+        const i64 res = F[ri] - F[li-1];
+        printf("%Ld\n", res);
     }
     return 0;
 }
