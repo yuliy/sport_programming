@@ -28,15 +28,18 @@ int main() {
             int ci, ai;
             scanf("%d %d", &ci, &ai);
             --ci;
-            C[ci] = make_pair(ci, timer);
+            C[ci] = make_pair(ai, timer);
         }
     }
 
     for (int ri = 0; ri < n; ++ri) {
         for (int ci = 0; ci < m; ++ci) {
-            const int colour = (R[ri].second > C[ci].second)
+            int colour = (R[ri].second > C[ci].second)
                 ? R[ri].first
                 : C[ci].first;
+            if (R[ri].second == C[ci].second) {
+                colour = max(R[ri].first, C[ci].first);
+            }
             printf ("%d ", colour);
         }
         printf("\n");
