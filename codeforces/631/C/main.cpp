@@ -11,6 +11,32 @@
 using namespace std;
 
 int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        scanf("%d", &a[i]);
+    }
+
+    vector<pair<int, int>> mods;
+    for (int i = 0; i < m; ++i) {
+        pair<int, int> mod;
+        scanf("%d %d", &(mod.first), &(mod.second));
+
+        while (mods.size() && (mods.back().second < mod.second)) {
+            mods.pop_back();
+        }
+
+        if (mods.empty() || (mods.back().first != mod.first)) {
+            mods.push_back(mod);
+        }
+    }
+
+    vector<int> b = a;
+
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end(), greater<int>());
 
     return 0;
 }
