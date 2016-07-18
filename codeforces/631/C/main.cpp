@@ -33,10 +33,26 @@ int main() {
         }
     }
 
-    vector<int> b = a;
+    vector<int> asc = a;
+    vector<int> dsc = a;
 
-    sort(a.begin(), a.end());
-    sort(b.begin(), b.end(), greater<int>());
+    sort(asc.begin(), asc.end());
+    sort(dsc.begin(), dsc.end(), greater<int>());
+
+    const auto mz = mods.size();
+    for (int i = mz - 1; i >= 0; --i) {
+        const int r = mods[i].second;
+        const int l = (i > 0) ? mods[i-1].second : 0;
+            for (int i = l; l != r; ++i) {
+                a[i] = (mods[i].first == 1)
+                    ? asc[i]
+                    : dsc[i];
+            }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        printf("%d ", a[i]);
+    }
 
     return 0;
 }
