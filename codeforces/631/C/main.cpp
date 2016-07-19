@@ -33,6 +33,12 @@ int main() {
         }
     }
 
+    cout << "mods: " << endl;
+    for (const auto mod : mods) {
+        cout << mod.first << '\t' << mod.second << endl;
+    }
+    cout << endl;
+
     vector<int> asc = a;
     vector<int> dsc = a;
 
@@ -40,9 +46,10 @@ int main() {
     sort(dsc.begin(), dsc.end(), greater<int>());
 
     const auto mz = mods.size();
-    for (int i = mz - 1; i >= 0; --i) {
+    for (int i = 0; i < mz; ++i) {
         const int r = mods[i].second;
-        const int l = (i > 0) ? mods[i-1].second : 0;
+        const int l = (i < (mz-1)) ? mods[i+1].second : 0;
+        cout << l << '\t' << r << endl;
         for (int i = l; i != r; ++i) {
             a[i] = (mods[i].first == 1)
                 ? asc[i]
@@ -53,6 +60,7 @@ int main() {
     for (int i = 0; i < n; ++i) {
         printf("%d ", a[i]);
     }
+    printf("\n");
 
     return 0;
 }
