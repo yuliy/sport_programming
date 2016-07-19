@@ -43,11 +43,11 @@ int main() {
     for (int i = mz - 1; i >= 0; --i) {
         const int r = mods[i].second;
         const int l = (i > 0) ? mods[i-1].second : 0;
-            for (int i = l; l != r; ++i) {
-                a[i] = (mods[i].first == 1)
-                    ? asc[i]
-                    : dsc[i];
-            }
+        for (int i = l; i != r; ++i) {
+            a[i] = (mods[i].first == 1)
+                ? asc[i]
+                : dsc[i];
+        }
     }
 
     for (int i = 0; i < n; ++i) {
