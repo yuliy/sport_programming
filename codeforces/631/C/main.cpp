@@ -33,27 +33,25 @@ int main() {
         }
     }
 
-    cout << "mods: " << endl;
-    for (const auto mod : mods) {
-        cout << mod.first << '\t' << mod.second << endl;
-    }
-    cout << endl;
+    const int maxPrefix = mods[0].second;
+    vector<int> tmp(a.begin(), a.begin() + maxPrefix);
+    sort(tmp.begin(), tmp.end());
 
-    vector<int> asc = a;
-    vector<int> dsc = a;
-
-    sort(asc.begin(), asc.end());
-    sort(dsc.begin(), dsc.end(), greater<int>());
+    int left = 0;
+    int right = maxPrefix - 1;
 
     const auto mz = mods.size();
+    int curPos = maxPrefix - 1;
     for (int i = 0; i < mz; ++i) {
-        const int r = mods[i].second;
-        const int l = (i < (mz-1)) ? mods[i+1].second : 0;
-        cout << l << '\t' << r << endl;
-        for (int i = l; i != r; ++i) {
-            a[i] = (mods[i].first == 1)
-                ? asc[i]
-                : dsc[i];
+        const int range = (i < (mz-1))
+            ? (mods[i].second - mods[i+1].second)
+            : mods[i].second;
+        for (int z = 0; z < range; ++z) {
+            if (mods[i].first == 1) {
+                a[curPos--] = tmp[right--];
+            } else {
+                a[curPos--] = tmp[left++];
+            }
         }
     }
 
