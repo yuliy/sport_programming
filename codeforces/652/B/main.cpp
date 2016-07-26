@@ -13,28 +13,25 @@ using namespace std;
 int main() {
     int N;
     scanf("%d", &N);
-    vector<int> odd, even;
+    vector<int> a(N);
     for (int i = 0 ; i < N; ++i) {
-        int elem;
-        scanf("%d", &elem);
-        if (i & 1) {
-            odd.push_back(elem);
-        } else {
-            even.push_back(elem);
-        }
+        scanf("%d", &a[i]);
     }
 
-    std::sort(even.begin(), even.end());
-    std::sort(odd.begin(), odd.end(), greater<int>());
+    sort(a.begin(), a.end());
 
-    int oddPos = 0;
-    int evenPos = 0;
+    int pos = 0;
+    vector<int> res(N);
+    for (int i = 0; i < N; i += 2) {
+        res[i] = a[pos++];
+    }
+    for (int i = N-1; i >= 0; --i) {
+        if (i & 1)
+            res[i] = a[pos++];
+    }
+
     for (int i = 0; i < N; ++i) {
-        if (i & 1) {
-            printf("%d ", odd[oddPos++]);
-        } else {
-            printf("%d ", even[evenPos++]);
-        }
+        printf("%d ", res[i]);
     }
     printf("\n");
 
