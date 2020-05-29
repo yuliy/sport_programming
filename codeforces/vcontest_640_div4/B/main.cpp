@@ -2,8 +2,40 @@
 #include <vector>
 using namespace std;
 
-void Solve(int n, int k) {
-    //
+bool SolveOdd(int n, int k) {
+    cout << "YES" << endl;
+    for (int i = 1; i < k; ++i) {
+        cout << 1 << " ";
+    }
+    cout << (n - k + 1) << endl;
+    return true;
+}
+
+bool SolveEven(int n, int k) {
+    cout << "YES" << endl;
+    for (int i = 1; i < k; ++i) {
+        cout << 2 << " ";
+    }
+    cout << (n - 2 * k + 2) << endl;
+    return true;
+}
+
+bool Solve(int n, int k) {
+    if (k > n)
+        return false;
+
+    int tmp = n - (k-1);
+    if (1 == tmp % 2)
+        return SolveOdd(n, k);
+
+    if (2*k > n)
+        return false;
+
+    tmp = n - (k-1) * 2;
+    if (0 == tmp % 2)
+        return SolveEven(n, k);
+
+    return false;
 }
 
 int main() {
@@ -16,7 +48,9 @@ int main() {
     for (int i = 0; i < t; ++i) {
         int n, k;
         cin >> n >> k;
-        Solve(n, k);
+        if (!Solve(n, k)) {
+            cout << "NO" << endl;
+        }
     }
 
     return 0;
