@@ -4,8 +4,12 @@ using namespace std;
 
 void Solve(int num) {
     vector<int> res;
+    int mult = 1;
     while (num) {
-        res.push_back( num % 10 );
+        const int digit = num % 10;
+        if (digit)
+            res.push_back( mult * digit );
+        mult *= 10;
         num /= 10;
     }
     cout << res.size() << endl;
