@@ -3,11 +3,14 @@
 using namespace std;
 
 int Solve(int n, int k) {
-    cout << "===============" << endl;
     const int m = k / (n-1);
     const int nk = m * (n-1);
     const int ch = m * n;
-    return ch + (k - nk);
+    int res = ch + (k - nk);
+    if (k == nk) {
+        --res;
+    }
+    return res;
 }
 
 
