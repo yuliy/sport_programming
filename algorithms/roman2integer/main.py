@@ -22,7 +22,7 @@ class Solution:
             return r[0]
 
         result = 0
-        for i in range(len(s)-1):
+        for i in range(len(r)-1):
             if r[i+1] > r[i]:
                 result -= r[i]
             else:
