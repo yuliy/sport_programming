@@ -15,22 +15,28 @@ using i64 = long long;
 using TVec = vector<int>;
 using TMat = vector<TVec>;
 
-bool SolveForPairOfStudents(const TMat& mx, int a, int b) {
+bool SolveForPairOfStudents(const TMat& v, int a, int b) {
     // p: 1 1
     // q: 1 0
     // s: 0 1
-    const int N = mx.size();
+    const int N = v.size();
     int p = 0, q = 0, s = 0;
     for (int i = 0; i < N; ++i) {
-        if (v[a] && v[b])
+        const auto& vs = v[i];
+        if (vs[a] && vs[b])
             ++p;
-        else if (v[a] && !v[b])
+        else if (vs[a] && !vs[b])
             ++q;
-        else if (!v[a] && v[b])
+        else if (!vs[a] && vs[b])
             ++s;
     }
 
-    // TODO
+    if (q < N/2)
+        p -= (N/2 - q);
+    if (s < N/2)
+        p -= (N/2 - s);
+
+    return (p >= 0);
 }
 
 int main() {
@@ -54,7 +60,7 @@ int main() {
         bool ok = false;
         for (int a = 0; a < 5; ++a) {
             for (int b = a+1; b < 5; ++b) {
-                if (SolveForPairOfStudents(mx, a, b)) {
+                if (SolveForPairOfStudents(v, a, b)) {
                     ok = true;
                     break;
                 }
