@@ -1,6 +1,8 @@
 This is a repository for my solutions of sport programming problems.
 
 # CodeForces
+  * [CF Курсы](https://codeforces.com/edu/courses)
+    * [ITMO Academy: пилотный курс](https://codeforces.com/edu/course/2)
   * [DP Tutorial and Problem List](https://codeforces.com/blog/entry/67679)
 
 # LeetCode
@@ -8,3 +10,4 @@ This is a repository for my solutions of sport programming problems.
   * [Top Interview Questions (easy colleсtion)](https://leetcode.com/explore/interview/card/top-interview-questions-easy/)
   * [Top Interview Questions (medium colleсtion)](https://leetcode.com/explore/interview/card/top-interview-questions-medium/)
   * [Top Interview Questions (hard colleсtion)](https://leetcode.com/explore/interview/card/top-interview-questions-hard/)
+
