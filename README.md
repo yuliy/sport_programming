@@ -4,7 +4,6 @@ This is a repository for my solutions of sport programming problems.
   * [CF Курсы](https://codeforces.com/edu/courses)
     * [ITMO Academy: пилотный курс](https://codeforces.com/edu/course/2)
   * [DP Tutorial and Problem List](https://codeforces.com/blog/entry/67679)
-  * [Problems Compilation for Algo-Club](./codeforces/README.md)
 
 # LeetCode
   * [Top 100 Liked Questions](https://leetcode.com/problem-list/79h8rn6/)
