@@ -16,7 +16,16 @@ using i64 = long long;
 static bool Solve(int a) {
     if (a < 60)
         return false;
-    return (360 % a) == 0;
+    //return (360 % a) == 0;
+    for (int n = 3; ; ++n) {
+        const int s = 180 * (n-2);
+        const int c = a * n;
+        if (c == s)
+            return true;
+        else if (c > s)
+            return false;
+    }
+    return false;
 }
 
 int main() {
