@@ -8,4 +8,5 @@
 | [ ] | [CF 270A Завидный забор](https://codeforces.com/problemset/problem/270/A) | 1100 | Довольно простая задача на геометрияю. Однако у меня не с первого раза зашла) |
 | [ ] | [CF 456A Ноутбуки](https://codeforces.com/problemset/problem/456/A) | 1100 | Задача на умение отсортировать массив. |
 | [ ] | [CF 492B Ваня и фонари](https://codeforces.com/problemset/problem/492/B) | 1200 | Скучная задача на умение отсортировать массив. |
+| [ ] | [CF 25A IQ Тест](https://codeforces.com/problemset/problem/25/A) | 1300 | Простая задача на логику. |
 | [ ] | []() |  |  |
