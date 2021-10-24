@@ -7,4 +7,5 @@
 | [ ] | [CF 706B Интересный напиток](https://codeforces.com/problemset/problem/706/B) | 1100 | Простая задача. Но полезная - можно показать std::upper_bound / std::lower_bound. |
 | [ ] | [CF 270A Завидный забор](https://codeforces.com/problemset/problem/270/A) | 1100 | Довольно простая задача на геометрияю. Однако у меня не с первого раза зашла) |
 | [ ] | [CF 456A Ноутбуки](https://codeforces.com/problemset/problem/456/A) | 1100 | Задача на умение отсортировать массив. |
+| [ ] | [CF 492B Ваня и фонари](https://codeforces.com/problemset/problem/492/B) | 1200 | Скучная задача на умение отсортировать массив. |
 | [ ] | []() |  |  |
