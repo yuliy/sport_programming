@@ -6,3 +6,6 @@ run1:	build
 
 run2:	build
 	./x < in2.txt
+
+run3:	build
+	./x < in3.txt
