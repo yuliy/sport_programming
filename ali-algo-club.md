@@ -9,4 +9,4 @@
 | [ ] | [CF 456A Ноутбуки](https://codeforces.com/problemset/problem/456/A) | 1100 | Задача на умение отсортировать массив. |
 | [ ] | [CF 492B Ваня и фонари](https://codeforces.com/problemset/problem/492/B) | 1200 | Скучная задача на умение отсортировать массив. |
 | [ ] | [CF 25A IQ Тест](https://codeforces.com/problemset/problem/25/A) | 1300 | Простая задача на логику. |
-| [ ] | []() |  |  |
+| [ ] | [CF 520B Две кнопки](https://codeforces.com/problemset/problem/520/B) | 1400 | Относительно несложная задача. Но интересная и полезная. |
