@@ -27,7 +27,7 @@ public:
 private:
     // We have this configuration:
     //   a -> b -> c -> d
-    // This function swaps b and c. And returns new a and b (that is d and d->next).
+    // This function swaps b and c. And returns new a and b (that is b and d).
     TPair swapPair(ListNode* a, ListNode* b) {
         ListNode* c = b->next;
         if (c == nullptr)
