@@ -11,3 +11,4 @@
 | [ ] | [CF 25A IQ Тест](https://codeforces.com/problemset/problem/25/A) | 1300 |  | Простая задача на логику. |
 | [ ] | [CF 520B Две кнопки](https://codeforces.com/problemset/problem/520/B) | 1400 | графы, математика | Относительно несложная задача. Но интересная и полезная. Её можно решить за линию с помощью графов (обход в ширину). А есть алгебраическое решение за логарифм. |
 | [ ] | [LC 853 Car Fleet](https://leetcode.com/problems/car-fleet/) | Medium | математика | Относительно несложная задача. Интересная. |
+| [ ] | [LC 24 Swap Nodes in Pairs](https://leetcode.com/problems/swap-nodes-in-pairs/) | Medium | списки | Простая задача на умение работать со связанными списками |
