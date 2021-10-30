@@ -13,3 +13,4 @@
 | [ ] | [LC 853 Car Fleet](https://leetcode.com/problems/car-fleet/) | Medium | математика | Относительно несложная задача. Интересная. |
 | [ ] | [LC 24 Swap Nodes in Pairs](https://leetcode.com/problems/swap-nodes-in-pairs/) | Medium | списки | Простая задача на умение работать со связанными списками |
 | [ ] | [CF 479C Экзамены](https://codeforces.com/problemset/problem/479/C) | 1400 | сортировки | Относительно простая задача на умение отсортировать массив и немного смекалки. |
+| [ ] | [LC 33 Search In Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) | Medium | бинпоиск | Задача на умение написать бинарный поиск |
