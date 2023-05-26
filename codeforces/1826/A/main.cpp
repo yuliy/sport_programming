@@ -38,8 +38,9 @@ static int Solve(int n, const vector<int> &a)
             break;
 
         const int pj = it->first;
-        f += pj;
+        f += p2c[pj];
         const int pk = prev_it->first;
+        //cout << "pj=" << pj << "\tf=" << f << "\tpk=" << pk << endl;
 
         if (pj > f && pk <= f)
             return f;
