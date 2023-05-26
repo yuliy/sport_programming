@@ -13,27 +13,36 @@ using namespace std;
 using ui64 = unsigned long long;
 using i64 = long long;
 
-static pair<int, int> Count(int p, const vector<int> &a)
-{
-    int equal = 0;
-    int greater = 0;
-    for (auto elem : a)
-    {
-        if (elem == p)
-            ++equal;
-        if (elem > p)
-            ++greater;
-    }
-    return make_pair(equal, greater);
-}
-
 static int Solve(int n, const vector<int> &a)
 {
+    map<int, int> p2c;
     for (auto p : a)
+        p2c[p] += 1;
+
+    if (p2c.size() == 1)
     {
-        const auto [eq, gr] = Count(p, a);
-        if (gr >= p)
-            return gr;
+        const auto p = a[0];
+        if (p == 0)
+            return 0;
+        if (p > n)
+            return n;
+        return -1;
+    }
+
+    int f = 0;
+    for (auto it = p2c.rbegin(); it != p2c.rend(); ++it)
+    {
+        auto prev_it = it;
+        ++prev_it;
+        if (prev_it == p2c.rend())
+            break;
+
+        const int pj = it->first;
+        f += pj;
+        const int pk = prev_it->first;
+
+        if (pj > f && pk <= f)
+            return f;
     }
 
     return -1;
