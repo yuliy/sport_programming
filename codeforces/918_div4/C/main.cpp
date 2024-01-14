@@ -17,27 +17,27 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(0);
 
-    vector<int> sq;
-    for (int i = 1; i*i <= 1e5; ++i) {
+    vector<ui64> sq;
+    for (ui64 i = 1; (i*i) <= (2ULL*1e14); ++i) {
         sq.push_back(i*i);
     }
 
-    int t;
+    ui64 t;
     cin >> t;
-    for (int i = 0; i < t; ++i) {
-        int n;
+    for (ui64 i = 0; i < t; ++i) {
+        ui64 n;
         cin >> n;
-        int sum = 0;
-        for (int j = 0; j < n; ++j) {
-            int tmp;
+        ui64 sum = 0;
+        for (ui64 j = 0; j < n; ++j) {
+            ui64 tmp;
             cin >> tmp;
             sum += tmp;
         }
 
-        if (find(sq.begin(), sq.end(), sum) == sq.end())
-            cout << "NO" << endl;
-        else
+        if (binary_search(sq.begin(), sq.end(), sum))
             cout << "YES" << endl;
+        else
+            cout << "NO" << endl;
     }
 
     return 0;
