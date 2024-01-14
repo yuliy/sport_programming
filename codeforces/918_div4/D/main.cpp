@@ -15,7 +15,7 @@ using i64 = long long;
 
 
 bool IsC(char ch) {
-    return (ch == 'b') || (ch == 'c') || ('ch == 'd');
+    return (ch == 'b') || (ch == 'c') || (ch == 'd');
 }
 
 bool IsV(char ch) {
