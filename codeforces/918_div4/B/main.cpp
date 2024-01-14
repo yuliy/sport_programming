@@ -19,7 +19,16 @@ int main() {
 
     int t;
     cin >> t;
-    for (int i = 0; i < t; ++i) {
+    const string abc = "ABC";
+    for (int i = 0; i < (t*3); ++i) {
+        string s;
+        cin >> s;
+        for (auto ch : abc) {
+            if (s.find(ch) == string::npos) {
+                cout << ch << endl;
+                break;
+            }
+        }
     }
 
     return 0;
