@@ -8,58 +8,52 @@
 #include <set>
 #include <list>
 #include <algorithm>
+#include <map>
 using namespace std;
 
 using ui64 = unsigned long long;
 using i64 = long long;
 
 
-inline bool odd(ui64 num) {
+inline bool odd(i64 num) {
     return (num & 1) == 1;
 }
 
-ui64 CalcOddSum(int l, int r, const vector<ui64>& a) {
-    return (odd(r) ? a[r] : a[r-1])
-        - (odd(l) ? a[l-2] : a[l-1]);
-}
+bool Solve() {
+    i64 n;
+    cin >> n;
+    i64 sum = 0;
+    map<i64, i64> m;
+    m[0] = 1;
 
-ui64 CalcEvenSum(int l, int r, const vector<ui64>& a) {
-    return (odd(r) ? a[r-1] : a[r])
-        - (odd(l) ? a[l-1] : a[l-2]);
-}
+    bool res = false;
+    for (int i = 0; i < n; ++i) {
+        i64 tmp;
+        cin >> tmp;
+        if (odd(i))
+            sum -= tmp;
+        else
+            sum += tmp;
 
-
-void Solve(int n, const vector<ui64>& a) {
-    for (int l = 2; l < (n+2); ++l) {
-        for (int r = l+1; r < (n+2); ++r) {
-            if (CalcOddSum(l, r, a) == CalcEvenSum(l, r, a)) {
-                cout << "YES" << endl;
-                return;
-            }
+        if (m[sum]) {
+            res = true;
+        } else {
+            ++m[sum];
         }
+
     }
-    cout << "NO" << endl;
+
+    return res;
 }
 
 
 int main() {
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 
-    ui64 t;
+    i64 t;
     cin >> t;
-    string s;
-    for (ui64 i = 0; i < t; ++i) {
-        ui64 n;
-        cin >> n;
-        vector<ui64> a(n+2);
-        a[0] = a[1] = 0;
-        for (int j = 2; j < (n+2); ++j) {
-            cin >> a[j];
-            a[j] += a[j-2];
-        }
-
-        Solve(n, a);
-    }
+    for (i64 i = 0; i < t; ++i)
+        cout << (Solve() ? "YES" : "NO") << endl;
 
     return 0;
 }
