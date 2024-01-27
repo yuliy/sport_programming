@@ -1,5 +1,5 @@
 build:
-	g++ -Wall -std=c++17 -o x main.cpp
+	g++-13 -Wall -std=c++17 -o x main.cpp
 
 run1:	build
 	./x < in1.txt
