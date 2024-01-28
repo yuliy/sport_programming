@@ -21,6 +21,18 @@ int main() {
     int t;
     cin >> t;
     for (int i = 0; i < t; ++i) {
+        int n;
+        cin >> n;
+        string s, f;
+        cin >> s >> f;
+
+        int z = 0, k = 0;
+        for (int j = 0; j < n; ++j) {
+            if (s[j] != f[j])
+                (s[j] == '1') ? ++k : ++z;
+        }
+
+        cout << max(z, k) << endl;
     }
 
     return 0;
