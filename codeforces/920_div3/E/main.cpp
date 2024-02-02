@@ -23,27 +23,19 @@ string Solve() {
 
     const i64 dx = abs(xa - xb);
     const bool bob_potential = (dx & 1) == 0;
-    if (bob_potential) {
-        const i64 xm = (xa + xb) / 2;
-        const i64 yma_right = min(ya + (xm - xa), w);
-        const i64 yma_left = max(ya - (xm - xa), 1LL);
-        const i64 ymb_right = min(yb - (xm - xb), w);;
-        const i64 ymb_left = max(yb + (xm - xb), 1LL);
-        return (yma_right > ymb_right || yma_left < ymb_left)
-            ? "draw" : "bob";
-    } else {
-        const i64 xm = (xa + xb) / 2 + 1;
-        const i64 yma_right = min(ya + (xm - xa), w);
-        const i64 yma_left = max(ya - (xm - xa), 1LL);
-        const i64 ymb_right = min(yb - (xm - xb), w);
-        const i64 ymb_left = max(yb + (xm - xb), 1LL);
-        return (ymb_right > yma_right || ymb_left < yma_left)
-            ? "draw" : "alice";
-    }
+    const i64 xm = bob_potential
+        ? (xa + xb) / 2
+        : (xa + xb) / 2 + 1;
 
-    return "???";
+    const i64 yma_right = min(ya + (xm - xa), w);
+    const i64 yma_left = max(ya - (xm - xa), 1LL);
+    const i64 ymb_right = min(yb - (xm - xb), w);;
+    const i64 ymb_left = max(yb + (xm - xb), 1LL);
+
+    if (bob_potential)
+        return (yma_right > ymb_right || yma_left < ymb_left) ? "draw" : "bob";
+    return (ymb_right > yma_right || ymb_left < yma_left) ? "draw" : "alice";
 }
-
 
 int main() {
     cin.tie(0);
