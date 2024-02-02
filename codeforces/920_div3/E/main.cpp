@@ -14,6 +14,10 @@ using namespace std;
 using ui64 = unsigned long long;
 using i64 = long long;
 
+void Debug(int num) {
+    cout << "(" << num << ")" << endl;
+}
+
 string Solve() {
     i64 h, w, xa, ya, xb, yb;
     cin >> h >> w >> xa >> ya >> xb >> yb;
@@ -25,29 +29,20 @@ string Solve() {
         << " xb=" << xb << " yb=" << yb
         << endl;
 
-    if (xa >= xb)
+    if (xa >= xb) {
+        Debug(1);
         return "draw";
+    }
 
     const i64 dy = abs(ya - yb);
     const i64 dx = abs(xa - xb);
-    if (dy > 1)
+    if (dy > 1) {
+        Debug(2);
         return "draw";
+    }
 
-    const bool even = (dx & 1) == 0;
+    const bool bob_potential = (dx & 1) == 0;
     if (dy == 1) {
-        if (even) {
-            if ((ya < yb) && (yb < w))
-                return "draw";
-            if ((ya > yb) && (yb > 1))
-                return "draw";
-            return "alice";
-        } else {
-            if ((ya < yb) && (ya > 1))
-                return "draw";
-            if ((ya > yb) && (ya < w))
-                return "draw";
-            return "bob";
-        }
     }
 
     //if (dy == 0)
