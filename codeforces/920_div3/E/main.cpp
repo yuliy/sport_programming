@@ -14,39 +14,34 @@ using namespace std;
 using ui64 = unsigned long long;
 using i64 = long long;
 
-void Debug(int num) {
-    cout << "(" << num << ")" << endl;
-}
-
 string Solve() {
     i64 h, w, xa, ya, xb, yb;
     cin >> h >> w >> xa >> ya >> xb >> yb;
 
-    cout << "_________________________" << endl;
-    cout
-        << "h=" << h << " w=" << w
-        << " xa=" << xa << " ya=" << ya
-        << " xb=" << xb << " yb=" << yb
-        << endl;
-
-    if (xa >= xb) {
-        Debug(1);
+    if (xa >= xb)
         return "draw";
-    }
 
-    const i64 dy = abs(ya - yb);
     const i64 dx = abs(xa - xb);
-    if (dy > 1) {
-        Debug(2);
-        return "draw";
-    }
-
     const bool bob_potential = (dx & 1) == 0;
-    if (dy == 1) {
+    if (bob_potential) {
+        const i64 xm = (xa + xb) / 2;
+        const i64 yma_right = min(ya + (xm - xa), w);
+        const i64 yma_left = max(ya - (xm - xa), 1LL);
+        const i64 ymb_right = min(yb - (xm - xb), w);;
+        const i64 ymb_left = max(yb + (xm - xb), 1LL);
+        return (yma_right > ymb_right || yma_left < ymb_left)
+            ? "draw" : "bob";
+    } else {
+        const i64 xm = (xa + xb) / 2 + 1;
+        const i64 yma_right = min(ya + (xm - xa), w);
+        const i64 yma_left = max(ya - (xm - xa), 1LL);
+        const i64 ymb_right = min(yb - (xm - xb), w);
+        const i64 ymb_left = max(yb + (xm - xb), 1LL);
+        return (ymb_right > yma_right || ymb_left < yma_left)
+            ? "draw" : "alice";
     }
 
-    //if (dy == 0)
-    return even ? "alice" : "bob";
+    return "???";
 }
 
 
