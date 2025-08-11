@@ -1,14 +1,16 @@
-#include <stdio.h>
-#include <iostream>
-#include <vector>
-#include <deque>
+#include <algorithm>
 #include <cstring>
-#include <string>
+#include <deque>
+#include <iostream>
+#include <list>
 #include <map>
 #include <set>
-#include <list>
-#include <algorithm>
+#include <stdio.h>
+#include <string>
+#include <vector>
+
 using namespace std;
+
 
 int main() {
 
