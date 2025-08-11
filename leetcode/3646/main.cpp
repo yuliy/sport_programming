@@ -16,17 +16,19 @@ vector<int> digits;
 
 static void CalcDigits(uint64_t num)
 {
+    //cout << "DIGITS[]:" << endl;
     digits.clear();
     while (num) {
         digits.push_back(num % 10);
         num /= 10;
+        //cout << "\t" << digits.back() << endl;
     }
 }
 
 
 static bool IsPalindrome()
 {
-    for (int i = 0; j = digits.size() - 1; i < j; ++i, --j)
+    for (int i = 0, j = digits.size() - 1; i < j; ++i, --j)
     {
         if (digits[i] != digits[j])
             return false;
@@ -37,16 +39,19 @@ static bool IsPalindrome()
 
 static bool CheckDigitsRule()
 {
-    array<int, 10> digit2cnt;
-    for (int i = 0; i < digits.size(); ++i)
+    array<int, 10> digit2cnt = {0};
+    for (auto d : digits)
     {
-        ++digit2cnt[i];
+        ++digit2cnt[d];
     }
 
-    for (int i = 0; i < 10; ++i)
+    for (auto d : digits)
     {
-        if (digit2cnt[i] != i)
+        if (digit2cnt[d] != d)
+        {
+            //cout << "FAIL: d=" << d << " cnt=" << digit2cnt[d] << endl;
             return false;
+        }
     }
 
     return true;
@@ -56,13 +61,16 @@ static bool CheckDigitsRule()
 static bool IsSpecial(uint64_t num)
 {
     CalcDigits(num);
+    //cout << "\tis palindrome: " << IsPalindrome() << endl;
+    //cout << "\tdigits ok: " << CheckDigitsRule() << endl;
     return IsPalindrome() && CheckDigitsRule();
 }
 
 
-uint64_t main() {
+int main()
+{
     int special_numbers_found = 0;
-    for (uint64_t n = 0; n < 1e16; ++n)
+    for (uint64_t n = 0; n <= 213; ++n)
     {
         if (IsSpecial(n))
         {
